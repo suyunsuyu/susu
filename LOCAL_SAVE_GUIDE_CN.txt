@@ -1,0 +1,18 @@
+本地保存功能使用说明
+
+1. 把整个网站文件夹保存在电脑上，不要只保留 ZIP。
+2. 推荐使用 Chrome / Edge 打开已经部署到 GitHub Pages 的网站。
+   直接写入本地文件夹需要 HTTPS 或 localhost；普通 file:// 页面可能无法使用浏览器的文件夹写入权限。
+3. 点击右下角 EDIT PAGE。
+4. 修改文字、位置、大小、删除/隐藏元素、追加元素或子导航。
+5. 在面板下方 SAVE TO COMPUTER 区域点击：CONNECT LOCAL FOLDER。
+6. 选择你电脑上这个网站的根文件夹（里面能直接看到 index.html 的那个文件夹），允许读写权限。
+7. 点击 SAVE TO LOCAL。
+8. 修改会写入本地网站文件夹中的 saved-layouts.js。
+9. 以后把这个本地网站文件夹全部上传 GitHub，保存过的网页设计也会一起生效。
+
+重要：
+- SAVE TO LOCAL 保存的是 EDIT PAGE 的网页设计修改。
+- 它不会把私人留言写进公开文件。
+- 浏览器中的 localStorage 仍作为编辑过程中的自动临时保存；成功 SAVE TO LOCAL 后，设计会固化到 saved-layouts.js。
+- 如果换电脑，只要带着整个网站文件夹（包括 saved-layouts.js），设计仍然保留。

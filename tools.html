@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><script>document.documentElement.classList.add("site-booting");setTimeout(()=>document.documentElement.classList.remove("site-booting"),3500)</script><title>Tools — Lee Su-yoon</title><link href="style.css?v=20260818-imgfix2" rel="stylesheet"/><link href="fonts.css?v=20260818-imgfix2" rel="stylesheet"/></head><body>
+<header><a class="brand" href="index.html">LEE SU-YOON</a><a href="index.html">← HOME</a></header>
+<main class="page tools-page"><p class="kicker">MY TOOLS</p>
+<section class="tool-grid">
+  <article class="tool-card"><span>01</span><h2>PDF ↔ IMAGE</h2><p>Convert PDF pages to PNG images, or combine images into one PDF.</p><input id="convert-files" type="file" accept="application/pdf,image/*" multiple><div class="tool-actions"><button id="pdf-to-images" class="black">PDF → IMAGES</button><button id="images-to-pdf">IMAGES → PDF</button></div><div id="convert-output" class="convert-output"></div></article>
+  <article class="tool-card"><span>02</span><h2>DRAWING BOARD</h2><p>Draw directly in the browser and save your work as PNG.</p><div class="drawing-toolbar"><input id="tool-draw-color" type="color" value="#111111"><input id="tool-draw-width" type="range" min="1" max="24" value="4"><button id="tool-draw-undo">UNDO</button><button id="tool-draw-clear">CLEAR</button><button id="tool-draw-save" class="black">SAVE PNG</button></div><canvas id="tool-draw-canvas" width="1100" height="650"></canvas></article>
+  <article class="tool-card"><span>03</span><h2>WHAT TO EAT TODAY?</h2><p>Can’t decide? Let the cat choose.</p><textarea id="meal-options" rows="5">국밥
+냉면
+마라탕
+초밥
+제육볶음
+샐러드
+돈까스
+쌀국수</textarea><button id="pick-meal" class="black">PICK FOR ME ↗</button><div id="meal-result" class="meal-result">?</div></article>
+</section></main>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script><script src="tools.js?v=20260818-imgfix2"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js?v=20260818-imgfix2"></script><script src="supabase-site.js?v=20260818-imgfix2"></script><script src="saved-layouts.js?v=20260818-imgfix2"></script><script src="page-editor.js?v=20260818-imgfix2"></script><script src="boot-ready.js?v=20260818-imgfix2"></script></body></html>

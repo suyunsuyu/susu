@@ -1,0 +1,14 @@
+主页编辑说明
+
+1. 打开主页，左下角 ADMIN LOGIN 登录管理员。
+2. 登录后右下角会出现 EDIT PAGE。
+3. 点 SELECT ELEMENT 后，可以选择：
+   - 主页猫咪图片
+   - 中文 / EN / 한국어 语言按钮
+   - ABOUT / WORKS / DIARY / GUESTBOOK / TOOLS 文字
+   - 各导航链接
+4. 可以修改文字、位置、大小、透明度、层级、隐藏/删除。
+5. 选择图片后可以使用 REPLACE SELECTED IMAGE 更换主页图片；新图片上传到 Supabase Storage。
+6. 选择链接后可以修改 SELECTED LINK URL。
+7. 修改会自动保存到 Supabase，访客重新打开后看到最新主页。
+8. 未登录访客不会看到 EDIT PAGE。

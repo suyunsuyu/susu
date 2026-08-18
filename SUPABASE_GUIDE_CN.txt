@@ -1,0 +1,41 @@
+SuYoon Personal Site — Supabase 管理员版
+
+已连接项目：suyunsuyu's Project
+管理员邮箱：linken0w0@gmail.com
+
+权限规则：
+1. 普通访客：可以浏览网站、查看公开内容、提交留言（包括选择 PRIVATE 给管理员看的留言）。
+2. 普通访客不能：修改关于我、上传/删除照片、创建/编辑/删除相册、修改日记、修改作品封面、使用 EDIT PAGE、删除留言。
+3. 管理员登录后：以上编辑功能全部开放。
+4. Supabase 后端 RLS 同样限制写入权限；即使别人用浏览器开发者工具，也不能把修改写进数据库或 Storage。
+
+管理员登录：
+- 每个页面左下角有 ADMIN LOGIN。
+- 点击后邮箱固定为 linken0w0@gmail.com。
+- 输入你在 Supabase Auth 里为这个账号设置的密码。
+- 登录成功后按钮变为 ADMIN MODE · LOG OUT，并显示编辑入口。
+
+已接入 Supabase：
+- Guestbook 留言
+- PRIVATE 留言读取（仅管理员）
+- 留言删除（仅管理员）
+- About 资料/头像
+- Works 封面
+- Photography / Drawing 相册与图片
+- Diary
+- EDIT PAGE 页面布局和文字修改
+
+EDIT PAGE：
+- 普通访客不会看到 EDIT PAGE。
+- 管理员修改后会自动保存到 Supabase，并对所有访客生效。
+- 仍保留 SAVE TO LOCAL，作为本地 saved-layouts.js 备份功能。
+
+上传 GitHub：
+解压 ZIP 后，把里面所有文件直接上传到仓库根目录，确保 index.html 在仓库第一层。
+
+
+管理员显示规则：
+- 未登录：只显示正常网站内容和留言板提交功能。
+- 不显示 EDIT PROFILE / EDIT COVERS / EDIT DIARY / NEW ALBUM / EDIT PAGE / MANAGE MESSAGES / DELETE MESSAGE 等管理功能。
+- ADMIN LOGIN 保留，用于进入管理模式。
+- 登录管理员后，上述编辑和管理入口才会出现。

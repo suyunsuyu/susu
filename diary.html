@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><script>document.documentElement.classList.add("site-booting");setTimeout(()=>document.documentElement.classList.remove("site-booting"),3500)</script>
+  <title>Diary — Lee Su-yoon</title>
+  <link rel="stylesheet" href="style.css?v=20260818-imgfix2">
+  <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
+</head>
+<body>
+  <header><a href="index.html" class="brand">LEE SU-YOON</a><a href="index.html">← HOME</a></header>
+  <main class="page diary-page">
+    <div class="diary-head-row"><p class="kicker">MY DIARY</p><button id="edit-diary" class="edit diary-edit" data-admin-only hidden>EDIT DIARY ↗</button></div>
+    <button id="diary-main-trigger" class="diary-main-trigger" type="button" aria-expanded="false">
+      <img src="assets/diary-main.png?v=20260818-imgfix2" data-fallback-src="assets/diary-main.png?v=20260818-imgfix2" alt="hand-drawn cat reading a book" class="diary-main-image">
+      <span>OPEN DIARY ↘</span>
+    </button>
+    <section id="diary-date-list" class="diary-date-list" hidden aria-label="Diary dates"></section>
+    <section id="diary-detail" class="diary-detail" hidden></section>
+  </main>
+
+  <dialog id="diary-dialog">
+    <form id="diary-form">
+      <button type="button" id="close-diary-editor" class="close">×</button>
+      <p class="kicker">DIARY EDITOR</p>
+      <label>DATE<input id="diary-date" type="date"></label>
+      <label>TEXT<textarea id="diary-text" rows="8" placeholder="Write here…"></textarea></label>
+      <div class="diary-style-controls">
+        <label>FONT STYLE<select id="diary-font"><option value="serif">Editorial Serif</option><option value="sans">Modern Sans</option><option value="cormorant">Elegant Serif</option><option value="bodoni">Bodoni</option><option value="hand">Handwritten</option><option value="cute">Cute Hand</option><option value="pen">Pen Script</option><option value="clean">Clean</option><option value="modern">Modern Grotesk</option><option value="mono">Monospace</option></select></label>
+        <label>FONT SIZE<select id="diary-size"><option value="">Default / Responsive</option><option value="12">12 px</option><option value="14">14 px</option><option value="16">16 px</option><option value="20">20 px</option><option value="24">24 px</option><option value="28">28 px</option><option value="32">32 px</option><option value="36">36 px</option><option value="42">42 px</option><option value="48">48 px</option><option value="56">56 px</option></select></label>
+        <label>TEXT COLOR<span class="diary-color-control"><input id="diary-color" type="color" value="#111111"><input id="diary-color-hex" type="text" value="#111111" maxlength="7"></span></label>
+      </div>
+      <div class="diary-style-preview-wrap"><small>STYLE PREVIEW</small><p id="diary-style-preview">Write here…</p></div>
+      <label>PHOTO<input id="diary-image" type="file" accept="image/*"></label>
+      <button type="button" id="new-diary-entry" class="edit">ADD ENTRY</button>
+      <div id="diary-manager" class="diary-manager"></div>
+      <button class="black" type="button" id="save-diary">SAVE</button>
+    </form>
+  </dialog>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js?v=20260818-imgfix2"></script>
+  <script src="app.js?v=20260818-imgfix2"></script>
+  <script src="supabase-site.js?v=20260818-imgfix2"></script>
+  <script src="saved-layouts.js?v=20260818-imgfix2"></script>
+  <script src="page-editor.js?v=20260818-imgfix2"></script>
+<script src="boot-ready.js?v=20260818-imgfix2"></script></body>
+</html>

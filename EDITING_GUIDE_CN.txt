@@ -1,0 +1,27 @@
+网页编辑功能使用说明
+
+1. 每个页面右下角都有 “EDIT PAGE”。点击后打开页面设计面板。
+2. 点击 “SELECT ELEMENT”，再点网页上的任意元素即可选中。
+3. 选中后可修改：
+   - X / Y：位置
+   - SCALE：整体大小
+   - OPACITY：透明度
+   - WIDTH / MAX WIDTH：宽度
+   - FONT SIZE：字体大小
+   - Z-INDEX：前后层级
+4. 在编辑模式下，选中元素后可直接拖动改变位置。
+5. ADD ELEMENT 可追加文字、图片、线条、按钮/链接。
+6. SUB NAVIGATION 可建立当前页面的子导航，并可删除。
+7. RESET SELECTED 只重置当前元素；RESET THIS PAGE 清除该页面全部自定义设计。
+8. 每个页面的修改使用浏览器 localStorage 自动保存。
+
+留言页
+- 每条公开留言会生成一颗猫粮。
+- 点击猫粮才会打开留言正文。
+- 打开留言后可删除该留言。
+- MANAGE MESSAGES 可管理公开和 PRIVATE 留言并删除。
+- PRIVATE 留言不会出现在公开猫粮碗里。
+
+注意
+当前网站仍是纯静态网站，留言和页面编辑数据默认保存在当前浏览器。
+若要让 GitHub Pages 上不同访客的留言同步到站长、并跨设备同步，需要再连接 Supabase 等后端数据库。

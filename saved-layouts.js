@@ -1,0 +1,1 @@
+window.SUYOON_SAVED_LAYOUTS = window.SUYOON_SAVED_LAYOUTS || {};

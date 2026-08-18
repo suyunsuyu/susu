@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><script>document.documentElement.classList.add("site-booting");setTimeout(()=>document.documentElement.classList.remove("site-booting"),3500)</script>
+  <title>Guestbook — Lee Su-yoon</title>
+  <link rel="stylesheet" href="style.css?v=20260818-imgfix2">
+  <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
+</head>
+<body>
+  <header>
+    <a href="index.html" class="brand">LEE SU-YOON</a>
+    <a href="index.html">← HOME</a>
+  </header>
+
+  <main class="page guestbook-page">
+    <div class="guestbook-intro">
+      <p class="kicker">GUESTBOOK / CAT FOOD</p>
+      <p data-pe-multiline="true">Leave a note. Every public message becomes one hand-drawn piece of cat food in the bowl. Click a grain to read what someone left behind.</p>
+    </div>
+
+    <section class="guest-experience">
+      <div class="cat-feeding-scene full-scene-drawing">
+        <img src="assets/guestbook/guestbook-scene-full.png?v=20260818-imgfix2" data-fallback-src="assets/guestbook/guestbook-scene-full.png?v=20260818-imgfix2" alt="hand-drawn cat and bowl" class="guest-scene-image">
+        <div id="kibble-layer" class="kibble-layer sketch-kibble-layer" aria-label="Guestbook messages"></div>
+        <div id="empty-bowl-note" class="empty-bowl-note" data-pe-multiline="true">THE BOWL IS EMPTY.<br>LEAVE THE FIRST CAT FOOD.</div>
+        <div id="bowl-count" class="bowl-count">0 CAT FOOD</div>
+        <div class="bowl-hint" data-pe-multiline="true">CLICK A GRAIN<br>TO READ A MESSAGE ↗</div>
+      </div>
+
+      <div class="guest-form-card">
+        <form id="message-form">
+          <label><span class="pe-editable-label">NAME</span> <small class="pe-editable-label">(optional)</small><input id="message-name" maxlength="40" placeholder=""></label>
+          <label><span class="pe-editable-label">MESSAGE</span><textarea id="message-body" maxlength="800" required placeholder=""></textarea></label>
+          <div class="guest-style-controls">
+            <label>FONT<select id="message-font"><option value="sans">Sans</option><option value="serif">Serif</option><option value="hand">Handwritten</option><option value="cute">Cute Hand</option><option value="mono">Mono</option></select></label>
+            <label>SIZE<select id="message-size"><option value="14">14 px</option><option value="16" selected>16 px</option><option value="20">20 px</option><option value="24">24 px</option><option value="28">28 px</option><option value="36">36 px</option></select></label>
+            <label>COLOR<input id="message-color" type="color" value="#111111"></label>
+          </div>
+          <label>IMAGE <small>(optional, max 5MB)</small><input id="message-image" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label>
+          <button id="toggle-message-drawing" class="message-manage" type="button">DRAW SOMETHING ↘</button>
+          <div id="message-drawing-panel" class="message-drawing-panel" hidden>
+            <canvas id="message-drawing-canvas" width="700" height="360"></canvas>
+            <div class="drawing-toolbar"><input id="message-draw-color" type="color" value="#111111"><input id="message-draw-width" type="range" min="1" max="18" value="4"><button id="message-draw-clear" type="button">CLEAR</button></div>
+          </div>
+          <label class="private"><input id="message-private" type="checkbox"><span class="pe-editable-label">PRIVATE — CREATOR ONLY</span></label>
+          <p id="form-status"></p>
+          <button class="black"><span class="pe-editable-label">FEED CAT FOOD ↗</span></button>
+          <p class="guest-form-note" data-pe-multiline="true">Public messages appear as hand-drawn cat food in the bowl. Private messages stay hidden from the public bowl.</p>
+          <button id="message-manage" class="message-manage" type="button" data-admin-only hidden><span class="pe-editable-label">MANAGE MESSAGES →</span></button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="message-dialog" class="message-dialog">
+    <div class="message-card">
+      <div class="message-card-head">
+        <div>
+          <strong id="message-dialog-name">ANONYMOUS</strong><br>
+          <small id="message-dialog-date"></small>
+        </div>
+        <button id="message-dialog-close" type="button">×</button>
+      </div>
+      <p id="message-dialog-text" class="message-card-text"></p><img id="message-dialog-image" class="message-dialog-media" alt="message attachment" hidden><img id="message-dialog-drawing" class="message-dialog-media" alt="message drawing" hidden>
+      <div class="message-card-foot">
+        <span id="message-dialog-index"></span>
+        <button id="message-delete" class="message-delete" type="button" data-admin-only hidden>DELETE MESSAGE</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="message-manager-dialog" class="message-manager-dialog">
+    <div class="message-manager-card">
+      <div class="message-card-head">
+        <div>
+          <strong>MESSAGE MANAGER</strong><br>
+          <small>PUBLIC + PRIVATE NOTES</small>
+        </div>
+        <button id="message-manager-close" type="button">×</button>
+      </div>
+      <div id="message-manager-list" class="message-manager-list"></div>
+    </div>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js?v=20260818-imgfix2"></script><script src="app.js?v=20260818-imgfix2"></script>
+  <script src="supabase-site.js?v=20260818-imgfix2"></script><script src="saved-layouts.js?v=20260818-imgfix2"></script><script src="page-editor.js?v=20260818-imgfix2"></script>
+<script src="boot-ready.js?v=20260818-imgfix2"></script></body>
+</html>
