@@ -140,19 +140,21 @@ img.suyoon-image-failed{opacity:1;background:var(--paper)}
   input:not([type=checkbox]):not([type=color]):not([type=range]),textarea,select{font-size:16px}
   .black,.edit,.tool-actions button,.drawing-toolbar button{min-height:44px}
 
-  /* Home: one calm image area followed by a balanced 2 + 2 + 1 menu. */
+  /* Home: a calm, unboxed composition. Mobile ignores desktop editor offsets. */
   .home-main,
-  body.mobile-layout-recommended .home-main{min-height:100svh;justify-content:flex-start;padding:78px 18px max(28px,env(safe-area-inset-bottom))}
+  body.mobile-layout-recommended .home-main{min-height:100svh;justify-content:center;gap:clamp(24px,6svh,52px);padding:72px 20px max(32px,env(safe-area-inset-bottom))}
   .language-switch{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;gap:2px}
   .language-switch button{min-width:42px;min-height:42px;padding:0 6px;display:grid;place-items:center}
   .home-cat,
-  body.mobile-layout-recommended .home-cat{width:min(96vw,520px);height:auto;max-height:45svh;margin:auto auto 0;object-fit:contain}
+  body.mobile-layout-recommended .home-cat{width:min(90vw,500px)!important;height:auto;max-height:46svh!important;margin:0 auto!important;object-fit:contain}
   .home-nav,
-  body.mobile-layout-recommended .home-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;max-width:430px;gap:0;margin:18px auto 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);font-size:13px}
-  .home-nav a{min-width:0;min-height:68px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.25;border-bottom:1px solid var(--line)}
-  .home-nav a:nth-child(1),.home-nav a:nth-child(3){border-right:1px solid var(--line)}
-  .home-nav a:nth-child(5){grid-column:1/3;border-bottom:0}
-  .home-nav small{display:block;margin-top:5px;font-size:7px;line-height:1;letter-spacing:.13em}
+  body.mobile-layout-recommended .home-nav{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;width:min(100%,390px);max-width:none;gap:8px clamp(18px,6vw,30px);margin:0 auto;border:0;font-size:12px}
+  .home-nav a{min-width:auto;min-height:44px;padding:8px 0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.25;border:0;white-space:nowrap}
+  .home-nav a:nth-child(1),.home-nav a:nth-child(3),.home-nav a:nth-child(5){border:0;grid-column:auto}
+  .home-nav small{display:block;margin-top:4px;font-size:7px;line-height:1;letter-spacing:.13em}
+  .home-main .home-cat.pe-transformed,
+  .home-main .home-nav .pe-transformed,
+  .home-main .language-switch.pe-transformed{translate:0 0!important;scale:1!important}
 
   /* Profile and editorial pages. */
   .about-layout,.guest-layout{gap:34px}
@@ -227,9 +229,10 @@ img.suyoon-image-failed{opacity:1;background:var(--paper)}
 
 @media (max-width:390px){
   .page{padding-inline:16px}
-  .home-main{padding-inline:14px}
-  .home-cat{max-height:40svh}
-  .home-nav a{min-height:62px;padding-block:10px}
+  .home-main{padding-inline:16px;gap:22px}
+  .home-cat{max-height:42svh!important}
+  .home-nav{gap:4px 18px!important}
+  .home-nav a{min-height:42px;padding-block:7px}
   .album-images{column-count:1}
   .convert-output{grid-template-columns:1fr}
   .guest-style-controls{grid-template-columns:1fr}
