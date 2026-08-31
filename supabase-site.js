@@ -240,7 +240,10 @@
   }
 
   const applyTextStyle=(el,s={})=>{
-    if(!el)return;el.className=el.className.split(' ').filter(x=>!x.startsWith('font-')&&!x.startsWith('size-')&&x!=='is-bold').concat(`font-${s.font||'sans'}`,`size-${s.size||'normal'}`,s.bold?'is-bold':'').join(' ');
+    if(!el)return;
+    el.className=el.className.split(' ').filter(x=>!x.startsWith('font-')&&!x.startsWith('size-')&&x!=='is-bold').concat(`font-${s.font||'sans'}`,`size-${s.size||'normal'}`,s.bold?'is-bold':'').join(' ');
+    if(/^#[0-9a-f]{6}$/i.test(s.color||''))el.style.color=s.color;
+    else el.style.removeProperty('color');
   };
   async function initProfile(){
     if(!$('#profile-name'))return;
@@ -267,12 +270,21 @@
     };
     $('#edit-photo-scale')?.addEventListener('input',()=>syncScale(false));
     $('#edit-photo-scale-number')?.addEventListener('input',()=>syncScale(true));
+    const syncTextColor=(unit,fromHex=false)=>{
+      const picker=$(`#${unit}-color`),hex=$(`#${unit}-color-hex`);if(!picker||!hex)return;
+      if(fromHex){if(/^#[0-9a-f]{6}$/i.test(hex.value))picker.value=hex.value}
+      else hex.value=picker.value.toUpperCase();
+    };
+    ['name','info','statement'].forEach(unit=>{
+      $(`#${unit}-color`)?.addEventListener('input',()=>syncTextColor(unit,false));
+      $(`#${unit}-color-hex`)?.addEventListener('input',()=>syncTextColor(unit,true));
+    });
     $('#edit-button').onclick=()=>{
       profile=profile||{name:'',info:'',statement:'',image:'',photoScale:100,styles:{}};
       $('#edit-name').value=profile.name||'';$('#edit-info').value=profile.info||'';$('#edit-statement').value=profile.statement||'';
       const scale=clampScale(profile.photoScale ?? ({small:60,normal:85,large:100}[profile.photoSize]||100));
       if($('#edit-photo-scale'))$('#edit-photo-scale').value=scale;if($('#edit-photo-scale-number'))$('#edit-photo-scale-number').value=scale;
-      ['name','info','statement'].forEach(u=>{const st=profile.styles?.[u]||{font:'sans',size:'normal',bold:false};if($(`#${u}-font`))$(`#${u}-font`).value=st.font;if($(`#${u}-size`))$(`#${u}-size`).value=st.size;if($(`#${u}-bold`))$(`#${u}-bold`).checked=!!st.bold});
+      ['name','info','statement'].forEach(u=>{const st=profile.styles?.[u]||{font:'sans',size:'normal',bold:false,color:'#161616'},color=/^#[0-9a-f]{6}$/i.test(st.color||'')?st.color:'#161616';if($(`#${u}-font`))$(`#${u}-font`).value=st.font;if($(`#${u}-size`))$(`#${u}-size`).value=st.size;if($(`#${u}-bold`))$(`#${u}-bold`).checked=!!st.bold;if($(`#${u}-color`))$(`#${u}-color`).value=color;if($(`#${u}-color-hex`))$(`#${u}-color-hex`).value=color.toUpperCase()});
       $('#editor').showModal();
     };
     $('#save-profile').onclick=async()=>{
@@ -280,7 +292,7 @@
       try{
         let image=profile?.image||'';const file=$('#edit-image').files?.[0];if(file)image=await uploadPublic(file,'profile');
         profile={name:$('#edit-name').value,info:$('#edit-info').value,statement:$('#edit-statement').value,photoScale:clampScale($('#edit-photo-scale-number')?.value||100),image,styles:{}};
-        ['name','info','statement'].forEach(u=>profile.styles[u]={font:$(`#${u}-font`)?.value||'sans',size:$(`#${u}-size`)?.value||'normal',bold:!!$(`#${u}-bold`)?.checked});
+        ['name','info','statement'].forEach(u=>{const entered=$(`#${u}-color-hex`)?.value||'',color=/^#[0-9a-f]{6}$/i.test(entered)?entered.toUpperCase():($(`#${u}-color`)?.value||'#161616').toUpperCase();profile.styles[u]={font:$(`#${u}-font`)?.value||'sans',size:$(`#${u}-size`)?.value||'normal',bold:!!$(`#${u}-bold`)?.checked,color}});
         await saveContent('profile',profile);render();$('#editor').close();
       }catch(err){alert('SAVE FAILED: '+err.message)}
     };
