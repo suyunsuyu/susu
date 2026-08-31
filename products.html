@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0">
   <script>document.documentElement.classList.add("site-booting");setTimeout(()=>document.documentElement.classList.remove("site-booting"),3500)</script>
   <title>Products — Lee Su-yoon</title>
-  <link rel="stylesheet" href="style.css?v=20260828-products1">
+  <link rel="stylesheet" href="style.css?v=20260828-products2">
   <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
 </head>
 <body>
@@ -45,6 +45,10 @@
         <small id="product-detail-category"></small>
         <h2 id="product-detail-name"></h2>
         <p id="product-detail-description"></p>
+        <section id="product-detail-colors-wrap" class="product-detail-colors-wrap" hidden>
+          <p class="product-color-label">AVAILABLE COLORS</p>
+          <div id="product-detail-colors" class="product-color-cards"></div>
+        </section>
       </article>
     </div>
   </dialog>
@@ -56,6 +60,14 @@
       <label>PRODUCT NAME<input id="product-name" maxlength="120" required></label>
       <label>CATEGORY<input id="product-category" maxlength="60" placeholder="e.g. CAT TOYS" required></label>
       <label>DESCRIPTION<textarea id="product-description" rows="7" maxlength="3000"></textarea></label>
+      <fieldset class="product-colors-editor">
+        <div class="product-colors-editor-head">
+          <span class="product-colors-title">PRODUCT COLORS / PANTONE</span>
+          <button id="add-product-color" type="button">ADD COLOR ＋</button>
+        </div>
+        <p class="product-colors-help">Choose the swatch color, then enter a Pantone code or any custom color name.</p>
+        <div id="product-color-rows" class="product-color-rows"></div>
+      </fieldset>
       <label>SORT ORDER<input id="product-order" type="number" min="0" step="1" value="0"></label>
       <label class="upload-label">ADD PRODUCT PHOTOS<input id="product-images" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple></label>
       <div id="product-image-preview" class="product-image-preview"></div>
@@ -67,7 +79,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js?v=20260818-imgfix2"></script>
   <script src="supabase-site.js?v=20260818-imgfix2"></script>
-  <script src="products.js?v=20260828-products1"></script>
+  <script src="products.js?v=20260828-products2"></script>
   <script src="saved-layouts.js?v=20260818-imgfix2"></script>
   <script src="page-editor.js?v=20260818-imgfix2"></script>
   <script src="boot-ready.js?v=20260818-imgfix2"></script>
