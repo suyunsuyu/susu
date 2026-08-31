@@ -116,6 +116,18 @@ html.site-booting body{visibility:hidden!important}
   body.mobile-layout-visual .pe-custom-element{max-width:94vw}
 }
 
+/* ===== Home snowfall ===== */
+.snow-layer{position:fixed;inset:0;z-index:12;overflow:hidden;pointer-events:none;contain:strict}
+.snowflake{position:absolute;top:-8vh;left:var(--snow-left);color:rgba(42,52,62,var(--snow-opacity));font-family:"Segoe UI Symbol","Arial Unicode MS",sans-serif;font-size:var(--snow-size);font-weight:400;line-height:1;text-shadow:0 0 1px #fff;will-change:transform;animation:snowFall var(--snow-duration) linear var(--snow-delay) infinite}
+@keyframes snowFall{
+  0%{transform:translate3d(0,-9vh,0) rotate(0deg)}
+  35%{transform:translate3d(calc(var(--snow-drift) * .45),35vh,0) rotate(calc(var(--snow-spin) * .35))}
+  70%{transform:translate3d(calc(var(--snow-drift) * -.18),76vh,0) rotate(calc(var(--snow-spin) * .72))}
+  100%{transform:translate3d(var(--snow-drift),116vh,0) rotate(var(--snow-spin))}
+}
+@media(max-width:720px){.snowflake:nth-child(2n){display:none}}
+@media(prefers-reduced-motion:reduce){.snow-layer{display:none}}
+
 
 /* ===== Image reliability + unified photo background ===== */
 html,body{background:var(--paper)!important}
