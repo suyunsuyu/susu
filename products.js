@@ -2,7 +2,7 @@
   const $ = (s, root=document) => root.querySelector(s);
   const $$ = (s, root=document) => [...root.querySelectorAll(s)];
   const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-  const state = { products:[], category:'ALL', sort:'custom', editingImages:[] };
+  const state = { products:[], category:'ALL', sort:'custom', editingImages:[], editingColors:[] };
 
   async function start() {
     if (!window.SUY_ADMIN) return;
@@ -12,6 +12,17 @@
     const editor = $('#product-editor');
 
     const normalizedImages = value => Array.isArray(value) ? value.filter(Boolean) : [];
+    const normalizedColors = value => {
+      if (typeof value === 'string') {
+        try { value = JSON.parse(value); } catch { return []; }
+      }
+      if (!Array.isArray(value)) return [];
+      return value.map(color => {
+        const name = String(color?.name || color?.pantone || '').trim();
+        const hex = /^#[0-9a-f]{6}$/i.test(String(color?.hex || '')) ? String(color.hex).toUpperCase() : '#111111';
+        return name ? { name, hex } : null;
+      }).filter(Boolean);
+    };
     const orderedProducts = () => {
       let items = state.products.filter(item => state.category === 'ALL' || (item.category || 'UNCATEGORIZED') === state.category);
       if (state.sort === 'newest') items.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
@@ -32,6 +43,9 @@
       $('#product-detail-category').textContent = product.category || 'UNCATEGORIZED';
       $('#product-detail-name').textContent = product.name || 'UNTITLED';
       $('#product-detail-description').textContent = product.description || '';
+      const colors = normalizedColors(product.pantone_colors);
+      $('#product-detail-colors-wrap').hidden = colors.length === 0;
+      $('#product-detail-colors').innerHTML = colors.map(color => `<figure class="pantone-card"><span class="pantone-swatch" style="--pantone-color:${esc(color.hex)}"></span><figcaption>${esc(color.name)}<small>${esc(color.hex)}</small></figcaption></figure>`).join('');
       $('#product-detail-main').innerHTML = images[0] ? `<img src="${esc(images[0])}" alt="${esc(product.name)}">` : '<span>NO IMAGE</span>';
       $('#product-detail-thumbs').innerHTML = images.length > 1 ? images.map((src,index) => `<button type="button" data-detail-image="${index}"><img src="${esc(src)}" alt="${esc(product.name)} ${index+1}"></button>`).join('') : '';
       $$('[data-detail-image]').forEach(button => button.onclick = () => { $('#product-detail-main').innerHTML = `<img src="${esc(images[Number(button.dataset.detailImage)])}" alt="${esc(product.name)}">`; });
@@ -61,7 +75,7 @@
     }
 
     async function loadProducts() {
-      const { data, error } = await sb.from('products').select('id,code,category,name,description,images,sort_order,created_at,updated_at').order('sort_order',{ascending:true}).order('created_at',{ascending:false});
+      const { data, error } = await sb.from('products').select('id,code,category,name,description,images,pantone_colors,sort_order,created_at,updated_at').order('sort_order',{ascending:true}).order('created_at',{ascending:false});
       if (error) throw error;
       state.products = data || [];
       await render();
@@ -70,6 +84,38 @@
     function renderPreview() {
       $('#product-image-preview').innerHTML = state.editingImages.map((src,index) => `<figure><img src="${esc(src)}" alt=""><button type="button" data-remove-product-image="${index}" aria-label="Remove image">×</button></figure>`).join('');
       $$('[data-remove-product-image]').forEach(button => button.onclick = () => { state.editingImages.splice(Number(button.dataset.removeProductImage),1); renderPreview(); });
+    }
+
+    function renderColorEditor() {
+      $('#product-color-rows').innerHTML = state.editingColors.map((color,index) => `<div class="product-color-row">
+        <input type="color" value="${esc(color.hex)}" data-product-color-hex="${index}" aria-label="Color ${index+1}">
+        <input type="text" value="${esc(color.name)}" maxlength="60" placeholder="PANTONE 186 C / CUSTOM NAME" data-product-color-name="${index}" aria-label="Pantone code or color name ${index+1}">
+        <input type="text" value="${esc(color.hex)}" maxlength="7" placeholder="#C8102E" data-product-color-hex-text="${index}" aria-label="Hex color ${index+1}">
+        <button type="button" data-remove-product-color="${index}" aria-label="Remove color ${index+1}">×</button>
+      </div>`).join('');
+      $$('[data-product-color-hex]').forEach(input => input.oninput = () => {
+        const index = Number(input.dataset.productColorHex);
+        state.editingColors[index].hex = input.value.toUpperCase();
+        $(`[data-product-color-hex-text="${index}"]`).value = state.editingColors[index].hex;
+      });
+      $$('[data-product-color-hex-text]').forEach(input => {
+        input.oninput = () => {
+          const value = input.value.trim().toUpperCase();
+          if (/^#[0-9A-F]{6}$/.test(value)) {
+            const index = Number(input.dataset.productColorHexText);
+            state.editingColors[index].hex = value;
+            $(`[data-product-color-hex="${index}"]`).value = value;
+            input.setCustomValidity('');
+          } else input.setCustomValidity('Use a 6-digit HEX value, for example #C8102E.');
+        };
+        input.onblur = () => {
+          const index = Number(input.dataset.productColorHexText);
+          if (!/^#[0-9A-F]{6}$/.test(input.value.trim().toUpperCase())) input.value = state.editingColors[index].hex;
+          input.setCustomValidity('');
+        };
+      });
+      $$('[data-product-color-name]').forEach(input => input.oninput = () => { state.editingColors[Number(input.dataset.productColorName)].name = input.value; });
+      $$('[data-remove-product-color]').forEach(button => button.onclick = () => { state.editingColors.splice(Number(button.dataset.removeProductColor),1); renderColorEditor(); });
     }
 
     function openEditor(product=null) {
@@ -81,7 +127,9 @@
       $('#product-images').value = '';
       $('#product-status').textContent = '';
       state.editingImages = normalizedImages(product?.images);
+      state.editingColors = normalizedColors(product?.pantone_colors);
       renderPreview();
+      renderColorEditor();
       editor.showModal();
     }
 
@@ -112,6 +160,12 @@
     $('#new-product').onclick = async () => { if (await isAdmin()) openEditor(); };
     $('#close-product-editor').onclick = () => editor.close();
     $('#close-product-detail').onclick = () => detail.close();
+    $('#add-product-color').onclick = () => {
+      state.editingColors.push({ name:'', hex:'#111111' });
+      renderColorEditor();
+      const inputs = $$('[data-product-color-name]');
+      inputs[inputs.length - 1]?.focus();
+    };
     [detail,editor].forEach(dialog => dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); }));
     $('#product-images').onchange = async event => {
       if (!await isAdmin()) return;
@@ -133,6 +187,7 @@
         category:$('#product-category').value.trim(),
         description:$('#product-description').value.trim(),
         images:[...state.editingImages],
+        pantone_colors:state.editingColors.map(color => ({ name:String(color.name || '').trim(), hex:/^#[0-9A-F]{6}$/i.test(String(color.hex || '')) ? String(color.hex).toUpperCase() : '#111111' })).filter(color => color.name),
         sort_order:Math.max(0,Number($('#product-order').value)||0),
         updated_at:new Date().toISOString()
       };
