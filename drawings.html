@@ -1,1 +1,43 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><script>document.documentElement.classList.add("site-booting");setTimeout(()=>document.documentElement.classList.remove("site-booting"),3500)</script><title>Drawing — Lee Su-yoon</title><link rel="stylesheet" href="style.css?v=20260828-mobile1"><link rel="stylesheet" href="fonts.css?v=20260818-imgfix2"></head><body data-album-type="drawing"><header><a href="works.html" class="brand">DRAWING</a><a href="works.html">← WORKS</a></header><main class="page albums-page"><div class="albums-heading"><p class="kicker">그림 / DRAWING</p><button class="edit" id="new-album" type="button" data-admin-only hidden>NEW ALBUM ↗</button></div><div id="albums" class="albums-grid"></div><p id="albums-empty" class="albums-empty">NO ALBUMS YET.</p></main><section id="album-editor" class="album-editor" hidden><div class="album-editor-inner"><button id="close-album-editor" class="close" type="button">×</button><p class="kicker">ALBUM EDITOR</p><input id="album-id" type="hidden"><label>PORTFOLIO / ALBUM NAME<input id="album-title" maxlength="80"></label><label>DESCRIPTION<textarea id="album-description" rows="5"></textarea></label><label class="upload-label">ADD IMAGES<input id="album-images" type="file" accept="image/*" multiple></label><div id="album-image-preview" class="album-image-preview"></div><button id="save-album" class="black" type="button">SAVE ALBUM</button><p id="album-status" class="save-status"></p></div></section><dialog id="album-lightbox"><button id="close-album-lightbox" class="close" type="button">×</button><img id="album-lightbox-image" alt="Album image"></dialog><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js?v=20260818-imgfix2"></script><script src="supabase-site.js?v=20260818-imgfix2"></script><script src="album-manager.js?v=20260818-imgfix2"></script><script src="saved-layouts.js?v=20260818-imgfix2"></script><script src="page-editor.js?v=20260818-imgfix2"></script><script src="boot-ready.js?v=20260818-imgfix2"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <script>document.documentElement.classList.add("site-booting");setTimeout(()=>document.documentElement.classList.remove("site-booting"),3500)</script>
+  <title>Drawing — Lee Su-yoon</title>
+  <link rel="stylesheet" href="style.css?v=20260831-profile-grid1">
+  <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
+</head>
+<body data-album-type="drawing">
+  <header><a href="works.html" class="brand">DRAWING</a><a href="works.html">← WORKS</a></header>
+  <main class="page albums-page">
+    <div class="albums-heading"><p class="kicker">그림 / DRAWING</p><button class="edit" id="new-album" type="button" data-admin-only hidden>NEW ALBUM ↗</button></div>
+    <div id="albums" class="albums-grid"></div>
+    <p id="albums-empty" class="albums-empty">NO ALBUMS YET.</p>
+  </main>
+  <section id="album-editor" class="album-editor" hidden>
+    <div class="album-editor-inner">
+      <button id="close-album-editor" class="close" type="button">×</button>
+      <p class="kicker">ALBUM EDITOR</p>
+      <input id="album-id" type="hidden">
+      <label>PORTFOLIO / ALBUM NAME<input id="album-title" maxlength="80"></label>
+      <label>DESCRIPTION<textarea id="album-description" rows="5"></textarea></label>
+      <label class="upload-label">ADD IMAGES<input id="album-images" type="file" accept="image/*" multiple></label>
+      <div id="album-image-preview" class="album-image-preview"></div>
+      <button id="save-album" class="black" type="button">SAVE ALBUM</button>
+      <p id="album-status" class="save-status"></p>
+    </div>
+  </section>
+  <dialog id="album-lightbox"><button id="close-album-lightbox" class="close" type="button">×</button><img id="album-lightbox-image" alt="Album image"></dialog>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js?v=20260818-imgfix2"></script>
+  <script src="supabase-site.js?v=20260818-imgfix2"></script>
+  <script src="album-manager.js?v=20260818-imgfix2"></script>
+  <script src="saved-layouts.js?v=20260818-imgfix2"></script>
+  <script src="page-editor.js?v=20260818-imgfix2"></script>
+  <script src="boot-ready.js?v=20260818-imgfix2"></script>
+</body>
+</html>
