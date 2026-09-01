@@ -51,6 +51,16 @@
     particle.style.setProperty('--weather-left', `${(-3 + Math.random() * 106).toFixed(1)}%`);
     particle.style.setProperty('--rain-length', `${Math.round(18 + Math.random() * 24)}px`);
     particle.style.setProperty('--rain-opacity', (0.28 + Math.random() * 0.3).toFixed(2));
+    particle.addEventListener('animationiteration', () => {
+      if (mode !== 'rain' || reducedMotion) return;
+      const left = parseFloat(particle.style.getPropertyValue('--weather-left')) || 0;
+      const splash = document.createElement('span');
+      splash.className = 'weather-rain-splash';
+      splash.style.left = `${Math.max(-2, Math.min(102, left - 10)).toFixed(1)}%`;
+      splash.style.setProperty('--splash-opacity', particle.style.getPropertyValue('--rain-opacity') || '.4');
+      splash.addEventListener('animationend', () => splash.remove(), { once:true });
+      layer.appendChild(splash);
+    });
     setTiming(particle);
     return particle;
   };
@@ -58,12 +68,7 @@
   const render = () => {
     layer.replaceChildren();
     document.body.dataset.weather = mode;
-    if (mode === 'clear') {
-      const sun = document.createElement('span');
-      sun.className = 'weather-sun';
-      sun.textContent = '☀';
-      layer.appendChild(sun);
-    } else if (!reducedMotion) {
+    if (mode !== 'clear' && !reducedMotion) {
       const count = mode === 'snow'
         ? (isMobile ? (isDiary ? 34 : 44) : (isDiary ? 58 : 78))
         : (isMobile ? 48 : 82);
