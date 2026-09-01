@@ -3,6 +3,7 @@
   window.SUY_PAGE_EDITOR_READY = new Promise(r => pageEditorReadyResolve = r);
   const STORAGE_PREFIX = 'suyoon-page-layout-v2:';
   const pageFile = location.pathname.split('/').pop() || 'index.html';
+  const isHomePage = pageFile === 'index.html';
   const pageKey = STORAGE_PREFIX + pageFile;
   const remoteLayoutKey = 'layout:' + pageFile;
   const $ = (s, root = document) => root.querySelector(s);
@@ -223,6 +224,17 @@
       <div class="pe-panel-head"><strong>PAGE DESIGN</strong><button id="pe-close" type="button">×</button></div>
       <p class="pe-small">Click SELECT, then choose any element on the page. Drag the selected element directly to move it. For text, select a small text element like a span, paragraph, or button label.</p>
       <button id="pe-select" class="pe-primary" type="button">SELECT ELEMENT</button>
+      ${isHomePage ? `<div class="pe-home-select" aria-label="Home page elements">
+        <span>HOME ELEMENTS</span>
+        <div>
+          <button type="button" data-pe-select-target="#home-cat">CAT IMAGE</button>
+          <button type="button" data-pe-select-target="#home-link-about">ABOUT</button>
+          <button type="button" data-pe-select-target="#home-link-works">WORKS</button>
+          <button type="button" data-pe-select-target="#home-link-diary">DIARY</button>
+          <button type="button" data-pe-select-target="#home-link-guestbook">GUESTBOOK</button>
+          <button type="button" data-pe-select-target="#home-link-tools">MY CAT</button>
+        </div>
+      </div>` : ''}
       <div id="pe-selected" class="pe-selected">NO ELEMENT SELECTED</div>
       <label>TEXT CONTENT <textarea id="pe-text-content" rows="3" placeholder="Edit selected text"></textarea></label>
       <label>PLACEHOLDER <input id="pe-placeholder" placeholder="For input / textarea"></label>
@@ -487,13 +499,23 @@
     $('#pe-open').onclick = () => { $('#pe-panel').classList.add('open'); $('#pe-panel').setAttribute('aria-hidden','false'); document.body.classList.add('pe-editing'); };
     $('#pe-close').onclick = () => { $('#pe-panel').classList.remove('open'); $('#pe-panel').setAttribute('aria-hidden','true'); document.body.classList.remove('pe-editing','pe-selecting'); selecting = false; selectElement(null); };
     $('#pe-select').onclick = () => { selecting = !selecting; document.body.classList.toggle('pe-selecting', selecting); $('#pe-select').textContent = selecting ? 'CLICK AN ELEMENT…' : 'SELECT ELEMENT'; };
+    $$('[data-pe-select-target]').forEach(button => {
+      button.onclick = () => selectElement(findTarget(button.dataset.peSelectTarget));
+    });
 
     document.addEventListener('click', e => {
-      if (!selecting) return;
-      if (e.target.closest('#pe-panel,#pe-open,.pe-user-subnav')) return;
-      e.preventDefault();
-      e.stopPropagation();
-      selectElement(e.target);
+      if (selecting) {
+        if (e.target.closest('#pe-panel,#pe-open,.pe-user-subnav')) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const homeLink = isHomePage ? e.target.closest('#home-nav a') : null;
+        selectElement(homeLink || e.target);
+        return;
+      }
+      if (document.body.classList.contains('pe-editing') && selected?.matches('a') && e.target.closest('a') === selected) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
     }, true);
 
     const textInputs = [['pe-x','x',Number],['pe-y','y',Number],['pe-scale','scale',Number],['pe-opacity','opacity',Number],['pe-width','width',String],['pe-maxwidth','maxWidth',String],['pe-font','fontSize',String],['pe-z','zIndex',Number]];
@@ -597,7 +619,7 @@
 
     document.addEventListener('pointerdown', e => {
       if (!document.body.classList.contains('pe-editing') || selecting || !selected || !e.target.closest('.pe-selected-outline')) return;
-      if (e.target.closest('input,textarea,button,select,a') && !selected.dataset.peCustom) return;
+      if (e.target.closest('input,textarea,button,select') && !selected.dataset.peCustom) return;
       const d = getSelectedData();
       drag = { sx:e.clientX, sy:e.clientY, x:Number(d.x||0), y:Number(d.y||0), id:e.pointerId };
       selected.setPointerCapture?.(e.pointerId);
