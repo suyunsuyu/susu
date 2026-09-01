@@ -118,11 +118,14 @@ html.site-booting body{visibility:hidden!important}
 
 /* ===== Full-screen weather ===== */
 .home-main{position:relative;overflow:hidden}
+.home-cat{position:relative;z-index:3;pointer-events:none}
+.home-nav{position:relative;z-index:7}
 .weather-layer{position:fixed;inset:0;z-index:5;overflow:hidden;pointer-events:none;contain:strict}
 .weather-particle{position:absolute;display:block;will-change:transform;pointer-events:none}
-.weather-snowflake{top:-12vh;left:var(--weather-left);color:rgba(42,52,62,var(--weather-opacity));font-family:"Segoe UI Symbol","Arial Unicode MS",sans-serif;font-size:var(--weather-size);font-weight:400;line-height:1;text-shadow:0 0 1px #fff;animation-name:weatherSnowFall;animation-timing-function:linear;animation-iteration-count:infinite}
-.weather-raindrop{top:-16vh;left:var(--weather-left);width:1px;height:var(--rain-length);border-radius:1px;background:rgba(52,67,78,var(--rain-opacity));animation-name:weatherRainFall;animation-timing-function:linear;animation-iteration-count:infinite}
-.weather-sun{position:absolute;top:10vh;left:6vw;color:rgba(50,48,42,.25);font:300 clamp(34px,5vw,64px)/1 var(--serif)}
+.weather-snowflake{top:-12vh;left:var(--weather-left);color:rgba(72,72,72,var(--weather-opacity));-webkit-text-fill-color:currentColor;font-family:"Segoe UI Symbol","Arial Unicode MS","Noto Sans Symbols 2",sans-serif;font-variant-emoji:text;font-size:var(--weather-size);font-weight:400;line-height:1;text-shadow:0 0 1px #fff;filter:grayscale(1);animation-name:weatherSnowFall;animation-timing-function:linear;animation-iteration-count:infinite}
+.weather-raindrop{top:-16vh;left:var(--weather-left);width:1.4px;height:var(--rain-length);border-radius:1px;background:rgba(39,55,68,var(--rain-opacity));box-shadow:0 0 1px #fff;animation-name:weatherRainFall;animation-timing-function:linear;animation-iteration-count:infinite}
+.weather-sun{position:absolute;top:10vh;left:7vw;color:rgba(48,45,34,.5);font:300 clamp(62px,8vw,108px)/1 var(--serif);text-shadow:0 0 22px rgba(80,74,48,.16)}
+.weather-cloud{position:absolute;top:7vh;left:7vw;color:rgba(45,58,68,.32);font:300 clamp(54px,7vw,96px)/1 var(--serif)}
 @keyframes weatherSnowFall{
   0%{transform:translate3d(0,-12vh,0) rotate(0deg)}
   35%{transform:translate3d(calc(var(--weather-drift) * .48),32vh,0) rotate(calc(var(--weather-spin) * .35))}
@@ -133,8 +136,8 @@ html.site-booting body{visibility:hidden!important}
   0%{transform:translate3d(0,-18vh,0) rotate(8deg)}
   100%{transform:translate3d(-10vw,120vh,0) rotate(8deg)}
 }
-.weather-controls{position:absolute;top:24px;left:4vw;z-index:6;color:#777;font:8px/1.3 var(--mono);letter-spacing:.12em}
-.language-switch{z-index:6}
+.weather-controls{position:fixed;top:24px;left:4vw;z-index:8;color:#777;font:8px/1.3 var(--mono);letter-spacing:.12em;text-shadow:0 1px 0 var(--paper)}
+.language-switch{z-index:8}
 .weather-modes{display:flex;align-items:center;gap:7px}
 .weather-modes span{color:#c3c3bc}
 .weather-modes button{border:0;border-bottom:1px solid transparent;background:none;padding:3px 0;color:#888;font:8px var(--mono);letter-spacing:.11em;cursor:pointer}
@@ -143,11 +146,12 @@ html.site-booting body{visibility:hidden!important}
 .weather-speed input{display:block;width:92px!important;height:14px;margin:0!important;border:0!important;background:transparent!important;padding:0!important;accent-color:var(--ink);cursor:pointer}
 body[data-weather="clear"] .weather-speed{opacity:.35}
 @media(max-width:720px){
-  .weather-controls{position:absolute;top:max(12px,env(safe-area-inset-top));left:12px}
+  .weather-controls{position:fixed;top:max(10px,env(safe-area-inset-top));left:10px}
   .weather-modes{gap:5px}
+  .weather-modes button{min-width:44px;min-height:36px;font-size:9px}
   .weather-speed{margin-top:4px}
   .weather-speed input{width:72px!important}
-  .weather-sun{top:12vh;left:7vw}
+  .weather-sun,.weather-cloud{top:13vh;left:7vw}
 }
 @media(prefers-reduced-motion:reduce){.weather-particle{display:none}}
 
@@ -388,4 +392,48 @@ img.suyoon-image-failed{opacity:1;background:var(--paper)}
   .product-editor-card{padding:20px 16px}
   .product-image-preview{grid-template-columns:repeat(3,1fr)}
   .product-color-row{grid-template-columns:36px minmax(0,1fr) 56px 24px;gap:6px}
+}
+
+/* ===== Compact photography and drawing cards ===== */
+.albums-page{max-width:1540px}
+.albums-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:52px 18px}
+.album-card,.album-card:nth-child(even){display:block;min-width:0;direction:ltr}
+.album-cover{width:100%;height:auto;min-height:0;aspect-ratio:4/3;overflow:hidden;background:#f4f4f1}
+.album-cover img{display:block;width:100%;height:100%;object-fit:cover}
+.album-meta{padding-top:12px}
+.album-meta small{font-size:8px;letter-spacing:.08em}
+.album-meta h2{margin:5px 0 7px;font:500 18px/1.25 var(--serif)}
+.album-meta p{display:-webkit-box;min-height:0;margin:0;overflow:hidden;color:#666;font:11px/1.55 'Noto Sans SC',sans-serif;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.album-meta button{min-height:32px;margin:8px 13px 0 0;padding:4px 0;font-size:8px}
+.album-images{grid-column:auto;margin-top:16px;padding-top:10px}
+.album-card:has(.album-images:not([hidden])){display:grid;grid-column:1/-1;grid-template-columns:minmax(180px,260px) minmax(0,1fr);gap:0 28px}
+.album-card:has(.album-images:not([hidden])) .album-images{display:grid;grid-column:1/-1;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;columns:auto}
+.album-card:has(.album-images:not([hidden])) .album-images img{width:100%;height:auto;aspect-ratio:4/3;margin:0;object-fit:cover}
+
+/* ===== Easier mobile page editing ===== */
+@media(max-width:720px){
+  .albums-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:34px 10px}
+  .album-meta{padding-top:8px}
+  .album-meta h2{margin:3px 0 5px;font-size:14px}
+  .album-meta p{font-size:9px;line-height:1.5}
+  .album-meta button{min-height:34px;margin-top:5px}
+  .album-card:has(.album-images:not([hidden])){display:block;grid-column:1/-1}
+  .album-card:has(.album-images:not([hidden])) .album-images{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+
+  .pe-panel{top:auto;bottom:0;width:100vw;max-width:none;height:min(88dvh,760px);padding:0 16px max(20px,env(safe-area-inset-bottom));border-top:1px solid var(--ink);border-left:0;border-radius:14px 14px 0 0;transform:translateY(102%);box-shadow:0 -18px 60px #0002;overscroll-behavior:contain}
+  .pe-panel.open{transform:none}
+  body.pe-selecting .pe-panel.open{transform:translateY(calc(100% - 58px))}
+  .pe-panel-head{position:sticky;top:0;z-index:3;min-height:58px;margin:0 0 14px;padding:10px 0;background:var(--paper)}
+  .pe-panel-head button{min-width:44px;min-height:44px}
+  .pe-panel .pe-primary,.pe-panel button,.pe-panel .pe-file{min-height:44px;padding:11px 10px;font-size:10px}
+  .pe-panel label{margin:0 0 12px;font-size:9px}
+  .pe-panel input,.pe-panel textarea{min-height:44px;margin-top:6px;padding:10px;font-size:16px}
+  .pe-panel textarea{min-height:86px}
+  .pe-panel .pe-grid{grid-template-columns:1fr;gap:10px}
+  .pe-panel .pe-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .pe-panel .pe-actions>*{width:100%}
+  .pe-panel .pe-selected{min-height:42px;padding:12px;font-size:10px}
+  .pe-panel hr{margin:22px 0}
+  .pe-mobile-presets button{min-height:64px!important;padding:12px!important}
+  .pe-open{min-width:52px;min-height:44px}
 }
