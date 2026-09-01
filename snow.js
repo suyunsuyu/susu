@@ -20,7 +20,7 @@
   document.body.appendChild(layer);
   let snowGround = null;
   let snowDepositCount = 0;
-  let snowHeights = [];
+  let snowDrifts = [];
   let snowMelting = false;
   let snowMeltTimer = 0;
 
@@ -36,11 +36,18 @@
     snowMeltTimer = 0;
     snowGround = null;
     snowDepositCount = 0;
-    snowHeights = [];
+    snowDrifts = [];
     snowMelting = false;
   };
 
   const startSnowGround = () => {
+    const driftCount = isMobile ? 4 : 7;
+    snowDrifts = Array.from({ length:driftCount }, (_, index) => ({
+      x: Math.max(4, Math.min(96, (index + .5) / driftCount * 100 + (-5 + Math.random() * 10))),
+      height: 0,
+      spread: .65 + Math.random() * .8,
+      weight: .65 + Math.random() * .75
+    }));
     snowGround = document.createElement('div');
     snowGround.className = 'weather-snow-ground';
     snowGround.style.setProperty('--snow-progress', '.08');
@@ -49,20 +56,26 @@
 
   const addSnowDeposit = particle => {
     if (mode !== 'snow' || !snowGround || snowMelting) return;
-    const threshold = isMobile ? 44 : 70;
-    const bucketCount = isMobile ? 16 : 26;
+    const threshold = isMobile ? 30 : 48;
     const left = Math.max(0, Math.min(99.9, parseFloat(particle.style.getPropertyValue('--weather-left')) || 0));
-    const bucket = Math.min(bucketCount - 1, Math.floor(left / 100 * bucketCount));
-    const rise = Math.min(18, snowHeights[bucket] || 0);
+    const driftIndex = Math.min(snowDrifts.length - 1, Math.floor(left / 100 * snowDrifts.length));
+    const drift = snowDrifts[driftIndex];
+    const rise = Math.min(26, drift.height * (.68 + Math.random() * .48));
+    const depositX = Math.max(1, Math.min(99, left * .35 + drift.x * .65 + (-7 + Math.random() * 14) * drift.spread));
     const deposit = document.createElement('span');
     deposit.className = 'weather-snow-deposit';
-    deposit.style.left = `${((bucket + .5) / bucketCount * 100).toFixed(2)}%`;
-    deposit.style.bottom = `${rise.toFixed(1)}px`;
-    deposit.style.width = `${Math.round(7 + Math.random() * 10)}px`;
-    deposit.style.height = `${Math.round(3 + Math.random() * 5)}px`;
-    deposit.style.setProperty('--snow-jitter', `${Math.round(-8 + Math.random() * 16)}px`);
+    deposit.style.left = `${depositX.toFixed(2)}%`;
+    deposit.style.bottom = `${Math.max(0, rise - Math.random() * 3).toFixed(1)}px`;
+    deposit.style.width = `${Math.round(Math.max(11, 18 + Math.random() * 25 - rise * .22))}px`;
+    deposit.style.height = `${Math.round(3 + Math.random() * 7)}px`;
+    deposit.style.setProperty('--snow-jitter', `${Math.round(-4 + Math.random() * 8)}px`);
+    deposit.style.setProperty('--snow-rotate', `${(-4 + Math.random() * 8).toFixed(1)}deg`);
+    deposit.style.setProperty('--snow-opacity', (.66 + Math.random() * .28).toFixed(2));
+    deposit.style.setProperty('--snow-radius', `${Math.round(42 + Math.random() * 30)}% ${Math.round(38 + Math.random() * 34)}% ${Math.round(40 + Math.random() * 32)}% ${Math.round(36 + Math.random() * 36)}% / ${Math.round(48 + Math.random() * 32)}% ${Math.round(42 + Math.random() * 36)}% ${Math.round(38 + Math.random() * 36)}% ${Math.round(44 + Math.random() * 32)}%`);
+    deposit.style.setProperty('--snow-melt-delay', `${Math.round(Math.random() * 340)}ms`);
+    deposit.style.setProperty('--snow-melt-extra', `${Math.round(Math.random() * 760)}ms`);
     snowGround.appendChild(deposit);
-    snowHeights[bucket] = rise + 1.2 + Math.random() * 2.2;
+    drift.height = Math.min(28, drift.height + (.55 + Math.random() * 1.2) * drift.weight);
     snowDepositCount += 1;
     snowGround.style.setProperty('--snow-progress', (0.08 + Math.min(1, snowDepositCount / threshold) * 0.92).toFixed(3));
     if (snowDepositCount < threshold) return;
@@ -74,10 +87,16 @@
       snowGround.classList.remove('is-melting');
       snowGround.style.setProperty('--snow-progress', '.08');
       snowDepositCount = 0;
-      snowHeights = [];
+      const driftCount = isMobile ? 4 : 7;
+      snowDrifts = Array.from({ length:driftCount }, (_, index) => ({
+        x: Math.max(4, Math.min(96, (index + .5) / driftCount * 100 + (-5 + Math.random() * 10))),
+        height: 0,
+        spread: .65 + Math.random() * .8,
+        weight: .65 + Math.random() * .75
+      }));
       snowMelting = false;
       snowMeltTimer = 0;
-    }, 2500);
+    }, 3100);
   };
 
   const createSnow = index => {
@@ -99,7 +118,7 @@
 
   const createRain = () => {
     const particle = document.createElement('span');
-    const duration = 0.8 + Math.random() * 0.75;
+    const duration = 1.7 + Math.random() * 1.6;
     particle.className = 'weather-particle weather-raindrop';
     particle.dataset.baseDuration = duration.toFixed(2);
     particle.dataset.delayRatio = Math.random().toFixed(3);
@@ -128,7 +147,7 @@
       if (mode === 'snow') startSnowGround();
       const count = mode === 'snow'
         ? (isMobile ? (isDiary ? 34 : 44) : (isDiary ? 58 : 78))
-        : (isMobile ? 48 : 82);
+        : (isMobile ? 38 : 64);
       for (let index = 0; index < count; index += 1) {
         layer.appendChild(mode === 'snow' ? createSnow(index) : createRain());
       }
