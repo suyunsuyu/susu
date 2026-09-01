@@ -7,11 +7,12 @@
   const validModes = new Set(['snow', 'clear', 'rain']);
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isMobile = matchMedia('(max-width: 720px)').matches;
-  const shapes = ['❄', '❅', '❆', '✻', '✼'];
+  const textStyle = '\uFE0E';
+  const shapes = ['❄', '❅', '❆', '✻', '✼'].map(shape => `${shape}${textStyle}`);
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}') || {}; } catch {}
 
-  let mode = isHome && validModes.has(saved.mode) ? saved.mode : 'snow';
+  let mode = validModes.has(saved.mode) ? saved.mode : 'snow';
   let speed = Math.max(0.5, Math.min(2, Number(saved.speed) || 1));
   const layer = document.createElement('div');
   layer.className = 'weather-layer';
@@ -48,8 +49,8 @@
     particle.dataset.baseDuration = duration.toFixed(2);
     particle.dataset.delayRatio = Math.random().toFixed(3);
     particle.style.setProperty('--weather-left', `${(-3 + Math.random() * 106).toFixed(1)}%`);
-    particle.style.setProperty('--rain-length', `${Math.round(12 + Math.random() * 22)}px`);
-    particle.style.setProperty('--rain-opacity', (0.14 + Math.random() * 0.2).toFixed(2));
+    particle.style.setProperty('--rain-length', `${Math.round(18 + Math.random() * 24)}px`);
+    particle.style.setProperty('--rain-opacity', (0.28 + Math.random() * 0.3).toFixed(2));
     setTiming(particle);
     return particle;
   };
@@ -60,7 +61,7 @@
     if (mode === 'clear') {
       const sun = document.createElement('span');
       sun.className = 'weather-sun';
-      sun.textContent = '☼';
+      sun.textContent = '☀';
       layer.appendChild(sun);
     } else if (!reducedMotion) {
       const count = mode === 'snow'
@@ -68,6 +69,12 @@
         : (isMobile ? 48 : 82);
       for (let index = 0; index < count; index += 1) {
         layer.appendChild(mode === 'snow' ? createSnow(index) : createRain());
+      }
+      if (mode === 'rain') {
+        const cloud = document.createElement('span');
+        cloud.className = 'weather-cloud';
+        cloud.textContent = '☁';
+        layer.appendChild(cloud);
       }
     }
     document.querySelectorAll('[data-weather-mode]').forEach(button => {
