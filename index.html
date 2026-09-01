@@ -4,19 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><script>document.documentElement.classList.add("site-booting");setTimeout(()=>document.documentElement.classList.remove("site-booting"),3500)</script>
   <title>Lee Su-yoon</title>
-  <link rel="stylesheet" href="style.css?v=20260831-weather1">
+  <link rel="stylesheet" href="style.css?v=20260901-snowfix1">
   <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
 </head>
 <body class="home">
+  <section id="weather-controls" class="weather-controls" aria-label="Weather controls">
+    <div class="weather-modes" role="group" aria-label="Weather mode">
+      <button type="button" data-weather-mode="snow">SNOW</button><span>/</span>
+      <button type="button" data-weather-mode="clear">SUN</button><span>/</span>
+      <button type="button" data-weather-mode="rain">RAIN</button>
+    </div>
+    <label class="weather-speed" for="weather-speed"><span>SPEED</span><input id="weather-speed" type="range" min="0.5" max="2" step="0.1" value="1"></label>
+  </section>
   <main class="home-main" id="home-main">
-    <section id="weather-controls" class="weather-controls" aria-label="Weather controls">
-      <div class="weather-modes" role="group" aria-label="Weather mode">
-        <button type="button" data-weather-mode="snow">SNOW</button><span>/</span>
-        <button type="button" data-weather-mode="clear">SUN</button><span>/</span>
-        <button type="button" data-weather-mode="rain">RAIN</button>
-      </div>
-      <label class="weather-speed" for="weather-speed"><span>SPEED</span><input id="weather-speed" type="range" min="0.5" max="2" step="0.1" value="1"></label>
-    </section>
     <div class="language-switch" id="home-language-switch">
       <button id="lang-zh" data-lang="zh">中文</button>
       <button id="lang-en" data-lang="en">EN</button>
@@ -37,7 +37,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js?v=20260818-imgfix2"></script>
   <script src="home.js?v=20260818-imgfix2"></script>
-  <script src="snow.js?v=20260831-weather1"></script>
+  <script src="snow.js?v=20260901-snowfix1"></script>
   <script src="supabase-site.js?v=20260818-imgfix2"></script>
   <script src="saved-layouts.js?v=20260818-imgfix2"></script>
   <script src="page-editor.js?v=20260818-imgfix2"></script>
