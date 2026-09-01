@@ -18,12 +18,66 @@
   layer.className = 'weather-layer';
   layer.setAttribute('aria-hidden', 'true');
   document.body.appendChild(layer);
+  let snowGround = null;
+  let snowDepositCount = 0;
+  let snowHeights = [];
+  let snowMelting = false;
+  let snowMeltTimer = 0;
 
   const setTiming = particle => {
     const duration = Number(particle.dataset.baseDuration) / speed;
     const delayRatio = Number(particle.dataset.delayRatio);
     particle.style.animationDuration = `${duration.toFixed(2)}s`;
     particle.style.animationDelay = `${(-duration * delayRatio).toFixed(2)}s`;
+  };
+
+  const resetSnowState = () => {
+    if (snowMeltTimer) clearTimeout(snowMeltTimer);
+    snowMeltTimer = 0;
+    snowGround = null;
+    snowDepositCount = 0;
+    snowHeights = [];
+    snowMelting = false;
+  };
+
+  const startSnowGround = () => {
+    snowGround = document.createElement('div');
+    snowGround.className = 'weather-snow-ground';
+    snowGround.style.setProperty('--snow-progress', '.08');
+    layer.appendChild(snowGround);
+  };
+
+  const addSnowDeposit = particle => {
+    if (mode !== 'snow' || !snowGround || snowMelting) return;
+    const threshold = isMobile ? 44 : 70;
+    const bucketCount = isMobile ? 16 : 26;
+    const left = Math.max(0, Math.min(99.9, parseFloat(particle.style.getPropertyValue('--weather-left')) || 0));
+    const bucket = Math.min(bucketCount - 1, Math.floor(left / 100 * bucketCount));
+    const rise = Math.min(18, snowHeights[bucket] || 0);
+    const deposit = document.createElement('span');
+    deposit.className = 'weather-snow-deposit';
+    deposit.style.left = `${((bucket + .5) / bucketCount * 100).toFixed(2)}%`;
+    deposit.style.bottom = `${rise.toFixed(1)}px`;
+    deposit.style.width = `${Math.round(7 + Math.random() * 10)}px`;
+    deposit.style.height = `${Math.round(3 + Math.random() * 5)}px`;
+    deposit.style.setProperty('--snow-jitter', `${Math.round(-8 + Math.random() * 16)}px`);
+    snowGround.appendChild(deposit);
+    snowHeights[bucket] = rise + 1.2 + Math.random() * 2.2;
+    snowDepositCount += 1;
+    snowGround.style.setProperty('--snow-progress', (0.08 + Math.min(1, snowDepositCount / threshold) * 0.92).toFixed(3));
+    if (snowDepositCount < threshold) return;
+    snowMelting = true;
+    snowGround.classList.add('is-melting');
+    snowMeltTimer = setTimeout(() => {
+      if (mode !== 'snow' || !snowGround) return;
+      snowGround.replaceChildren();
+      snowGround.classList.remove('is-melting');
+      snowGround.style.setProperty('--snow-progress', '.08');
+      snowDepositCount = 0;
+      snowHeights = [];
+      snowMelting = false;
+      snowMeltTimer = 0;
+    }, 2500);
   };
 
   const createSnow = index => {
@@ -38,6 +92,7 @@
     particle.style.setProperty('--weather-opacity', (0.2 + Math.random() * 0.34).toFixed(2));
     particle.style.setProperty('--weather-drift', `${(-38 + Math.random() * 76).toFixed(1)}px`);
     particle.style.setProperty('--weather-spin', `${Math.round(180 + Math.random() * 620)}deg`);
+    particle.addEventListener('animationiteration', () => addSnowDeposit(particle));
     setTiming(particle);
     return particle;
   };
@@ -49,8 +104,8 @@
     particle.dataset.baseDuration = duration.toFixed(2);
     particle.dataset.delayRatio = Math.random().toFixed(3);
     particle.style.setProperty('--weather-left', `${(-3 + Math.random() * 106).toFixed(1)}%`);
-    particle.style.setProperty('--rain-length', `${Math.round(18 + Math.random() * 24)}px`);
-    particle.style.setProperty('--rain-opacity', (0.28 + Math.random() * 0.3).toFixed(2));
+    particle.style.setProperty('--rain-length', `${Math.round(8 + Math.random() * 12)}px`);
+    particle.style.setProperty('--rain-opacity', (0.18 + Math.random() * 0.22).toFixed(2));
     particle.addEventListener('animationiteration', () => {
       if (mode !== 'rain' || reducedMotion) return;
       const left = parseFloat(particle.style.getPropertyValue('--weather-left')) || 0;
@@ -66,20 +121,16 @@
   };
 
   const render = () => {
+    resetSnowState();
     layer.replaceChildren();
     document.body.dataset.weather = mode;
     if (mode !== 'clear' && !reducedMotion) {
+      if (mode === 'snow') startSnowGround();
       const count = mode === 'snow'
         ? (isMobile ? (isDiary ? 34 : 44) : (isDiary ? 58 : 78))
         : (isMobile ? 48 : 82);
       for (let index = 0; index < count; index += 1) {
         layer.appendChild(mode === 'snow' ? createSnow(index) : createRain());
-      }
-      if (mode === 'rain') {
-        const cloud = document.createElement('span');
-        cloud.className = 'weather-cloud';
-        cloud.textContent = '☁';
-        layer.appendChild(cloud);
       }
     }
     document.querySelectorAll('[data-weather-mode]').forEach(button => {
