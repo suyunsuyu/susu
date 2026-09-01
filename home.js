@@ -1,4 +1,4 @@
-const homeLabels={en:['ABOUT','WORKS','DIARY','GUESTBOOK','TOOLS'],zh:['关于我','我的作品','我的日记','给我留言','我的工具'],ko:['소개','작품','일기','방명록','도구']};
+const homeLabels={en:['ABOUT','WORKS','DIARY','GUESTBOOK','MY CAT'],zh:['关于我','我的作品','我的日记','给我留言','我的小猫'],ko:['소개','작품','일기','방명록','우리 고양이']};
 const setHomeLang=lang=>{
   localStorage.setItem('suyoon-language',lang);
   document.documentElement.lang=lang;
