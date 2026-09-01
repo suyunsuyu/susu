@@ -36,7 +36,7 @@
 /* Admin permissions: edit controls are hidden until Supabase confirms the administrator session. */
 [data-admin-only][hidden]{display:none!important}
 
-.pe-replace-file{width:100%;margin:8px 0 10px!important}.pe-control-disabled{opacity:.35;pointer-events:none}
+.pe-replace-file{width:100%;margin:8px 0 10px!important}.pe-control-disabled{opacity:.35;pointer-events:none}.pe-home-select{margin:0 0 10px;padding:9px;border:1px solid var(--line);background:#fafaf7}.pe-home-select>span{display:block;margin-bottom:7px;font:8px var(--mono);letter-spacing:.1em}.pe-home-select>div{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.pe-home-select button{min-width:0;padding:7px 4px;font-size:7px;white-space:nowrap}
 
 /* ===== Diary writing style controls ===== */
 .diary-style-controls{display:grid;grid-template-columns:1.2fr .9fr 1fr;gap:10px;margin:2px 0 18px}.diary-style-controls label{margin:0!important}.diary-style-controls select{width:100%;margin-top:6px;padding:9px;border:1px solid var(--line);background:var(--paper);font:10px var(--mono)}.diary-color-control{display:grid;grid-template-columns:42px 1fr;gap:7px;margin-top:6px}.diary-color-control input[type=color]{width:42px;height:36px;padding:2px;border:1px solid var(--line);background:var(--paper);cursor:pointer}.diary-color-control input[type=text]{width:100%;margin:0!important;padding:9px;border:1px solid var(--line);font:10px var(--mono);text-transform:uppercase}.diary-style-preview-wrap{border:1px solid var(--line);padding:14px 16px;margin:0 0 20px;min-height:112px;background:var(--paper)}.diary-style-preview-wrap>small{display:block;margin-bottom:12px;font:8px var(--mono);letter-spacing:.1em;color:#777}.diary-style-preview-wrap p{margin:0;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}.diary-entry-text{white-space:normal;overflow-wrap:anywhere}@media(max-width:720px){.diary-style-controls{grid-template-columns:1fr}.diary-color-control{grid-template-columns:46px 1fr}}
@@ -119,6 +119,7 @@ html.site-booting body{visibility:hidden!important}
 /* ===== Full-screen weather ===== */
 .home-main{position:relative;overflow:hidden}
 .home-cat{position:relative;z-index:3;pointer-events:none}
+.pe-editing .home-cat,.pe-selecting .home-cat{pointer-events:auto}
 .home-nav{position:relative;z-index:7}
 .weather-layer{position:fixed;inset:0;z-index:5;overflow:hidden;pointer-events:none;contain:strict}
 .weather-particle{position:absolute;display:block;will-change:transform;pointer-events:none}
@@ -220,7 +221,7 @@ img.suyoon-image-failed{opacity:1;background:var(--paper)}
   .home-nav a:nth-child(1),.home-nav a:nth-child(3),.home-nav a:nth-child(5){border:0;grid-column:auto}
   .home-nav small{display:block;margin-top:4px;font-size:7px;line-height:1;letter-spacing:.13em}
   .home-main .home-cat.pe-transformed,
-  .home-main .home-nav .pe-transformed,
+  .home-main .home-nav.pe-transformed,
   .home-main .language-switch.pe-transformed{translate:0 0!important;scale:1!important}
 
   /* Profile and editorial pages. */
