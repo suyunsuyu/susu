@@ -7,8 +7,8 @@ if (!mount) throw new Error('Room canvas is missing.');
 const mobile = matchMedia('(max-width: 720px)').matches;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xf4f3ef);
-scene.fog = new THREE.Fog(0xf4f3ef, 16, 26);
+scene.background = new THREE.Color(0xfaf3e7);
+scene.fog = new THREE.Fog(0xfaf3e7, 16, 26);
 
 const camera = new THREE.OrthographicCamera(-7, 7, 6, -6, .1, 60);
 camera.position.set(9.5, 8.2, 11.5);
@@ -34,11 +34,12 @@ controls.screenSpacePanning = true;
 controls.target.set(0, 1, 0);
 
 const C = {
-  wall:0xe5e3de, wallSide:0xd4d1cb, floor:0x625d58, floorLine:0x7b756f,
-  floorWoodA:0x716963, floorWoodB:0x675f59, floorWoodC:0x786f68, floorSeam:0x4e4945,
-  ink:0x242424, dark:0x3b3937, mid:0x8e8a85, light:0xc8c5bf,
-  paper:0xf4f2ed, fabric:0xaaa7a1, wood:0x81776e, metal:0x565656,
-  glass:0xbec1be, plant:0x777b72, warm:0xb0a18e
+  wall:0xeee3d2, wallSide:0xd8c1a6, floor:0x6c4d3e, floorLine:0x7b756f,
+  floorWoodA:0x88634b, floorWoodB:0x765340, floorWoodC:0x997254, floorSeam:0x5a3d31,
+  ink:0x332b27, dark:0x4b3930, mid:0x9c856f, light:0xf4eadc,
+  paper:0xf9f3e9, fabric:0xb9aa91, wood:0x8b6043, metal:0x665950,
+  glass:0x8cb9bb, plant:0x6e8b5f, warm:0xe0b56c,
+  sage:0xa9b39f, peach:0xd38e6e, sky:0x7198a0, rug:0xc7b496
 };
 const material = (color, roughness=.8, metalness=.03) => new THREE.MeshStandardMaterial({ color, roughness, metalness });
 const makeWoodTexture = () => {
@@ -59,6 +60,7 @@ const mats = {
   floorWoodA:texturedMaterial(C.floorWoodA), floorWoodB:texturedMaterial(C.floorWoodB), floorWoodC:texturedMaterial(C.floorWoodC), floorSeam:material(C.floorSeam,.96),
   ink:material(C.ink,.78), dark:material(C.dark,.85), mid:material(C.mid,.88),
   light:material(C.light,.92), paper:material(C.paper,.98), fabric:material(C.fabric,1),
+  sage:material(C.sage,.96), peach:material(C.peach,.9), sky:material(C.sky,.64), rug:material(C.rug,1),
   wood:texturedMaterial(C.wood,.9), metal:material(C.metal,.4,.42), glass:material(C.glass,.22,.08),
   plant:material(C.plant,.95), warm:material(C.warm,.9)
 };
@@ -120,14 +122,15 @@ addBox(windowGroup,[.11,2.05,.16],[.13,.05,-1.33],mats.fabric);
 addBox(windowGroup,[.11,2.05,.16],[.13,.05,1.33],mats.fabric);
 
 // Central sofa, cushions, rug and table
-const rug=group([0,.03,.75]); addBox(rug,[4.35,.04,3.25],[0,0,0],mats.light);
-for(let i=-1.7;i<=1.7;i+=.42)addBox(rug,[.018,.015,3.05],[i,.03,0],mats.mid);
+const rug=group([0,.03,.75]); addBox(rug,[4.35,.04,3.25],[0,0,0],mats.rug);
+addBox(rug,[4.06,.015,.025],[0,.03,-1.51],mats.mid);addBox(rug,[4.06,.015,.025],[0,.03,1.51],mats.mid);
+addBox(rug,[.025,.015,3.02],[-2.03,.03,0],mats.mid);addBox(rug,[.025,.015,3.02],[2.03,.03,0],mats.mid);
 const sofa=group([.15,0,-1.65]);
 addBox(sofa,[3.65,.48,1.18],[0,.48,0],mats.fabric);
 addBox(sofa,[3.65,1.25,.28],[0,1.18,-.47],mats.fabric,[.08,0,0]);
 addBox(sofa,[.3,.75,1.25],[-1.7,.72,0],mats.fabric);addBox(sofa,[.3,.75,1.25],[1.7,.72,0],mats.fabric);
-addBox(sofa,[1.25,.48,.18],[-.75,1.02,-.24],mats.light,[.05,.08,-.03]);
-addBox(sofa,[1.05,.43,.18],[.67,1.03,-.24],mats.mid,[-.03,-.1,.04]);
+addBox(sofa,[1.25,.48,.18],[-.75,1.02,-.24],mats.sage,[.05,.08,-.03]);
+addBox(sofa,[1.05,.43,.18],[.67,1.03,-.24],mats.peach,[-.03,-.1,.04]);
 addBox(sofa,[1.18,.08,.82],[.2,.78,.05],mats.paper,[0,.08,.03]);
 addBox(sofa,[3.05,.025,.025],[0,.74,.59],mats.mid);
 [-1.15,-.38,.38,1.15].forEach(x=>addSphere(sofa,.035,[x,.74,.6],mats.dark));
@@ -188,7 +191,7 @@ addBox(tvCab,[3.25,.82,.78],[0,.42,0],mats.wood);addBox(tvCab,[.04,.58,.7],[0,.4
 for(let x of[-1.25,1.25])addBox(tvCab,[.09,.2,.09],[x,.06,.05],mats.dark);
 for(let x of[-1.05,-.35,.35,1.05])addCylinder(tvCab,.03,.03,.14,[x,.48,.4],mats.metal,10,[Math.PI/2,0,0]);
 const tv=group([2.72,2.25,-3.82]);
-addBox(tv,[2.55,1.46,.18],[0,0,0],mats.ink);const tvScreen=addBox(tv,[2.3,1.21,.045],[0,0,.115],material(0x555754,.36));
+addBox(tv,[2.55,1.46,.18],[0,0,0],mats.ink);const tvScreen=addBox(tv,[2.3,1.21,.045],[0,0,.115],material(C.sky,.36));
 addBox(tv,[.08,.46,.08],[0,-.94,0],mats.dark);addBox(tv,[.86,.06,.34],[0,-1.15,.08],mats.dark);
 addBox(tv,[1.85,.025,.025],[0,-.48,.145],mats.light);
 addBox(tv,[.04,.42,.025],[-.92,.02,.145],mats.light);addBox(tv,[.04,.42,.025],[.92,.02,.145],mats.light);
@@ -247,9 +250,6 @@ const artwork=group([-.65,2.7,-3.84]);
 addBox(artwork,[1.65,1.22,.09],[0,0,0],mats.ink);addBox(artwork,[1.45,1.02,.05],[0,0,.07],mats.paper);
 addBox(artwork,[.82,.04,.03],[.05,.1,.12],mats.mid,[0,0,.4]);addSphere(artwork,.2,[-.28,-.15,.12],mats.dark,[1.5,.6,1]);
 register(artwork,'artwork',[-.65,2.7,-3.55]);
-const frame1=group([-3.05,3.25,-3.86]);addBox(frame1,[.82,1.02,.06],[0,0,0],mats.ink);addBox(frame1,[.67,.86,.04],[0,0,.05],mats.light);
-const frame2=group([-2.05,3.48,-3.86]);addBox(frame2,[.58,.74,.06],[0,0,0],mats.ink);addBox(frame2,[.45,.61,.04],[0,0,.05],mats.paper);
-const map=group([-4.88,3.5,2.35]);addBox(map,[.05,1.25,1.5],[0,0,0],mats.paper);for(let i=0;i<4;i++)addBox(map,[.06,.025,.75],[.04,-.35+i*.25,-.12+i*.18],mats.mid,[0,0,.2-i*.1]);
 
 // Wall message board / guestbook. The board is the clickable object visitors
 // can use to reach the guestbook without adding another floating label.
@@ -261,32 +261,21 @@ addBox(messageBoard,[.42,.25,.025],[.26,-.18,.09],mats.mid,[0,0,-.08]);
 [-.55,.55].forEach(x=>addSphere(messageBoard,.045,[x,.45,.1],mats.ink));
 register(messageBoard,'telephone',[-2.35,2.72,-3.5]);
 
-// Small telephone remains as a quiet still-life detail on the side table.
-const sideTable=group([-2.55,0,2.65]);addBox(sideTable,[1.25,.1,.82],[0,.72,0],mats.wood);addBox(sideTable,[.1,.72,.1],[-.48,.36,-.28],mats.dark);addBox(sideTable,[.1,.72,.1],[.48,.36,.28],mats.dark);
-const phone=group([-2.55,.79,2.65]);addBox(phone,[.78,.22,.55],[0,.1,0],mats.dark);addBox(phone,[.86,.16,.2],[0,.34,0],mats.ink,[0,0,.05]);addCylinder(phone,.17,.17,.025,[0,.24,.3],mats.paper,18,[Math.PI/2,0,0]);
-
-// Additional lived-in objects: chair, slippers, bag, vase, storage box, clock, mirror, cat toy
+// Keep the floor plan quiet: the main interactive objects have room to read,
+// with one simple chair grounding the coffee table instead of many small props.
 const chair=group([-1.9,0,1.45]);addBox(chair,[.72,.1,.72],[0,.72,0],mats.wood);for(let x of[-.27,.27])for(let z of[-.27,.27])addBox(chair,[.07,.72,.07],[x,.36,z],mats.dark);addBox(chair,[.72,.8,.08],[0,1.1,.3],mats.wood);
-const slippers=group([2.55,.08,2.55]);addSphere(slippers,.22,[-.28,.05,0],mats.paper,[.6,.28,1.35]);addSphere(slippers,.22,[.28,.05,.18],mats.paper,[.6,.28,1.35]);
-const bag=group([-4.15,.1,3]);addBox(bag,[.72,.72,.24],[0,.36,0],mats.dark);const handle=new THREE.Mesh(new THREE.TorusGeometry(.24,.035,8,20,Math.PI),mats.dark);handle.position.set(0,.76,0);bag.add(handle);
-const vase=group([3.9,.86,-3.28]);addCylinder(vase,.15,.25,.55,[0,.28,0],mats.paper,18);addCylinder(vase,.035,.035,.65,[0,.85,0],mats.plant,8);addSphere(vase,.16,[0,1.18,0],mats.light,[.7,1,.7]);
-const box=group([3.55,.12,2.75]);addBox(box,[1.02,.55,.82],[0,.28,0],mats.mid);addBox(box,[1.08,.07,.88],[0,.58,0],mats.dark);
-const clock=group([-1.9,3.55,-3.86]);addCylinder(clock,.38,.38,.07,[0,0,0],mats.paper,28,[Math.PI/2,0,0]);addBox(clock,[.025,.28,.025],[0,.08,.08],mats.ink,[0,0,.45]);addBox(clock,[.025,.2,.025],[.06,-.05,.08],mats.ink,[0,0,-.7]);
-const mirror=group([-4.88,2.55,3.05]);addBox(mirror,[.06,1.35,.82],[0,0,0],mats.ink);addBox(mirror,[.065,1.18,.67],[.04,0,0],mats.glass);
-const catToy=group([1.9,.06,.38]);addSphere(catToy,.12,[0,.1,0],mats.dark);addCylinder(catToy,.02,.02,.65,[0,.44,0],mats.ink,6,[0,0,.4]);
-const paperPlane=group([-.5,.86,.82]);addPlane(paperPlane,[.5,.28],[0,0,0],mats.paper,[-Math.PI/2,0,.45]);
 
 // Lighting
-const hemi=new THREE.HemisphereLight(0xf5f3ee,0x625d58,2.4);scene.add(hemi);
-const sun=new THREE.DirectionalLight(0xf5f1e9,3.5);sun.position.set(7,11,8);sun.castShadow=true;sun.shadow.mapSize.set(mobile?512:1024,mobile?512:1024);sun.shadow.camera.left=-8;sun.shadow.camera.right=8;sun.shadow.camera.top=8;sun.shadow.camera.bottom=-8;scene.add(sun);
+const hemi=new THREE.HemisphereLight(0xfff7e9,0x654839,2.4);scene.add(hemi);
+const sun=new THREE.DirectionalLight(0xfff1d7,3.5);sun.position.set(7,11,8);sun.castShadow=true;sun.shadow.mapSize.set(mobile?512:1024,mobile?512:1024);sun.shadow.camera.left=-8;sun.shadow.camera.right=8;sun.shadow.camera.top=8;sun.shadow.camera.bottom=-8;scene.add(sun);
 const ambient=new THREE.AmbientLight(0xffffff,.35);scene.add(ambient);
 const windowLight=new THREE.PointLight(0xc9ced0,.3,8);windowLight.position.set(-4.2,2.8,-.8);scene.add(windowLight);
 const warmFill=new THREE.PointLight(0xffc18f,0,8,2);warmFill.position.set(.8,2.1,1.5);warmFill.castShadow=true;warmFill.shadow.mapSize.set(mobile?256:512,mobile?256:512);scene.add(warmFill);
 const lighting={mode:0,names:['DAY','WARM','NIGHT']};
 const lightTargets=[
-  {hemi:2.4,sun:3.5,pendant:.2,ambient:.35,window:.3,warmFill:.02,exposure:1.05,bg:0xf4f3ef,pane:0x969a98},
-  {hemi:1.25,sun:1.2,pendant:3.1,ambient:.28,window:.2,warmFill:1.55,exposure:.93,bg:0xe8e5df,pane:0x777977},
-  {hemi:.28,sun:.12,pendant:1.45,ambient:.16,window:1.35,warmFill:.25,exposure:.64,bg:0x6e6e6b,pane:0x333638}
+  {hemi:2.4,sun:3.5,pendant:.2,ambient:.35,window:.3,warmFill:.02,exposure:1.05,bg:0xfaf3e7,pane:0x8cb9bb},
+  {hemi:1.25,sun:1.2,pendant:3.1,ambient:.28,window:.2,warmFill:1.55,exposure:.93,bg:0xf3dfc1,pane:0x779999},
+  {hemi:.28,sun:.12,pendant:1.45,ambient:.16,window:1.35,warmFill:.25,exposure:.64,bg:0x51443f,pane:0x314b4b}
 ];
 let currentLight={...lightTargets[0]};let wantedLight={...lightTargets[0]};
 const lightLabel=document.querySelector('#room-light-label'),toast=document.querySelector('#room3d-toast');let toastTimer;
@@ -348,6 +337,10 @@ const resize=()=>{
   const frustumH=mobile?11.7:9.6;camera.left=-frustumH*aspect/2;camera.right=frustumH*aspect/2;camera.top=frustumH/2;camera.bottom=-frustumH/2;camera.updateProjectionMatrix();renderer.setSize(w,h,false)
 };
 new ResizeObserver(resize).observe(mount);resize();
+
+// The room is an intimate centerpiece rather than a full-screen wall. Keep
+// its center anchored while leaving generous quiet space around the scene.
+scene.scale.setScalar(mobile ? .56 : .48);
 
 const clock3d=new THREE.Clock();
 const animate=()=>{
