@@ -102,6 +102,11 @@
     try { return document.querySelector(key); } catch { return null; }
   }
 
+  // Weather is a functional control, not page copy. Older saved layouts
+  // accidentally replaced its buttons with text and marked it as deleted.
+  // Keep the controls usable while still allowing the whole group to move.
+  const isProtectedElement = el => !!el?.closest?.('[data-editor-protected]');
+
   function renderSubnav() {
     $$('.pe-user-subnav').forEach(x => x.remove());
     if (!state.subnav.length) return;
@@ -117,7 +122,7 @@
   function renderDeleted() {
     state.deleted.forEach(key => {
       const el = findTarget(key);
-      if (el) el.classList.add('pe-deleted-by-editor');
+      if (el && !isProtectedElement(el)) el.classList.add('pe-deleted-by-editor');
     });
   }
 
@@ -204,11 +209,11 @@
     Object.entries(state.styles).forEach(([key, data]) => applyStyle(findTarget(key), data));
     Object.entries(state.content).forEach(([key, text]) => {
       const el = findTarget(key);
-      if (el) setEditableText(el, text);
+      if (el && !isProtectedElement(el)) setEditableText(el, text);
     });
     Object.entries(state.attrs).forEach(([key, attrs]) => {
       const el = findTarget(key);
-      if (!el || !attrs) return;
+      if (!el || !attrs || isProtectedElement(el)) return;
       if ('placeholder' in attrs) setManagedAttr(el, 'placeholder', attrs.placeholder);
       if ('src' in attrs) setManagedAttr(el, 'src', attrs.src);
       if ('href' in attrs) setManagedAttr(el, 'href', attrs.href);
@@ -343,7 +348,7 @@
   }
 
   function updateSelectedText(value) {
-    if (!selected || !canEditText(selected)) return;
+    if (!selected || isProtectedElement(selected) || !canEditText(selected)) return;
     const key = selectorFor(selected);
     if (key.startsWith('custom:')) {
       const item = state.custom.find(x => x.id === key.slice(7));
@@ -369,7 +374,7 @@
 
 
   function updateSelectedAttr(name, value, selector) {
-    if (!selected || !selected.matches(selector)) return;
+    if (!selected || isProtectedElement(selected) || !selected.matches(selector)) return;
     const key = selectorFor(selected);
     state.attrs[key] ||= {};
     state.attrs[key][name] = value;
@@ -536,7 +541,7 @@
       e.target.value='';
     };
 
-    $('#pe-hide').onclick = () => { const d = getSelectedData(); if (!d) return; d.hidden = !d.hidden; applyStyle(selected, d); save(); };
+    $('#pe-hide').onclick = () => { if (isProtectedElement(selected)) return; const d = getSelectedData(); if (!d) return; d.hidden = !d.hidden; applyStyle(selected, d); save(); };
     $('#pe-reset-one').onclick = () => {
       if (!selected) return;
       const key = selectorFor(selected);
@@ -567,6 +572,7 @@
     };
     $('#pe-delete').onclick = () => {
       if (!selected) return;
+      if (isProtectedElement(selected)) return;
       const key = selectorFor(selected);
       if (key.startsWith('custom:')) {
         state.custom = state.custom.filter(x => x.id !== selected.dataset.peCustom);
