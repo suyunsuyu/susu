@@ -8,54 +8,89 @@
   <meta http-equiv="Expires" content="0">
   <script>document.documentElement.classList.add("site-booting");setTimeout(()=>document.documentElement.classList.remove("site-booting"),3500)</script>
   <title>About — Lee Su-yoon</title>
-  <link rel="stylesheet" href="style.css?v=20260831-ui2">
+  <link rel="stylesheet" href="style.css?v=20260902-room2">
   <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
 </head>
 <body>
   <header><a href="index.html" class="brand">LEE SU-YOON</a><a href="index.html">← HOME</a></header>
-  <main class="page">
-    <p class="kicker">ABOUT ME</p>
-    <div class="about-layout">
-      <div class="profile-photo-slot">
-        <img id="profile-image" class="profile-image" src="" alt="profile" hidden>
-        <div id="profile-photo-empty" class="profile-photo-empty">NO PROFILE PHOTO</div>
-        <button id="edit-button" class="edit" data-admin-only hidden>EDIT PROFILE ↗</button>
-      </div>
-      <article id="profile-content">
-        <h1 id="profile-name">이수윤</h1>
-        <div id="profile-info" class="info"></div>
-        <section><div id="profile-statement" class="statement"></div></section>
-      </article>
+  <main class="room-page">
+    <div class="room-title-row">
+      <div><p class="kicker">ABOUT ME · MY LITTLE ROOM</p><h1>Click around<br><em>my room.</em></h1></div>
+      <button id="edit-room" class="room-edit" type="button" data-admin-only hidden>EDIT ROOM ↗</button>
     </div>
-  </main>
-  <dialog id="editor">
-    <form id="profile-form">
-      <button type="button" id="close-editor" class="close">×</button>
-      <p class="kicker">PROFILE SETTINGS</p>
-      <label>NAME<input id="edit-name"></label>
-      <div class="unit-controls" data-unit="name"></div>
-      <label class="profile-color-setting">NAME COLOR<span><input id="name-color" type="color" value="#161616"><input id="name-color-hex" type="text" value="#161616" maxlength="7"></span></label>
-      <label>INFO <small>(one line each)</small><textarea id="edit-info" rows="7"></textarea></label>
-      <div class="unit-controls" data-unit="info"></div>
-      <label class="profile-color-setting">INFO COLOR<span><input id="info-color" type="color" value="#161616"><input id="info-color-hex" type="text" value="#161616" maxlength="7"></span></label>
-      <label>TEXT<textarea id="edit-statement" rows="12"></textarea></label>
-      <div class="unit-controls" data-unit="statement"></div>
-      <label class="profile-color-setting">TEXT COLOR<span><input id="statement-color" type="color" value="#161616"><input id="statement-color-hex" type="text" value="#161616" maxlength="7"></span></label>
-      <label>PROFILE PHOTO SIZE
-        <div class="profile-size-control">
-          <input id="edit-photo-scale" type="range" min="10" max="160" step="1" value="100">
-          <input id="edit-photo-scale-number" type="number" min="10" max="160" step="1" value="100"><span>%</span>
+    <section class="room-experience" aria-label="Interactive room">
+      <div class="room-ambient" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <div id="room-scene" class="room-scene">
+        <svg class="room-art" viewBox="0 0 1000 780" role="img" aria-label="A warm isometric room with clickable furniture">
+          <defs>
+            <linearGradient id="leftWall" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f6ead6"/><stop offset="1" stop-color="#d9b788"/></linearGradient>
+            <linearGradient id="rightWall" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b98459"/><stop offset="1" stop-color="#79513c"/></linearGradient>
+            <linearGradient id="floorWood" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#8d5c3f"/><stop offset="1" stop-color="#493126"/></linearGradient>
+            <radialGradient id="lampGlow"><stop stop-color="#fff5b7" stop-opacity=".8"/><stop offset="1" stop-color="#ffd36c" stop-opacity="0"/></radialGradient>
+            <filter id="softShadow"><feDropShadow dx="0" dy="12" stdDeviation="12" flood-opacity=".18"/></filter>
+          </defs>
+          <ellipse class="room-shadow" cx="500" cy="713" rx="370" ry="45"/>
+          <g class="room-shell" filter="url(#softShadow)">
+            <path class="room-wall room-wall-left" d="M150 88 500 290 500 548 150 346Z" fill="url(#leftWall)"/>
+            <path class="room-wall room-wall-right" d="M500 290 850 88 850 346 500 548Z" fill="url(#rightWall)"/>
+            <path class="room-floor" d="M150 346 500 548 850 346 500 752Z" fill="url(#floorWood)"/>
+            <g class="floor-lines" opacity=".2"><path d="M202 376 520 721M282 422 576 677M366 471 636 627M448 518 700 579M798 376 480 721M718 422 424 677M634 471 364 627M552 518 300 579"/></g>
+          </g>
+          <g class="room-light"><ellipse cx="500" cy="367" rx="195" ry="150" fill="url(#lampGlow)"/><path d="M500 76v135"/><path class="lamp-shade" d="M448 251q52-84 104 0z"/><ellipse class="lamp-bulb" cx="500" cy="252" rx="45" ry="15"/></g>
+          <g class="window-art"><path d="M218 152 369 239v105l-151-87z"/><path class="window-night" d="M230 171 357 244v77l-127-73z"/><circle cx="319" cy="229" r="21"/><path d="m239 259 35-14 24 31 27-10 30 36"/><circle cx="259" cy="210" r="2"/><circle cx="286" cy="219" r="2"/><circle cx="341" cy="269" r="2"/></g>
+          <g class="calendar-art"><path d="M175 276 245 317v72l-70-41z"/><path d="M184 286v-15M231 313v-15"/><path d="m194 322 10 6m9 5 10 6m-29 1 10 6m9 5 10 6"/><circle cx="211" cy="344" r="12"/><text id="room-calendar-day" x="211" y="348">♥</text></g>
+          <g class="camera-art"><path d="m278 371 84 48-38 23-84-48z"/><path d="m267 371 14-13 25 14 9 18"/><circle cx="302" cy="405" r="18"/><circle cx="302" cy="405" r="9"/></g>
+          <g class="shelf-art"><path d="m205 403 155 90 38-22-155-90z"/><path d="m222 408v67m147-9v43"/><g class="book-spines"><path d="m246 423v43m17-33v43m17-34v43m17-33v43m18-33v43"/></g></g>
+          <g class="tv-art"><path d="m604 242 157-91v121l-157 91z"/><path class="tv-screen" d="m617 248 131-76v91l-131 76z"/><path d="m682 318-1 39m-42 3 86-49"/><path class="tv-wave" d="m638 259 25 3 15-25 22 24 29-35"/></g>
+          <g class="stereo-art"><path d="m659 375 132-76 42 24-132 77z"/><path d="m701 400v75m90-127v73"/><circle cx="729" cy="365" r="28"/><circle cx="729" cy="365" r="11"/><path d="m756 329 33 18-34 20"/></g>
+          <g class="plant-art"><path class="pot" d="m774 414 54-31 30 17-55 32zM783 421l11 61 47-27 9-47"/><g class="leaves"><path d="M812 406q-45-60-13-74 35 20 17 68M819 401q15-76 43-60 10 31-35 65M810 405q-55-19-48 17 28 21 55-8"/></g></g>
+          <g class="sofa-art"><path d="m356 487 156-90 149 86-158 92z"/><path d="m356 487 147 85v77l-147-85zM503 572l158-89v76l-158 90z"/><path class="sofa-cushion" d="m382 484 67-39 56 33-68 39zM461 438l66-38 57 33-68 39z"/></g>
+          <g class="table-art"><path d="m423 590 119-69 97 56-120 69z"/><path d="m440 603v62m177-75v61"/><g class="diary-art"><path d="m466 574 54-31 49 28-54 31z"/><path d="m515 602 4-59"/><path d="m480 574 25-14m20 25 27-15"/></g><g class="trophy-art"><path d="M577 524q18 29 38 6v27l-20 12-18-10z"/><path d="m596 568 1 24m-19 10 38-21M579 528q-24-4-17 20 10 15 25 7M614 526q23-5 17 18-7 13-22 10"/></g></g>
+          <g class="cat-art"><path d="M663 615q15-39 49-27l18-21 15 29q18 25 0 54-22 34-71 13-21-9-11-48z"/><path d="m679 603-8-32 31 20m-20 34 4 1m35-1 4-2m-39 18q18 12 35-2M748 643q54 12 48-35"/><path d="m665 625-38-8m39 21-42 8m108-23 38-17m-39 31 43 5"/></g>
+          <g class="postcard-art"><path d="m561 300 67 39v69l-67-39z"/><path d="m570 317 19 33 29-2"/><circle cx="610" cy="335" r="7"/></g>
+        </svg>
+        <div class="room-hotspots">
+          <button style="--x:69%;--y:30%" data-room-item="tv"><span>TV</span></button>
+          <button style="--x:29%;--y:51%" data-room-item="camera"><span>CAMERA</span></button>
+          <button style="--x:71%;--y:81%" data-room-item="cat"><span>MY CAT</span></button>
+          <button style="--x:20%;--y:43%" data-room-item="calendar"><span>CALENDAR</span></button>
+          <button style="--x:74%;--y:52%" data-room-item="stereo"><span>MUSIC</span></button>
+          <button style="--x:50%;--y:29%" data-room-item="lamp"><span>LAMP</span></button>
+          <button style="--x:83%;--y:56%" data-room-item="plant"><span>FLOWER</span></button>
+          <button style="--x:27%;--y:63%" data-room-item="books"><span>BOOKS</span></button>
+          <button style="--x:60%;--y:73%" data-room-item="trophy"><span>TROPHY</span></button>
+          <button style="--x:50%;--y:78%" data-room-item="diary"><span>DIARY</span></button>
+          <button style="--x:59%;--y:47%" data-room-item="postcard"><span>SECRET</span></button>
+          <button style="--x:29%;--y:28%" data-room-item="window"><span>NIGHT</span></button>
         </div>
-        <small>10% — 160%</small>
-      </label>
-      <label>NEW PROFILE PHOTO<input id="edit-image" type="file" accept="image/*"></label>
-      <button class="black" type="button" id="save-profile">SAVE</button>
+      </div>
+      <p class="room-hint"><span></span> CLICK THE GLOWING DOTS · 点击房间里的家具</p>
+    </section>
+  </main>
+  <dialog id="room-detail-dialog" class="room-detail-dialog">
+    <button type="button" id="room-detail-close" class="room-dialog-close" aria-label="Close">×</button>
+    <div class="room-detail-card"><small id="room-detail-kicker">MY ROOM</small><h2 id="room-detail-title"></h2><img id="room-detail-image" alt="" hidden><p id="room-detail-text"></p><time id="room-detail-date" hidden></time><audio id="room-detail-audio" controls hidden></audio><a id="room-detail-link" target="_blank" rel="noopener" hidden>OPEN LINK ↗</a></div>
+  </dialog>
+  <dialog id="room-editor" class="room-editor-dialog">
+    <form id="room-editor-form" class="room-editor-card">
+      <div class="room-editor-head"><strong>EDIT MY ROOM</strong><button type="button" id="room-editor-close">×</button></div>
+      <label>选择家具 / ITEM<select id="room-editor-item"></select></label>
+      <label>标题 / TITLE<input id="room-editor-title" maxlength="80"></label>
+      <label>介绍 / DESCRIPTION<textarea id="room-editor-text" rows="7"></textarea></label>
+      <label id="room-editor-date-label">日期 / DATE<input id="room-editor-date" type="date"></label>
+      <label>图片地址 / IMAGE URL<input id="room-editor-image-url" type="url" placeholder="https://..."></label>
+      <label class="room-upload">上传照片 / UPLOAD PHOTO<input id="room-editor-image" type="file" accept="image/*"></label>
+      <label>音乐或链接 / MUSIC · LINK<input id="room-editor-link" type="url" placeholder="https://..."></label>
+      <label class="room-upload">上传音频 / UPLOAD AUDIO<input id="room-editor-audio" type="file" accept="audio/*"></label>
+      <div id="room-editor-preview" class="room-editor-preview"></div>
+      <p id="room-editor-status" class="room-editor-status"></p>
+      <button class="black" type="submit">SAVE THIS ITEM</button>
     </form>
   </dialog>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js?v=20260818-imgfix2"></script>
-  <script src="app.js?v=20260818-imgfix2"></script>
-  <script src="supabase-site.js?v=20260831-profile1"></script>
+  <script src="supabase-site.js?v=20260902-room1"></script>
+  <script src="about-room.js?v=20260902-room1"></script>
   <script src="saved-layouts.js?v=20260818-imgfix2"></script>
   <script src="page-editor.js?v=20260818-imgfix2"></script>
   <script src="boot-ready.js?v=20260818-imgfix2"></script>
