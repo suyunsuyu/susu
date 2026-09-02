@@ -20,6 +20,8 @@
   let photos = [];
   let removedPhotoIds = [];
 
+  $('#room-admin-login')?.addEventListener('click', () => $('#admin-auth-button')?.click());
+
   const setStatus = (selector, message, failed = false) => {
     const el = $(selector);
     if (!el) return;
