@@ -27,6 +27,8 @@
   let selected = null;
   let selecting = false;
   let drag = null;
+  let editorMounted = false;
+  let editorInitRunning = false;
 
   function selectorFor(el) {
     if (el.dataset.peCustom) return 'custom:' + el.dataset.peCustom;
@@ -463,27 +465,31 @@
   }
 
   async function init() {
-    if (window.SUY_ADMIN_READY) await window.SUY_ADMIN_READY;
+    if (editorMounted || editorInitRunning) return;
+    editorInitRunning = true;
     try {
-      if (window.SUY_ADMIN?.loadContent) {
-        const remote = await window.SUY_ADMIN.loadContent(remoteLayoutKey);
-        if (remote && typeof remote === 'object') {
-          state = { styles:{}, custom:[], subnav:[], deleted:[], content:{}, attrs:{}, mobilePreset:'recommended', ...remote };
-        } else {
-          state = { styles:{}, custom:[], subnav:[], deleted:[], content:{}, attrs:{}, mobilePreset:'recommended', ...fileState };
+      if (window.SUY_ADMIN_READY) await window.SUY_ADMIN_READY;
+      try {
+        if (window.SUY_ADMIN?.loadContent) {
+          const remote = await window.SUY_ADMIN.loadContent(remoteLayoutKey);
+          if (remote && typeof remote === 'object') {
+            state = { styles:{}, custom:[], subnav:[], deleted:[], content:{}, attrs:{}, mobilePreset:'recommended', ...remote };
+          } else {
+            state = { styles:{}, custom:[], subnav:[], deleted:[], content:{}, attrs:{}, mobilePreset:'recommended', ...fileState };
+          }
+        }
+      } catch (err) {
+        console.error('Could not load remote layout', err);
+        if (window.SUY_IS_ADMIN && localDraft && typeof localDraft === 'object') {
+          state = { styles:{}, custom:[], subnav:[], deleted:[], content:{}, attrs:{}, mobilePreset:'recommended', ...localDraft };
         }
       }
-    } catch (err) {
-      console.error('Could not load remote layout', err);
-      if (window.SUY_IS_ADMIN && localDraft && typeof localDraft === 'object') {
-        state = { styles:{}, custom:[], subnav:[], deleted:[], content:{}, attrs:{}, mobilePreset:'recommended', ...localDraft };
-      }
-    }
-    applySaved();
-    pageEditorReadyResolve?.(true);
-    if (!window.SUY_IS_ADMIN) return;
-    document.body.insertAdjacentHTML('beforeend', panelHTML());
-    navList();
+      applySaved();
+      pageEditorReadyResolve?.(true);
+      if (!window.SUY_IS_ADMIN) return;
+      document.body.insertAdjacentHTML('beforeend', panelHTML());
+      editorMounted = true;
+      navList();
 
     const syncMobilePresetUI = () => {
       document.querySelectorAll('[data-mobile-preset]').forEach(b => b.classList.toggle('active', b.dataset.mobilePreset === state.mobilePreset));
@@ -641,8 +647,17 @@
       $('#pe-x').value = nx;
       $('#pe-y').value = ny;
     });
-    document.addEventListener('pointerup', () => { if (drag) { drag = null; save(); } });
+      document.addEventListener('pointerup', () => { if (drag) { drag = null; save(); } });
+    } finally {
+      editorInitRunning = false;
+    }
   }
 
+  // A session can finish restoring after the first page pass. Mount the
+  // editor as soon as Supabase confirms the administrator, without requiring
+  // a second manual refresh.
+  document.addEventListener('suyoon-admin-state', event => {
+    if (event.detail?.admin && !editorMounted) init();
+  });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => init()); else init();
 })();
