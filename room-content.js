@@ -15,11 +15,11 @@
   let lightboxIndex = 0;
 
   const titles = {
-    tv:'MY WORKS', camera:'PHOTOGRAPHS', cat:'MY CAT', calendar:'MEMORIES', music:'MY MUSIC',
+    tv:'MY WORKS', camera:'PHOTOGRAPHS', cat:'MY CAT', calendar:'MEMORIES', music:'MY MUSIC', telephone:'GUESTBOOK',
     flowers:'MY FAVORITE FLOWERS', books:'MY BOOKS', trophy:'EDUCATION / ARCHIVE',
     diary:'ABOUT ME', artwork:'MY ART'
   };
-  const types = { tv:'works',cat:'cat',calendar:'calendar',music:'music',flowers:'flowers',books:'books',trophy:'education',diary:'profile',artwork:'artwork' };
+  const types = { tv:'works',cat:'cat',calendar:'calendar',music:'music',flowers:'flowers',books:'books',trophy:'education',diary:'profile',artwork:'artwork',telephone:'guestbook' };
   const emptyText = {
     tv:'作品正在整理中。这里以后会保存设计、项目、视频和创作。',
     cat:'小猫的照片、生日、品种和故事会保存在这里。',
@@ -29,7 +29,8 @@
     books:'这里会收藏书名、作者、评分和我的短评。',
     trophy:'大学、专业和学习经历会作为个人档案保存在这里。',
     diary:'姓名、性格、MBTI、理想和想做的事情。',
-    artwork:'墙上的画会替换成我真正的作品。'
+    artwork:'墙上的画会替换成我真正的作品。',
+    telephone:'留言板上的字会在这里留下；也可以打开留言页写下新的话。'
   };
 
   const openOverlay = key => {
@@ -37,7 +38,13 @@
     activeAlbum = null;
     indexLabel.textContent = titles[key] || 'MY ROOM';
     back.hidden = true;
-    overlay.classList.add('is-open');
+    overlay.classList.remove('is-open');
+    try {
+      if (!overlay.open) overlay.showModal();
+    } catch {
+      overlay.setAttribute('open','');
+    }
+    requestAnimationFrame(() => overlay.classList.add('is-open'));
     overlay.setAttribute('aria-hidden','false');
     document.body.classList.add('room-content-open');
     render(key);
@@ -48,9 +55,11 @@
     document.body.classList.remove('room-content-open');
     document.dispatchEvent(new CustomEvent('room-content-closed'));
     document.dispatchEvent(new CustomEvent('room-record-playing',{detail:{playing:false}}));
+    if (overlay.open) overlay.close();
     body.querySelectorAll('audio').forEach(audio=>audio.pause());
   };
   $('#room-content-close').addEventListener('click',closeOverlay);
+  overlay.addEventListener('click',event=>{if(event.target===overlay)closeOverlay()});
   back.addEventListener('click',()=>activeKey==='camera'&&activeAlbum?renderAlbums():render(activeKey));
   document.addEventListener('room-object-select',event=>openOverlay(event.detail?.key));
   document.addEventListener('keydown',event=>{if(event.key==='Escape'&&overlay.classList.contains('is-open'))closeOverlay()});
@@ -69,7 +78,7 @@
     try{
       const items=await queryItems(types[key]);
       if(!items.length){
-        const existing=key==='tv'?'<a class="room-text-link" href="works.html">OPEN CURRENT WORKS ↗</a>':key==='cat'?'<a class="room-text-link" href="tools.html">OPEN MY CAT PAGE ↗</a>':'';
+        const existing=key==='tv'?'<a class="room-text-link" href="works.html">OPEN CURRENT WORKS ↗</a>':key==='cat'?'<a class="room-text-link" href="tools.html">OPEN MY CAT PAGE ↗</a>':key==='telephone'?'<a class="room-text-link" href="guestbook.html">OPEN GUESTBOOK ↗</a>':'';
         body.innerHTML=`<section class="room-editorial room-editorial-empty"><p class="room-section-no">${esc(titles[key])}</p><h2>NOTES<br>WILL LIVE HERE.</h2><p>${esc(emptyText[key])}</p>${existing}</section>`;return;
       }
       body.innerHTML=`<section class="room-editorial"><p class="room-section-no">${esc(titles[key])} · ${String(items.length).padStart(2,'0')}</p><h2>${esc(titles[key])}</h2><div class="room-editorial-list">${items.map((item,i)=>`<article class="room-editorial-item">${itemFigure(item)}<div class="room-editorial-copy"><small>${String(i+1).padStart(2,'0')}${item.subtitle?` · ${esc(item.subtitle)}`:''}</small><h3>${esc(item.title||'UNTITLED')}</h3><p>${esc(item.description||'').replace(/\n/g,'<br>')}</p>${item.link_url?`<a href="${esc(item.link_url)}" target="_blank" rel="noopener">OPEN ↗</a>`:''}</div></article>`).join('')}</div></section>`;
