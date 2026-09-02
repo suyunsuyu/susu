@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <title>Room Editor — Lee Su-yoon</title>
-  <link rel="stylesheet" href="style.css?v=20260902-room3d2">
+  <link rel="stylesheet" href="style.css?v=20260902-room4">
   <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
 </head>
 <body class="room-admin-body">
   <header><a href="about.html" class="brand">ROOM EDITOR</a><a href="about.html">← MY ROOM</a></header>
   <main class="room-admin-page">
     <section id="room-admin-locked" class="room-admin-locked">
-      <p>ADMIN ONLY</p><h1>Sign in to arrange<br>your room.</h1><p>使用右下角 ADMIN LOGIN 登录后才能编辑。</p>
+      <p>ADMIN ONLY</p><h1>Sign in to arrange<br>your room.</h1><p>登录后才能编辑房间内容。</p><button id="room-admin-login" class="room-admin-login" type="button">ADMIN LOGIN</button>
     </section>
     <div id="room-admin-app" data-admin-only hidden>
       <div class="room-admin-title"><div><p>PRIVATE ADMINISTRATION</p><h1>Room archive.</h1></div><a href="about.html">VIEW ROOM ↗</a></div>
@@ -70,8 +70,8 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
   <script src="config.js?v=20260818-imgfix2"></script>
-  <script src="supabase-site.js?v=20260902-room3d2"></script>
-  <script src="room-admin.js?v=20260902-room3d2"></script>
+  <script src="supabase-site.js?v=20260902-auth1"></script>
+  <script src="room-admin.js?v=20260902-room4"></script>
   <script src="boot-ready.js?v=20260818-imgfix2"></script>
 </body>
 </html>
