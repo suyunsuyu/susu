@@ -60,6 +60,7 @@
   };
   $('#room-content-close').addEventListener('click',closeOverlay);
   overlay.addEventListener('click',event=>{if(event.target===overlay)closeOverlay()});
+  overlay.addEventListener('cancel',event=>{event.preventDefault();closeOverlay()});
   back.addEventListener('click',()=>activeKey==='camera'&&activeAlbum?renderAlbums():render(activeKey));
   document.addEventListener('room-object-select',event=>openOverlay(event.detail?.key));
   document.addEventListener('keydown',event=>{if(event.key==='Escape'&&overlay.classList.contains('is-open'))closeOverlay()});
