@@ -18,14 +18,44 @@
   let readyResolved = false;
   let siteReadyResolve;
   window.SUY_SITE_READY = new Promise(r => siteReadyResolve = r);
+  let cachedUser = null;
+  let cachedSession = null;
+  let authRefreshTimer = null;
+  let authRefreshInFlight = null;
 
   async function currentUser() {
-    const { data } = await sb.auth.getUser();
-    return data?.user || null;
+    try {
+      // Read the persisted session first so a page opened immediately after
+      // login can restore the admin UI without waiting on a second request.
+      const { data: sessionData, error: sessionError } = await sb.auth.getSession();
+      if (sessionError) throw sessionError;
+      const session = sessionData?.session || null;
+      if (!session?.user) {
+        cachedSession = null;
+        cachedUser = null;
+        return null;
+      }
+      cachedSession = session;
+      if (cachedUser?.id === session.user.id && cachedUser?.email === session.user.email) return cachedUser;
+
+      // Confirm a new session with the Auth server. The database RLS policies
+      // remain the final authorization check for every write.
+      const { data, error } = await sb.auth.getUser();
+      if (!error && data?.user) cachedUser = data.user;
+      else cachedUser = session.user;
+      return cachedUser;
+    } catch (error) {
+      console.warn('Supabase session check failed', error);
+      return cachedUser;
+    }
   }
   async function isAdmin() {
-    const user = await currentUser();
-    return (user?.email || '').toLowerCase() === ADMIN_EMAIL;
+    try {
+      const user = await currentUser();
+      return (user?.email || '').toLowerCase() === ADMIN_EMAIL;
+    } catch {
+      return false;
+    }
   }
   async function loadContent(key) {
     const { data, error } = await sb.from('site_content').select('data').eq('key', key).maybeSingle();
@@ -145,6 +175,7 @@
           <label>PASSWORD<input id="admin-auth-password" type="password" autocomplete="current-password" required></label>
           <p id="admin-auth-status"></p>
           <button class="black" type="submit">LOG IN</button>
+          <button id="admin-auth-magic" class="admin-auth-secondary" type="button">SEND LOGIN LINK</button>
         </form>
       </dialog>`);
     const dlg=$('#admin-auth-dialog');
@@ -160,18 +191,30 @@
     };
     $('#admin-auth-close').onclick=()=>dlg.close();
     dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
+    $('#admin-auth-magic').onclick=async()=>{
+      const status=$('#admin-auth-status');status.textContent='SENDING LOGIN LINK...';
+      try {
+        const {error}=await sb.auth.signInWithOtp({email:ADMIN_EMAIL,options:{emailRedirectTo:location.href}});
+        status.textContent=error?'LOGIN LINK FAILED: '+error.message:'CHECK YOUR EMAIL FOR THE LOGIN LINK.';
+      } catch (error) {
+        status.textContent='LOGIN LINK FAILED: '+(error?.message||'UNKNOWN ERROR');
+      }
+    };
     $('#admin-auth-form').onsubmit=async e=>{
       e.preventDefault();
       const status=$('#admin-auth-status');status.textContent='LOGGING IN...';
-      const {error}=await sb.auth.signInWithPassword({email:ADMIN_EMAIL,password:$('#admin-auth-password').value});
+      const {data,error}=await sb.auth.signInWithPassword({email:ADMIN_EMAIL,password:$('#admin-auth-password').value});
       if(error){status.textContent='LOGIN FAILED: '+error.message;return}
-      if(!await isAdmin()){await sb.auth.signOut();status.textContent='THIS ACCOUNT IS NOT AN ADMIN.';return}
+      cachedSession=data?.session||cachedSession;
+      cachedUser=data?.user||cachedUser;
+      if(!await isAdmin()){await sb.auth.signOut();cachedSession=null;cachedUser=null;status.textContent='THIS ACCOUNT IS NOT AN ADMIN.';return}
       dlg.close();await refreshAdminState();location.reload();
     };
   }
 
   async function refreshAdminState(){
-    const admin=await isAdmin();
+    let admin=false;
+    try { admin=await isAdmin(); } catch (error) { console.warn('Admin state refresh failed', error); }
     window.SUY_IS_ADMIN=admin;
     document.body.classList.toggle('supabase-admin',admin);
     $$('[data-admin-only]').forEach(el=>el.hidden=!admin);
@@ -181,6 +224,13 @@
     if(!readyResolved){readyResolved=true;readyResolve(admin)}
     document.dispatchEvent(new CustomEvent('suyoon-admin-state',{detail:{admin}}));
     return admin;
+  }
+
+  function scheduleAdminRefresh() {
+    clearTimeout(authRefreshTimer);
+    authRefreshTimer=setTimeout(()=>{
+      authRefreshInFlight=refreshAdminState().catch(error=>{console.warn('Admin state update failed',error);return false});
+    },0);
   }
 
   async function initGuestbook(){
@@ -334,10 +384,19 @@
     try{
       authUI();await refreshAdminState();
       await Promise.allSettled([initGuestbook(),initProfile(),initCovers(),initDiary()]);
+    } catch (error) {
+      console.error('Supabase site initialization failed', error);
     } finally {
+      if(!readyResolved){readyResolved=true;readyResolve(false)}
       siteReadyResolve?.(true);
     }
   }
-  sb.auth.onAuthStateChange(()=>refreshAdminState());
+  // Supabase serializes auth events internally. Defer the UI refresh so it
+  // never starts another Auth request inside the auth-state callback.
+  sb.auth.onAuthStateChange((_,session)=>{
+    cachedSession=session||null;
+    cachedUser=session?.user||null;
+    scheduleAdminRefresh();
+  });
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
