@@ -341,7 +341,7 @@ new ResizeObserver(resize).observe(mount);resize();
 
 // The room is an intimate centerpiece rather than a full-screen wall. Keep
 // its center anchored while leaving generous quiet space around the scene.
-scene.scale.setScalar(mobile ? .48 : .44);
+scene.scale.setScalar(mobile ? .36 : .44);
 
 const clock3d=new THREE.Clock();
 const animate=()=>{
