@@ -5,7 +5,14 @@
     return;
   }
 
-  const sb = window.supabase.createClient(cfg.url, cfg.anonKey);
+  const sb = window.supabase.createClient(cfg.url, cfg.anonKey, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      storage: window.localStorage
+    }
+  });
   const ADMIN_EMAIL = 'linken0w0@gmail.com';
   const $ = (s, root=document) => root.querySelector(s);
   const $$ = (s, root=document) => [...root.querySelectorAll(s)];
@@ -25,27 +32,32 @@
   let authRetryTimers = [];
 
   async function currentUser() {
+    // Read the persisted session first so a new page can paint the correct
+    // admin state immediately after navigation. Confirm it with getUser when
+    // Auth is reachable; the server check remains the source of truth for
+    // writes and RLS-protected data.
+    let sessionRead = false;
+    let sessionUser = null;
     try {
-      // Ask Auth for a server-verified user first. This keeps the editor and
-      // the database policies in agreement instead of trusting stale storage.
+      const { data, error } = await sb.auth.getSession();
+      if (error) throw error;
+      sessionRead = true;
+      cachedSession = data?.session || null;
+      sessionUser = cachedSession?.user || null;
+      if (sessionUser) cachedUser = sessionUser;
+    } catch (error) {
+      console.warn('Supabase persisted session check failed', error);
+    }
+    try {
       const { data, error } = await sb.auth.getUser();
       if (!error && data?.user) {
         cachedUser = data.user;
-        const { data: sessionData } = await sb.auth.getSession();
-        cachedSession = sessionData?.session || cachedSession;
         return cachedUser;
       }
-      // A transient network failure can still leave a valid persisted session;
-      // use it as a short-lived fallback and retry on the next state refresh.
-      const { data: sessionData, error: sessionError } = await sb.auth.getSession();
-      if (sessionError) throw sessionError;
-      cachedSession = sessionData?.session || null;
-      cachedUser = cachedSession?.user || null;
-      return cachedUser;
     } catch (error) {
-      console.warn('Supabase session check failed', error);
-      return cachedUser;
+      console.warn('Supabase verified session check failed', error);
     }
+    return sessionRead ? sessionUser : cachedUser;
   }
   async function isAdmin() {
     try {
