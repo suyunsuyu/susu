@@ -33,7 +33,10 @@
   const uniqueId = () => crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
   async function requireAdmin() {
-    const admin = await window.SUY_ADMIN_READY;
+    let admin = !!window.SUY_IS_ADMIN;
+    try {
+      if (window.SUY_ADMIN?.isAdmin) admin = await window.SUY_ADMIN.isAdmin();
+    } catch {}
     locked.hidden = admin;
     app.hidden = !admin;
     return admin;
@@ -329,5 +332,8 @@
   itemDialog.addEventListener('click', event => { if (event.target === itemDialog) itemDialog.close(); });
   albumDialog.addEventListener('click', event => { if (event.target === albumDialog) albumDialog.close(); });
 
-  requireAdmin().then(admin => { if (admin) loadItems(); });
+  const syncAdmin = async () => { if (await requireAdmin()) await loadItems(); };
+  document.addEventListener('suyoon-admin-state', syncAdmin);
+  if (window.SUY_ADMIN_READY) window.SUY_ADMIN_READY.then(syncAdmin);
+  else syncAdmin();
 })();
