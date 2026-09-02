@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Room Editor — Lee Su-yoon</title>
+  <link rel="stylesheet" href="style.css?v=20260902-room3d2">
+  <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
+</head>
+<body class="room-admin-body">
+  <header><a href="about.html" class="brand">ROOM EDITOR</a><a href="about.html">← MY ROOM</a></header>
+  <main class="room-admin-page">
+    <section id="room-admin-locked" class="room-admin-locked">
+      <p>ADMIN ONLY</p><h1>Sign in to arrange<br>your room.</h1><p>使用右下角 ADMIN LOGIN 登录后才能编辑。</p>
+    </section>
+    <div id="room-admin-app" data-admin-only hidden>
+      <div class="room-admin-title"><div><p>PRIVATE ADMINISTRATION</p><h1>Room archive.</h1></div><a href="about.html">VIEW ROOM ↗</a></div>
+      <nav class="room-admin-nav" aria-label="Room editor sections">
+        <button type="button" data-admin-section="items" class="active">CONTENT</button>
+        <button type="button" data-admin-section="albums">PHOTO ALBUMS</button>
+      </nav>
+
+      <section id="room-admin-items" class="room-admin-section">
+        <div class="room-admin-toolbar"><label>ROOM OBJECT<select id="admin-item-type"><option value="works">TV · WORKS</option><option value="cat">CAT</option><option value="calendar">CALENDAR</option><option value="music">RECORD PLAYER · MUSIC</option><option value="flowers">FLOWERS</option><option value="books">BOOKS</option><option value="education">TROPHY · EDUCATION</option><option value="profile">DIARY · ABOUT ME</option><option value="artwork">WALL ART</option><option value="secret">SECRET DRAWER</option></select></label><button id="admin-new-item" type="button">＋ NEW ITEM</button></div>
+        <div id="admin-item-list" class="room-admin-list"></div>
+      </section>
+
+      <section id="room-admin-albums" class="room-admin-section" hidden>
+        <div class="room-admin-toolbar"><p>CAMERA · PHOTOGRAPHS</p><button id="admin-new-album" type="button">＋ NEW ALBUM</button></div>
+        <div id="admin-album-list" class="room-admin-list"></div>
+      </section>
+    </div>
+  </main>
+
+  <dialog id="admin-item-dialog" class="room-admin-dialog">
+    <form id="admin-item-form">
+      <div class="room-admin-dialog-head"><strong>CONTENT ITEM</strong><button type="button" data-close-dialog>×</button></div>
+      <input id="admin-item-id" type="hidden">
+      <label>TITLE<input id="admin-item-title" required></label>
+      <label>SUBTITLE / AUTHOR / ARTIST<input id="admin-item-subtitle"></label>
+      <label>DESCRIPTION<textarea id="admin-item-description" rows="7"></textarea></label>
+      <div class="room-admin-grid"><label>DATE<input id="admin-item-date" type="date"></label><label>SORT ORDER<input id="admin-item-sort" type="number" value="0"></label></div>
+      <label>LINK URL<input id="admin-item-link" type="url" placeholder="https://..."></label>
+      <label>IMAGE URL<input id="admin-item-image-url" type="url" placeholder="https://..."></label>
+      <label class="room-admin-upload">UPLOAD IMAGE<input id="admin-item-image" type="file" accept="image/*"></label>
+      <label>MEDIA / AUDIO URL<input id="admin-item-media-url" type="url" placeholder="https://..."></label>
+      <label class="room-admin-upload">UPLOAD AUDIO<input id="admin-item-media" type="file" accept="audio/*"></label>
+      <label class="room-admin-check"><input id="admin-item-published" type="checkbox" checked> PUBLISHED</label>
+      <p id="admin-item-status"></p><button class="black" type="submit">SAVE ITEM</button>
+    </form>
+  </dialog>
+
+  <dialog id="admin-album-dialog" class="room-admin-dialog room-album-admin-dialog">
+    <form id="admin-album-form">
+      <div class="room-admin-dialog-head"><strong>PHOTO ALBUM</strong><button type="button" data-close-dialog>×</button></div>
+      <input id="admin-album-id" type="hidden">
+      <label>ALBUM TITLE<input id="admin-album-title" required></label>
+      <label>DESCRIPTION<textarea id="admin-album-description" rows="4"></textarea></label>
+      <div class="room-admin-grid"><label>DATE<input id="admin-album-date" type="date"></label><label>SORT ORDER<input id="admin-album-sort" type="number" value="0"></label></div>
+      <label>COVER URL<input id="admin-album-cover-url" type="url" placeholder="https://..."></label>
+      <label class="room-admin-upload">UPLOAD COVER<input id="admin-album-cover" type="file" accept="image/*"></label>
+      <label class="room-admin-check"><input id="admin-album-published" type="checkbox" checked> PUBLISHED</label>
+      <hr>
+      <div class="room-admin-photo-head"><strong>PHOTOGRAPHS</strong><label class="room-admin-upload">＋ BATCH UPLOAD<input id="admin-photo-upload" type="file" accept="image/*" multiple></label></div>
+      <div id="admin-photo-list" class="room-admin-photo-list"></div>
+      <p id="admin-album-status"></p><button class="black" type="submit">SAVE ALBUM & PHOTOS</button>
+    </form>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+  <script src="config.js?v=20260818-imgfix2"></script>
+  <script src="supabase-site.js?v=20260902-room3d2"></script>
+  <script src="room-admin.js?v=20260902-room3d2"></script>
+  <script src="boot-ready.js?v=20260818-imgfix2"></script>
+</body>
+</html>
