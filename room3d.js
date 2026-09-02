@@ -7,8 +7,10 @@ if (!mount) throw new Error('Room canvas is missing.');
 const mobile = matchMedia('(max-width: 720px)').matches;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xfaf3e7);
-scene.fog = new THREE.Fog(0xfaf3e7, 16, 26);
+// Keep the space around the house clean white; warmth comes from the room's
+// wood, fabrics, plants and lighting rather than a tinted page background.
+scene.background = new THREE.Color(0xffffff);
+scene.fog = new THREE.Fog(0xffffff, 16, 26);
 
 const camera = new THREE.OrthographicCamera(-7, 7, 6, -6, .1, 60);
 camera.position.set(9.5, 8.2, 11.5);
@@ -204,7 +206,8 @@ const vinyl=addCylinder(music,.42,.42,.025,[-.2,.12,0],mats.ink,32);
 addCylinder(music,.06,.06,.035,[-.2,.145,0],mats.paper,18);
 addBox(music,[.055,.05,.58],[.36,.19,.06],mats.metal,[0,.38,0]);
 register(music,'music',[3.65,1.15,-1.45]);
-const headphones=group([4.2,.92,-2.65]);addCylinder(headphones,.33,.33,.05,[0,0,0],mats.ink,24,[Math.PI/2,0,0]);
+// Keep the record player readable without a second loose accessory competing
+// with the interactive bookshelf and lamp.
 
 // Bookshelf with irregular books
 const books=group([4.17,0,.45]);
@@ -273,9 +276,9 @@ const windowLight=new THREE.PointLight(0xc9ced0,.3,8);windowLight.position.set(-
 const warmFill=new THREE.PointLight(0xffc18f,0,8,2);warmFill.position.set(.8,2.1,1.5);warmFill.castShadow=true;warmFill.shadow.mapSize.set(mobile?256:512,mobile?256:512);scene.add(warmFill);
 const lighting={mode:0,names:['DAY','WARM','NIGHT']};
 const lightTargets=[
-  {hemi:2.4,sun:3.5,pendant:.2,ambient:.35,window:.3,warmFill:.02,exposure:1.05,bg:0xfaf3e7,pane:0x8cb9bb},
-  {hemi:1.25,sun:1.2,pendant:3.1,ambient:.28,window:.2,warmFill:1.55,exposure:.93,bg:0xf3dfc1,pane:0x779999},
-  {hemi:.28,sun:.12,pendant:1.45,ambient:.16,window:1.35,warmFill:.25,exposure:.64,bg:0x51443f,pane:0x314b4b}
+  {hemi:2.4,sun:3.5,pendant:.2,ambient:.35,window:.3,warmFill:.02,exposure:1.05,bg:0xffffff,pane:0x8cb9bb},
+  {hemi:1.25,sun:1.2,pendant:3.1,ambient:.28,window:.2,warmFill:1.55,exposure:.93,bg:0xffffff,pane:0x779999},
+  {hemi:.28,sun:.12,pendant:1.45,ambient:.16,window:1.35,warmFill:.25,exposure:.64,bg:0xffffff,pane:0x314b4b}
 ];
 let currentLight={...lightTargets[0]};let wantedLight={...lightTargets[0]};
 const lightLabel=document.querySelector('#room-light-label'),toast=document.querySelector('#room3d-toast');let toastTimer;
@@ -320,8 +323,6 @@ renderer.domElement.addEventListener('pointerup',event=>{
   if(Math.hypot(event.clientX-down.x,event.clientY-down.y)>8)return;
   const root=cast(event);if(!root)return;const key=root.userData.roomKey;
   if(key==='lamp'){setLightMode(lighting.mode+1);return}
-  if(key==='telephone'){location.href='guestbook.html';return}
-  if(key==='cat'){location.href='tools.html';return}
   focusObject(key);document.dispatchEvent(new CustomEvent('room-object-select',{detail:{key}}));
 });
 
@@ -340,7 +341,7 @@ new ResizeObserver(resize).observe(mount);resize();
 
 // The room is an intimate centerpiece rather than a full-screen wall. Keep
 // its center anchored while leaving generous quiet space around the scene.
-scene.scale.setScalar(mobile ? .56 : .48);
+scene.scale.setScalar(mobile ? .48 : .44);
 
 const clock3d=new THREE.Clock();
 const animate=()=>{
