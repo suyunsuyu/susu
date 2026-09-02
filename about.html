@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <script>document.documentElement.classList.add('site-booting');setTimeout(()=>document.documentElement.classList.remove('site-booting'),5000)</script>
   <title>My Room — Lee Su-yoon</title>
-  <link rel="stylesheet" href="style.css?v=20260902-room3d2">
+  <link rel="stylesheet" href="style.css?v=20260902-room4">
   <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
 </head>
 <body class="room3d-body">
@@ -18,17 +18,10 @@
     </div>
   </header>
 
-  <main class="room3d-page">
-    <div class="room3d-intro">
-      <p>MY ROOM · PERSONAL ARCHIVE</p>
-      <h1>A room is another<br><em>way to know someone.</em></h1>
-    </div>
-
+  <main class="room3d-page" aria-label="My room">
     <section id="room3d-stage" class="room3d-stage" aria-label="Interactive isometric personal room">
       <div id="room3d-canvas" class="room3d-canvas" aria-hidden="true"></div>
       <div id="room3d-loading" class="room3d-loading"><span></span><p>BUILDING MY ROOM</p></div>
-      <p id="room3d-object-label" class="room3d-object-label" hidden></p>
-      <p class="room3d-instruction">CLICK THE FURNITURE · 点击家具慢慢认识我</p>
       <button id="room-edit-entry" class="room3d-edit-entry" type="button" data-admin-only hidden>EDIT</button>
     </section>
   </main>
@@ -53,10 +46,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
   <script src="config.js?v=20260818-imgfix2"></script>
-  <script src="supabase-site.js?v=20260902-room3d2"></script>
-  <script src="room-content.js?v=20260902-room3d2"></script>
+  <script src="supabase-site.js?v=20260902-auth1"></script>
+  <script src="room-content.js?v=20260902-room4"></script>
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
-  <script type="module" src="room3d.js?v=20260902-room3d2"></script>
+  <script type="module" src="room3d.js?v=20260902-room4"></script>
   <script src="boot-ready.js?v=20260818-imgfix2"></script>
 </body>
 </html>
