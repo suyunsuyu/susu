@@ -22,27 +22,25 @@
   let cachedSession = null;
   let authRefreshTimer = null;
   let authRefreshInFlight = null;
+  let authRetryTimers = [];
 
   async function currentUser() {
     try {
-      // Read the persisted session first so a page opened immediately after
-      // login can restore the admin UI without waiting on a second request.
+      // Ask Auth for a server-verified user first. This keeps the editor and
+      // the database policies in agreement instead of trusting stale storage.
+      const { data, error } = await sb.auth.getUser();
+      if (!error && data?.user) {
+        cachedUser = data.user;
+        const { data: sessionData } = await sb.auth.getSession();
+        cachedSession = sessionData?.session || cachedSession;
+        return cachedUser;
+      }
+      // A transient network failure can still leave a valid persisted session;
+      // use it as a short-lived fallback and retry on the next state refresh.
       const { data: sessionData, error: sessionError } = await sb.auth.getSession();
       if (sessionError) throw sessionError;
-      const session = sessionData?.session || null;
-      if (!session?.user) {
-        cachedSession = null;
-        cachedUser = null;
-        return null;
-      }
-      cachedSession = session;
-      if (cachedUser?.id === session.user.id && cachedUser?.email === session.user.email) return cachedUser;
-
-      // Confirm a new session with the Auth server. The database RLS policies
-      // remain the final authorization check for every write.
-      const { data, error } = await sb.auth.getUser();
-      if (!error && data?.user) cachedUser = data.user;
-      else cachedUser = session.user;
+      cachedSession = sessionData?.session || null;
+      cachedUser = cachedSession?.user || null;
       return cachedUser;
     } catch (error) {
       console.warn('Supabase session check failed', error);
@@ -52,10 +50,20 @@
   async function isAdmin() {
     try {
       const user = await currentUser();
-      return (user?.email || '').toLowerCase() === ADMIN_EMAIL;
+      return (user?.email || '').trim().toLowerCase() === ADMIN_EMAIL;
     } catch {
       return false;
     }
+  }
+  async function ensureAdminSession() {
+    if (await isAdmin()) return true;
+    try {
+      const { data, error } = await sb.auth.refreshSession();
+      if (error) return false;
+      cachedSession = data?.session || cachedSession;
+      cachedUser = data?.user || cachedUser;
+      return await isAdmin();
+    } catch { return false; }
   }
   async function loadContent(key) {
     const { data, error } = await sb.from('site_content').select('data').eq('key', key).maybeSingle();
@@ -63,12 +71,12 @@
     return data?.data ?? null;
   }
   async function saveContent(key, data) {
-    if (!await isAdmin()) throw new Error('Admin login required.');
+    if (!await ensureAdminSession()) throw new Error('Admin login required.');
     const { error } = await sb.from('site_content').upsert({ key, data, updated_at:new Date().toISOString() }, { onConflict:'key' });
     if (error) throw error;
   }
   async function uploadPublic(file, folder='uploads') {
-    if (!await isAdmin()) throw new Error('Admin login required.');
+    if (!await ensureAdminSession()) throw new Error('Admin login required.');
     const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'') || 'jpg';
     const path=`${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
     const { error }=await sb.storage.from('site-media').upload(path,file,{upsert:false,cacheControl:'3600'});
@@ -76,7 +84,7 @@
     return sb.storage.from('site-media').getPublicUrl(path).data.publicUrl;
   }
 
-  window.SUY_ADMIN = { sb, ADMIN_EMAIL, isAdmin, loadContent, saveContent, uploadPublic };
+  window.SUY_ADMIN = { sb, ADMIN_EMAIL, isAdmin, ensureAdminSession, loadContent, saveContent, uploadPublic };
 
 
   // Robust image loader: if a public Storage URL fails in <img>, retry through
@@ -389,6 +397,10 @@
     } finally {
       if(!readyResolved){readyResolved=true;readyResolve(false)}
       siteReadyResolve?.(true);
+      // Storage restoration can finish just after the first render. These
+      // short rechecks allow the editor to unlock without a hard refresh.
+      authRetryTimers.forEach(clearTimeout);
+      authRetryTimers=[1200,3200].map(delay=>setTimeout(()=>scheduleAdminRefresh(),delay));
     }
   }
   // Supabase serializes auth events internally. Defer the UI refresh so it
@@ -398,5 +410,7 @@
     cachedUser=session?.user||null;
     scheduleAdminRefresh();
   });
+  addEventListener('focus', scheduleAdminRefresh, { passive:true });
+  addEventListener('pageshow', scheduleAdminRefresh, { passive:true });
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
