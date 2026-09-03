@@ -613,3 +613,52 @@ body[data-weather="clear"] .weather-canvas{opacity:0}
   body.mobile-layout-visual .home-nav{display:grid!important;grid-template-columns:repeat(5,max-content)!important;justify-content:space-between!important;width:min(94vw,520px)!important;max-width:none!important;gap:0!important;margin:0 auto!important;padding:0!important;overflow:visible!important;font-size:clamp(6.5px,2.15vw,9px)!important;letter-spacing:clamp(.06em,.35vw,.14em)!important}
   .home-nav a{display:block!important;min-width:0!important;min-height:44px!important;padding:17px 0!important;line-height:1!important}
 }
+
+/* Keep all five homepage links visible and evenly spaced on small screens. */
+@media(max-width:720px){
+  body.home .home-main{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    min-height:100svh!important;
+    height:100svh!important;
+    padding:48px 12px max(24px,env(safe-area-inset-bottom))!important;
+    gap:clamp(20px,5svh,38px)!important;
+    overflow:visible!important;
+  }
+  body.home .home-cat{
+    width:min(84vw,420px)!important;
+    max-height:50svh!important;
+    flex:0 1 auto!important;
+  }
+  body.home .home-nav{
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    align-items:center!important;
+    justify-content:stretch!important;
+    width:min(94vw,520px)!important;
+    max-width:none!important;
+    gap:0!important;
+    margin:0 auto!important;
+    padding:0!important;
+    overflow:visible!important;
+    translate:0 0!important;
+    scale:1!important;
+  }
+  body.home .home-nav a{
+    min-width:0!important;
+    min-height:44px!important;
+    padding:10px 2px!important;
+    font-size:clamp(7px,2.3vw,10px)!important;
+    line-height:1!important;
+    letter-spacing:.04em!important;
+    text-align:center!important;
+    overflow:visible!important;
+  }
+}
+@media(max-width:390px){
+  body.home .home-main{gap:18px!important;padding-inline:8px!important}
+  body.home .home-cat{width:82vw!important;max-height:46svh!important}
+  body.home .home-nav a{font-size:7px!important;letter-spacing:.02em!important}
+}
