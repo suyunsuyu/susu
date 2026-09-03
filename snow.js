@@ -3,6 +3,7 @@
 
   const storageKey = 'suyoon-weather-v2';
   const modes = new Set(['rain', 'snow', 'clear']);
+  const modeOrder = ['snow', 'rain', 'clear'];
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let stored = {};
   try { stored = JSON.parse(localStorage.getItem(storageKey) || '{}') || {}; } catch {}
@@ -204,14 +205,16 @@
       button.setAttribute('aria-pressed', String(active));
     });
   };
-  document.querySelectorAll('[data-weather-mode]').forEach(button => {
-    button.addEventListener('click', () => {
-      mode = modes.has(button.dataset.weatherMode) ? button.dataset.weatherMode : 'clear';
-      seedParticles();
-      renderControls();
-      save();
-    });
-  });
+  // Keep the homepage visually quiet: double-click empty space to cycle
+  // through snow → rain → clear. Interactive elements keep their normal use.
+  document.addEventListener('dblclick', event => {
+    if (event.target.closest('a,button,input,textarea,select,dialog,[contenteditable="true"]')) return;
+    const index = modeOrder.indexOf(mode);
+    mode = modeOrder[(index + 1) % modeOrder.length];
+    seedParticles();
+    renderControls();
+    save();
+  }, { passive:true });
   addEventListener('resize', () => {
     resize();
     seedParticles();
