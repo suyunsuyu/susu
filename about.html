@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -8,55 +8,66 @@
   <meta http-equiv="Expires" content="0">
   <script>document.documentElement.classList.add("site-booting");setTimeout(()=>document.documentElement.classList.remove("site-booting"),3500)</script>
   <title>About — Lee Su-yoon</title>
-  <link rel="stylesheet" href="style.css?v=20260903-static1">
+  <link rel="stylesheet" href="style.css?v=20260903-about-interactive1">
   <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
 </head>
-<body>
-  <header><a href="index.html" class="brand">LEE SU-YOON</a><a href="index.html">← HOME</a></header>
-  <main class="page">
-    <p class="kicker">ABOUT ME</p>
-    <div class="about-layout">
-      <div class="profile-photo-slot">
-        <img id="profile-image" class="profile-image" src="" alt="profile" hidden>
-        <div id="profile-photo-empty" class="profile-photo-empty">NO PROFILE PHOTO</div>
-        <button id="edit-button" class="edit" data-admin-only hidden>EDIT PROFILE ↗</button>
-      </div>
-      <article id="profile-content">
-        <h1 id="profile-name">이수윤</h1>
-        <div id="profile-info" class="info"></div>
-        <section><div id="profile-statement" class="statement"></div></section>
-      </article>
+<body class="about-interactive-page">
+  <header>
+    <a href="index.html" class="brand">LEE SU-YOON</a>
+    <div class="about-header-actions">
+      <button id="about-edit" class="about-edit-button" type="button" data-admin-only hidden>EDIT ABOUT ↗</button>
+      <a href="index.html">← HOME</a>
     </div>
+  </header>
+
+  <main class="about-page" aria-label="About Lee Su-yoon">
+    <div class="about-page-head">
+      <p class="kicker">ABOUT ME</p>
+      <p class="about-page-hint">CLICK A DRAWING</p>
+    </div>
+    <section id="about-art" class="about-art" aria-label="Interactive about illustration">
+      <img id="about-main-image" src="assets/about-main.png?v=20260903-about1" alt="A hand-drawn collection of things I love">
+      <div id="about-light-glow" class="about-light-glow" aria-hidden="true"></div>
+      <div class="about-hotspots" aria-label="About sections">
+        <button type="button" class="about-hotspot" data-about-hotspot="calendar" aria-label="Calendar and important dates"></button>
+        <button type="button" class="about-hotspot" data-about-hotspot="flowers" aria-label="Flowers"></button>
+        <button type="button" class="about-hotspot" data-about-hotspot="music" aria-label="Music playlist"></button>
+        <button type="button" class="about-hotspot" data-about-hotspot="lamp" aria-label="Lamp and lighting"></button>
+        <button type="button" class="about-hotspot" data-about-hotspot="camera" aria-label="Photo albums"></button>
+        <button type="button" class="about-hotspot" data-about-hotspot="cat" aria-label="My cat"></button>
+        <button type="button" class="about-hotspot" data-about-hotspot="personal" aria-label="Personal introduction"></button>
+        <button type="button" class="about-hotspot" data-about-hotspot="favorites" aria-label="Favorite films and television"></button>
+      </div>
+    </section>
   </main>
-  <dialog id="editor">
-    <form id="profile-form">
-      <button type="button" id="close-editor" class="close">×</button>
-      <p class="kicker">PROFILE SETTINGS</p>
-      <label>NAME<input id="edit-name"></label>
-      <div class="unit-controls" data-unit="name"></div>
-      <label class="profile-color-setting">NAME COLOR<span><input id="name-color" type="color" value="#161616"><input id="name-color-hex" type="text" value="#161616" maxlength="7"></span></label>
-      <label>INFO <small>(one line each)</small><textarea id="edit-info" rows="7"></textarea></label>
-      <div class="unit-controls" data-unit="info"></div>
-      <label class="profile-color-setting">INFO COLOR<span><input id="info-color" type="color" value="#161616"><input id="info-color-hex" type="text" value="#161616" maxlength="7"></span></label>
-      <label>TEXT<textarea id="edit-statement" rows="12"></textarea></label>
-      <div class="unit-controls" data-unit="statement"></div>
-      <label class="profile-color-setting">TEXT COLOR<span><input id="statement-color" type="color" value="#161616"><input id="statement-color-hex" type="text" value="#161616" maxlength="7"></span></label>
-      <label>PROFILE PHOTO SIZE
-        <div class="profile-size-control">
-          <input id="edit-photo-scale" type="range" min="10" max="160" step="1" value="100">
-          <input id="edit-photo-scale-number" type="number" min="10" max="160" step="1" value="100"><span>%</span>
-        </div>
-        <small>10% — 160%</small>
-      </label>
-      <label>NEW PROFILE PHOTO<input id="edit-image" type="file" accept="image/*"></label>
-      <button class="black" type="button" id="save-profile">SAVE</button>
+
+  <dialog id="about-item-dialog" class="about-item-dialog" aria-label="About detail">
+    <div class="about-dialog-head">
+      <button id="about-dialog-back" type="button" class="about-dialog-back" hidden>← BACK</button>
+      <small id="about-dialog-kicker">ABOUT</small>
+      <button id="about-dialog-close" type="button" class="about-dialog-close" aria-label="Close">×</button>
+    </div>
+    <h2 id="about-dialog-title"></h2>
+    <div id="about-dialog-body" class="about-dialog-body"></div>
+  </dialog>
+
+  <dialog id="about-editor-dialog" class="about-editor-dialog" aria-label="Edit About content">
+    <form id="about-editor-form" class="about-editor-form">
+      <div class="about-editor-head">
+        <strong>EDIT ABOUT</strong>
+        <button id="about-editor-close" type="button" aria-label="Close">×</button>
+      </div>
+      <p class="about-editor-note">只有管理员可以保存。游客只能查看弹窗内容。</p>
+      <div id="about-editor-body"></div>
+      <p id="about-editor-status" class="about-editor-status" role="status"></p>
+      <button id="about-editor-save" class="black" type="button">SAVE ABOUT</button>
     </form>
   </dialog>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js?v=20260818-imgfix2"></script>
   <script src="supabase-site.js?v=20260902-auth4"></script>
-  <script src="saved-layouts.js?v=20260818-imgfix2"></script>
-  <script src="page-editor.js?v=20260902-homeedit4"></script>
+  <script src="about-interactive.js?v=20260903-about-interactive1"></script>
   <script src="boot-ready.js?v=20260818-imgfix2"></script>
 </body>
 </html>
