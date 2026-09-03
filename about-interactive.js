@@ -64,6 +64,7 @@
 
   let data = makeDefaultData();
   let dialogItem = '';
+  let dialogEditing = false;
   let lampOn = false;
   try { lampOn = localStorage.getItem(lampStorageKey) === 'on'; } catch {}
 
@@ -80,6 +81,8 @@
     const section = editorSectionFor(dialogItem);
     dialogEdit.dataset.editorSection = section;
     dialogEdit.hidden = !(admin && section);
+    dialogEdit.textContent = dialogEditing ? 'CANCEL' : 'EDIT THIS ↗';
+    dialogEdit.setAttribute('aria-pressed', String(dialogEditing));
   };
   const setLampState = next => {
     lampOn = !!next;
@@ -159,19 +162,31 @@
     const dialog = $('#about-item-dialog');
     if (!dialog || !dialogItem) return;
     const isAlbum = dialogItem.startsWith('album:');
-    $('#about-dialog-kicker').textContent = isAlbum ? 'CAMERA · ALBUM' : 'ABOUT';
+    const editing = dialogEditing && !!window.SUY_IS_ADMIN && !!editorSectionFor(dialogItem);
+    if (dialogEditing && !editing) dialogEditing = false;
+    $('#about-dialog-kicker').textContent = editing ? 'EDIT MODE' : (isAlbum ? 'CAMERA · ALBUM' : 'ABOUT');
     $('#about-dialog-title').textContent = isAlbum ? (data.albums[Number(dialogItem.slice(6))]?.title || 'ALBUM') : itemTitle(dialogItem);
-    $('#about-dialog-body').innerHTML = publicMarkup(dialogItem);
+    $('#about-dialog-body').innerHTML = editing ? popupEditorMarkup(dialogItem) : publicMarkup(dialogItem);
     const back = $('#about-dialog-back');
-    if (back) back.hidden = !isAlbum;
+    if (back) back.hidden = editing || !isAlbum;
     syncAdminControls();
-    dialog.querySelectorAll('[data-about-toggle-lamp]').forEach(button => button.addEventListener('click', () => { setLampState(!lampOn); renderDialog(); }));
-    dialog.querySelectorAll('[data-about-album]').forEach(button => button.addEventListener('click', () => { dialogItem = `album:${button.dataset.aboutAlbum}`; renderDialog(); }));
+    if (editing) {
+      $('#about-inline-editor-form')?.addEventListener('submit', event => event.preventDefault());
+      $('#about-inline-save')?.addEventListener('click', saveInlineEditor);
+      $('#about-inline-cancel')?.addEventListener('click', () => { dialogEditing = false; renderDialog(); });
+    } else {
+      dialog.querySelectorAll('[data-about-album]').forEach(button => button.addEventListener('click', () => {
+        dialogEditing = false;
+        dialogItem = `album:${button.dataset.aboutAlbum}`;
+        renderDialog();
+      }));
+    }
   }
 
   function openItem(key) {
     if (key === 'cat') { location.href = 'tools.html'; return; }
-    if (key === 'lamp') setLampState(!lampOn);
+    if (key === 'lamp') { setLampState(!lampOn); return; }
+    dialogEditing = false;
     dialogItem = key;
     renderDialog();
     const dialog = $('#about-item-dialog');
@@ -181,15 +196,18 @@
   $$('[data-about-hotspot]').forEach(button => {
     button.addEventListener('click', () => openItem(button.dataset.aboutHotspot));
   });
-  $('#about-dialog-close')?.addEventListener('click', () => $('#about-item-dialog')?.close());
-  $('#about-dialog-back')?.addEventListener('click', () => { dialogItem = 'camera'; renderDialog(); });
+  $('#about-dialog-close')?.addEventListener('click', () => { dialogEditing = false; $('#about-item-dialog')?.close(); });
+  $('#about-dialog-back')?.addEventListener('click', () => { dialogEditing = false; dialogItem = 'camera'; renderDialog(); });
   $('#about-dialog-edit')?.addEventListener('click', event => {
-    const section = event.currentTarget.dataset.editorSection;
-    if (!section || !window.SUY_IS_ADMIN) return;
-    $('#about-item-dialog')?.close();
-    openEditor(section);
+    if (!event.currentTarget.dataset.editorSection || !window.SUY_IS_ADMIN) return;
+    dialogEditing = !dialogEditing;
+    renderDialog();
   });
-  $('#about-item-dialog')?.addEventListener('click', event => { if (event.target === event.currentTarget) event.currentTarget.close(); });
+  $('#about-item-dialog')?.addEventListener('click', event => {
+    if (event.target !== event.currentTarget) return;
+    dialogEditing = false;
+    event.currentTarget.close();
+  });
 
   function editorRow(type, item = {}) {
     if (type === 'date') return `<div class="about-editor-row" data-editor-row="date"><label>DATE<input data-field="date" type="text" value="${esc(item.date)}" placeholder="2026-09-03"></label><label>TITLE<input data-field="title" type="text" value="${esc(item.title)}" placeholder="Birthday"></label><label>NOTE<input data-field="note" type="text" value="${esc(item.note)}" placeholder="A short note"></label><button type="button" class="about-row-remove" data-remove-row>×</button></div>`;
@@ -201,6 +219,22 @@
   }
 
   const sectionMarkup = (type, title, rows) => `<section class="about-editor-section" data-about-editor-section="${type}"><div class="about-editor-section-head"><h3>${title}</h3><button type="button" data-add-row="${type}">+ ADD</button></div><div class="about-editor-rows" data-editor-rows="${type}">${rows.length ? rows.map(item => editorRow(type, item)).join('') : `<p class="about-editor-empty">暂无内容</p>`}</div></section>`;
+
+  function popupEditorMarkup(key) {
+    const section = editorSectionFor(key);
+    let content = '';
+    if (section === 'date') content = sectionMarkup('date', '1 · IMPORTANT DATES', data.calendar.importantDates);
+    if (section === 'flower') content = sectionMarkup('flower', '2 · FLOWERS', data.flowers);
+    if (section === 'music') content = sectionMarkup('music', '3 · MUSIC', data.music);
+    if (section === 'album' && key === 'camera') content = sectionMarkup('album', '5 · PHOTO ALBUMS', data.albums);
+    if (section === 'album' && key.startsWith('album:')) {
+      const album = data.albums[Number(key.slice(6))];
+      content = `<section class="about-editor-section" data-about-editor-section="album"><div class="about-editor-section-head"><h3>5 · EDIT THIS ALBUM</h3></div><div class="about-editor-rows" data-editor-rows="album">${album ? editorRow('album', album) : '<p class="about-editor-empty">暂无内容</p>'}</div></section>`;
+    }
+    if (section === 'personal') content = `<section class="about-editor-section" data-about-editor-section="personal"><div class="about-editor-section-head"><h3>7 · PERSONAL INTRODUCTION</h3></div><label>TITLE<input id="about-inline-personal-title" type="text" value="${esc(data.personal.title)}" placeholder="About me"></label><label>TEXT<textarea id="about-inline-personal-text" rows="5" placeholder="Write a short introduction">${esc(data.personal.text)}</textarea></label></section>`;
+    if (section === 'favorite') content = sectionMarkup('favorite', '8 · FILM & TV FAVORITES', data.favorites);
+    return `<form id="about-inline-editor-form" class="about-inline-editor">${content}<div class="about-inline-actions"><p id="about-inline-status" class="about-inline-status" role="status"></p><button id="about-inline-cancel" class="about-inline-cancel" type="button">CANCEL</button><button id="about-inline-save" class="about-inline-save" type="button">SAVE THIS</button></div></form>`;
+  }
 
   function renderEditor() {
     const root = $('#about-editor-body');
@@ -232,17 +266,21 @@
     });
   }
 
-  $('#about-editor-body')?.addEventListener('click', event => {
+  function handleEditorRowsClick(event, root) {
+    if (!(event.target instanceof Element)) return;
     const remove = event.target.closest('[data-remove-row]');
     if (remove) { remove.closest('[data-editor-row]')?.remove(); return; }
     const add = event.target.closest('[data-add-row]');
     if (!add) return;
     const type = add.dataset.addRow;
-    const rows = $(`[data-editor-rows="${type}"]`);
+    const rows = $(`[data-editor-rows="${type}"]`, root);
     if (!rows) return;
     rows.querySelector('.about-editor-empty')?.remove();
     rows.insertAdjacentHTML('beforeend', editorRow(type));
-  });
+  }
+
+  $('#about-editor-body')?.addEventListener('click', event => handleEditorRowsClick(event, event.currentTarget));
+  $('#about-dialog-body')?.addEventListener('click', event => { if (dialogEditing) handleEditorRowsClick(event, event.currentTarget); });
 
   async function uploadFile(file, folder) {
     if (!file) return '';
@@ -250,6 +288,78 @@
     return window.SUY_ADMIN.uploadPublic(file, folder);
   }
   const rowValue = (row, field) => asText($(`[data-field="${field}"]`, row)?.value);
+
+  async function collectFlowerRows(root, status) {
+    const items = [];
+    const rows = $$('[data-editor-row="flower"]', root);
+    for (let index = 0; index < rows.length; index += 1) {
+      const row = rows[index];
+      if (status) status.textContent = `上传花朵图片 ${index + 1}/${rows.length}…`;
+      const file = $('[data-field="image"]', row)?.files?.[0];
+      const image = file ? await uploadFile(file, 'about-flowers') : asText(row.dataset.currentImage);
+      const item = { name:rowValue(row,'name'), description:rowValue(row,'description'), image };
+      if (item.name || item.description || item.image) items.push(item);
+    }
+    return items;
+  }
+
+  async function collectAlbumRows(root, status) {
+    const items = [];
+    const rows = $$('[data-editor-row="album"]', root);
+    for (let index = 0; index < rows.length; index += 1) {
+      const row = rows[index];
+      let photos = [];
+      try { photos = JSON.parse(row.dataset.currentPhotos || '[]').filter(Boolean); } catch {}
+      const files = [...($('[data-field="photos"]', row)?.files || [])];
+      for (const [fileIndex, file] of files.entries()) {
+        if (status) status.textContent = `上传相册图片 ${index + 1}/${rows.length} · ${fileIndex + 1}/${files.length}…`;
+        const url = await uploadFile(file, 'about-albums');
+        if (url) photos.push(url);
+      }
+      const item = { title:rowValue(row,'title'), description:rowValue(row,'description'), photos };
+      if (item.title || item.description || item.photos.length) items.push(item);
+    }
+    return items;
+  }
+
+  async function saveInlineEditor() {
+    const root = $('#about-dialog-body');
+    const status = $('#about-inline-status');
+    const saveButton = $('#about-inline-save');
+    const itemKey = dialogItem;
+    const section = editorSectionFor(itemKey);
+    if (!root || !section) return;
+    if (!window.SUY_ADMIN || !await window.SUY_ADMIN.ensureAdminSession()) { if (status) status.textContent = '只有管理员可以保存。'; return; }
+    if (saveButton) saveButton.disabled = true;
+    if (status) status.textContent = 'SAVING…';
+    try {
+      const next = normalize(data);
+      if (section === 'date') next.calendar.importantDates = $$('[data-editor-row="date"]', root).map(row => ({ date:rowValue(row,'date'), title:rowValue(row,'title'), note:rowValue(row,'note') })).filter(item => item.date || item.title || item.note);
+      if (section === 'flower') next.flowers = await collectFlowerRows(root, status);
+      if (section === 'music') next.music = $$('[data-editor-row="music"]', root).map(row => ({ title:rowValue(row,'title'), artist:rowValue(row,'artist'), url:rowValue(row,'url') })).filter(item => item.title || item.artist || item.url);
+      if (section === 'personal') next.personal = { title:asText($('#about-inline-personal-title')?.value) || 'ABOUT ME', text:asText($('#about-inline-personal-text')?.value) };
+      if (section === 'favorite') next.favorites = $$('[data-editor-row="favorite"]', root).map(row => ({ title:rowValue(row,'title'), type:rowValue(row,'type'), note:rowValue(row,'note'), url:rowValue(row,'url') })).filter(item => item.title || item.type || item.note || item.url);
+      if (section === 'album') {
+        const albums = await collectAlbumRows(root, status);
+        if (itemKey.startsWith('album:')) {
+          const index = Number(itemKey.slice(6));
+          if (!Number.isInteger(index) || index < 0 || index >= next.albums.length) throw new Error('找不到这个相册。');
+          if (albums[0]) next.albums[index] = albums[0];
+          else { next.albums.splice(index, 1); dialogItem = 'camera'; }
+        } else next.albums = albums;
+      }
+      if (status) status.textContent = 'SAVING TO SUPABASE…';
+      await window.SUY_ADMIN.saveContent(aboutKey, next);
+      data = normalize(next);
+      dialogEditing = false;
+      renderDialog();
+    } catch (error) {
+      console.error(error);
+      if (status) status.textContent = `SAVE FAILED: ${error?.message || error}`;
+    } finally {
+      if (saveButton) saveButton.disabled = false;
+    }
+  }
 
   async function saveEditor() {
     const status = $('#about-editor-status');
@@ -318,7 +428,14 @@
     }
     setLampState(lampOn);
     syncAdminControls();
-    document.addEventListener('suyoon-admin-state', event => syncAdminControls(!!event.detail?.admin));
+    document.addEventListener('suyoon-admin-state', event => {
+      const admin = !!event.detail?.admin;
+      if (!admin && dialogEditing) {
+        dialogEditing = false;
+        if ($('#about-item-dialog')?.open) renderDialog();
+      }
+      syncAdminControls(admin);
+    });
   }
   load();
 })();
