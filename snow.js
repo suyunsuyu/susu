@@ -197,14 +197,7 @@
   const save = () => {
     try { localStorage.setItem(storageKey, JSON.stringify({ mode })); } catch {}
   };
-  const renderControls = () => {
-    document.body.dataset.weather = mode;
-    document.querySelectorAll('[data-weather-mode]').forEach(button => {
-      const active = button.dataset.weatherMode === mode;
-      button.classList.toggle('active', active);
-      button.setAttribute('aria-pressed', String(active));
-    });
-  };
+  const renderControls = () => { document.body.dataset.weather = mode; };
   // Keep the homepage visually quiet: double-click empty space to cycle
   // through snow → rain → clear. Interactive elements keep their normal use.
   document.addEventListener('dblclick', event => {
