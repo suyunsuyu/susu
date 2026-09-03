@@ -80,12 +80,37 @@
     ? `<img class="${className}" src="${esc(src)}" alt="${esc(alt)}" loading="lazy">`
     : '<div class="about-image-empty">NO IMAGE</div>';
   const emptyMarkup = () => `<p class="about-empty">${emptyText}</p>`;
+  const dateParts = value => {
+    const match = /^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})$/.exec(asText(value));
+    return match ? { year:Number(match[1]), month:Number(match[2]), day:Number(match[3]) } : null;
+  };
+  const calendarCardMarkup = dates => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const totalDays = new Date(year, month + 1, 0).getDate();
+    const marked = new Map();
+    dates.forEach(item => {
+      const parts = dateParts(item.date);
+      if (parts && parts.year === year && parts.month === month + 1) marked.set(parts.day, item.title || '重要日子');
+    });
+    const cells = [];
+    for (let index = 0; index < firstDay; index += 1) cells.push('<span class="about-calendar-day is-empty"></span>');
+    for (let day = 1; day <= totalDays; day += 1) {
+      const title = marked.get(day);
+      const today = day === now.getDate();
+      cells.push(`<span class="about-calendar-day${title ? ' is-marked' : ''}${today ? ' is-today' : ''}"${title ? ` title="${esc(title)}"` : ''}>${day}${title ? '<i></i>' : ''}</span>`);
+    }
+    const monthLabel = new Intl.DateTimeFormat('zh-CN', { year:'numeric', month:'long' }).format(now);
+    return `<div class="about-calendar-card"><div class="about-calendar-month"><strong>${esc(monthLabel)}</strong><span>${year}</span></div><div class="about-calendar-weekdays"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div><div class="about-calendar-grid">${cells.join('')}</div><p class="about-calendar-caption">MARKED DAYS · 重要日子</p></div>`;
+  };
 
   function publicMarkup(key) {
     if (key === 'calendar') {
       const dates = data.calendar.importantDates;
       return `<div class="about-dialog-columns about-calendar-columns">
-        <div class="about-calendar-card"><span class="about-card-number">01</span><p>日历记录着值得记住的日子。</p><p class="about-calendar-caption">IMPORTANT DAYS</p></div>
+        ${calendarCardMarkup(dates)}
         <aside class="about-important-list"><div class="about-list-head"><strong>IMPORTANT DATES</strong><span>↗</span></div>${dates.length ? dates.map(item => `<article><time>${esc(item.date || '—')}</time><h3>${esc(item.title || '重要日子')}</h3>${item.note ? `<p>${esc(item.note)}</p>` : ''}</article>`).join('') : emptyMarkup()}</aside>
       </div>`;
     }
