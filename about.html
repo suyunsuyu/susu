@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0">
   <script>document.documentElement.classList.add("site-booting");setTimeout(()=>document.documentElement.classList.remove("site-booting"),3500)</script>
   <title>About — Lee Su-yoon</title>
-  <link rel="stylesheet" href="style.css?v=20260903-about-interactive2">
+  <link rel="stylesheet" href="style.css?v=20260903-about-interactive3">
   <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
 </head>
 <body class="about-interactive-page">
@@ -45,7 +45,10 @@
     <div class="about-dialog-head">
       <button id="about-dialog-back" type="button" class="about-dialog-back" hidden>← BACK</button>
       <small id="about-dialog-kicker">ABOUT</small>
-      <button id="about-dialog-close" type="button" class="about-dialog-close" aria-label="Close">×</button>
+      <div class="about-dialog-actions">
+        <button id="about-dialog-edit" class="about-dialog-edit" type="button" data-admin-only hidden>EDIT THIS ↗</button>
+        <button id="about-dialog-close" type="button" class="about-dialog-close" aria-label="Close">×</button>
+      </div>
     </div>
     <h2 id="about-dialog-title"></h2>
     <div id="about-dialog-body" class="about-dialog-body"></div>
@@ -67,7 +70,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js?v=20260818-imgfix2"></script>
   <script src="supabase-site.js?v=20260903-auth5"></script>
-  <script src="about-interactive.js?v=20260903-about-interactive3"></script>
+  <script src="about-interactive.js?v=20260903-about-interactive4"></script>
   <script src="boot-ready.js?v=20260818-imgfix2"></script>
 </body>
 </html>
