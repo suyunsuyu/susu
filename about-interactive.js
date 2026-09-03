@@ -19,6 +19,8 @@
   };
 
   const validColor = value => /^#[0-9a-f]{6}$/i.test(text(value)) ? text(value) : '#e35f86';
+  const validNoteFont = value => ['mono', 'serif', 'hand'].includes(text(value)) ? text(value) : 'mono';
+  const noteFontClass = value => `about-note-font-${validNoteFont(value)}`;
   const marker = value => Array.from(text(value)).slice(0, 3).join('') || '●';
   const safeLink = value => {
     const raw = text(value);
@@ -27,6 +29,36 @@
       const url = new URL(raw);
       return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
     } catch { return ''; }
+  };
+  const sourceName = value => {
+    const url = safeLink(value);
+    if (!url) return '';
+    try {
+      const host = new URL(url).hostname.replace(/^www\./, '');
+      if (host === 'open.spotify.com') return 'SPOTIFY';
+      if (host === 'youtu.be' || host.endsWith('youtube.com')) return 'YOUTUBE';
+      if (host.endsWith('music.apple.com')) return 'APPLE MUSIC';
+      return host.toUpperCase();
+    } catch { return 'SOURCE'; }
+  };
+  const playerSpec = value => {
+    const url = safeLink(value);
+    if (!url) return null;
+    try {
+      const parsed = new URL(url);
+      const host = parsed.hostname.replace(/^www\./, '');
+      if (host === 'open.spotify.com') {
+        const match = /^\/(track|album|playlist|episode|show|artist)\/([A-Za-z0-9]+)(?:\/|$)/.exec(parsed.pathname);
+        if (match) return { kind:'spotify', provider:'SPOTIFY', src:`https://open.spotify.com/embed/${match[1]}/${match[2]}?utm_source=generator` };
+      }
+      if (host === 'youtu.be' || host.endsWith('youtube.com')) {
+        const id = host === 'youtu.be' ? parsed.pathname.split('/').filter(Boolean)[0] : parsed.searchParams.get('v') || (/^\/shorts\/([^/]+)/.exec(parsed.pathname)?.[1] ?? '') || (/^\/embed\/([^/]+)/.exec(parsed.pathname)?.[1] ?? '');
+        if (/^[A-Za-z0-9_-]{6,15}$/.test(id || '')) return { kind:'youtube', provider:'YOUTUBE', src:`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0` };
+      }
+      if (host.endsWith('music.apple.com')) return { kind:'apple', provider:'APPLE MUSIC', src:`https://embed.music.apple.com${parsed.pathname}${parsed.search}` };
+      if (/\.(mp3|m4a|aac|ogg|wav)(?:$|\?)/i.test(url)) return { kind:'audio', provider:'AUDIO SOURCE', src:url };
+    } catch {}
+    return null;
   };
   const normalizeDate = value => {
     const match = /^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})$/.exec(text(value));
@@ -61,7 +93,8 @@
         title:text(item?.title),
         note:text(item?.note),
         symbol:marker(item?.symbol),
-        color:validColor(item?.color)
+        color:validColor(item?.color),
+        font:validNoteFont(item?.font)
       })).filter(item => /^\d{4}-\d{2}-\d{2}$/.test(item.date))
     };
     base.flowers = list(source.flowers).map(item => ({
@@ -285,7 +318,7 @@
       </section>
       <aside class="about-date-index">
         <div class="about-list-head"><strong${inlineAttrs('calendar', 'listTitle')}>${esc(data.calendar.listTitle || 'INDEX')}</strong><span>↗</span></div>
-        <div class="about-date-index-list">${entries.map(item => `<button type="button" data-calendar-index="${esc(item.date)}" style="--event-color:${item.color}"><span class="about-date-index-marker">${esc(item.symbol)}</span><time>${esc(item.date)}</time><strong>${esc(item.title)}</strong></button>`).join('')}</div>
+        <div class="about-date-index-list">${entries.map(item => `<button type="button" data-calendar-index="${esc(item.date)}" style="--event-color:${item.color}"><span class="about-date-index-marker">${esc(item.symbol)}</span><time>${esc(item.date)}</time><strong class="${noteFontClass(item.font)}">${esc(item.title)}</strong></button>`).join('')}</div>
       </aside>
     </div>`;
   }
@@ -296,6 +329,8 @@
     const fallback = esc(Array.from(title || '·')[0] || '·');
     const art = src ? `<img src="${esc(src)}" alt="${esc(title)}" loading="lazy">` : `<span class="about-archive-letter" aria-hidden="true">${fallback}</span>`;
     if (kind === 'camera') return `<button type="button" class="about-archive-cover" data-open-album="${index}" aria-label="Open ${esc(title || 'album')}">${art}</button>`;
+    if (kind === 'music' && playerSpec(item.url)) return `<button type="button" class="about-archive-cover" data-play-music="${index}" aria-label="Play ${esc(title || 'music')}">${art}</button>`;
+    if (kind === 'music') return `<div class="about-archive-cover">${art}</div>`;
     const url = safeLink(item.url);
     if (url) return `<a class="about-archive-cover" href="${esc(url)}" target="_blank" rel="noreferrer" aria-label="Open ${esc(title || 'link')}">${art}</a>`;
     return `<div class="about-archive-cover">${art}</div>`;
@@ -308,11 +343,17 @@
       const title = kind === 'flowers' ? item.name : item.title;
       const inlineKind = kind === 'favorites' ? 'favorite' : kind === 'camera' ? 'album' : kind === 'flowers' ? 'flower' : 'music';
       const extra = kind === 'flowers' && item.description ? `<p${inlineAttrs('flower', 'description', { index, multiline:true })}>${esc(item.description)}</p>` : '';
+      const url = safeLink(item.url);
+      const spec = kind === 'music' ? playerSpec(url) : null;
+      const credit = kind === 'music' ? text(item.artist) || sourceName(url) : '';
+      const source = url ? `<a class="about-archive-open" href="${esc(url)}" target="_blank" rel="noreferrer">SOURCE · ${esc(sourceName(url) || 'LINK')} ↗</a>` : '';
       const open = kind === 'camera'
         ? `<button type="button" class="about-archive-open" data-open-album="${index}">OPEN ↗</button>`
-        : safeLink(item.url) ? `<a class="about-archive-open" href="${esc(safeLink(item.url))}" target="_blank" rel="noreferrer">OPEN ↗</a>` : '';
+        : kind === 'music'
+          ? `${spec ? `<button type="button" class="about-archive-open" data-play-music="${index}" aria-expanded="false">PLAY</button>` : ''}${source}`
+          : source;
       const admin = window.SUY_IS_ADMIN ? `<div class="about-archive-admin"><button type="button" data-edit-card="${kind}" data-card-index="${index}">EDIT</button><button type="button" data-delete-card="${kind}" data-card-index="${index}">DELETE</button></div>` : '';
-      return `<article class="about-archive-card">${coverMarkup(kind, item, index)}<div class="about-archive-meta"><small>${String(index + 1).padStart(2, '0')}</small><h3${inlineAttrs(inlineKind, kind === 'flowers' ? 'name' : 'title', { index })}>${esc(title || 'UNTITLED')}</h3>${extra}${open}${admin}</div></article>`;
+      return `<article class="about-archive-card">${coverMarkup(kind, item, index)}<div class="about-archive-meta"><small>${String(index + 1).padStart(2, '0')}</small><h3${inlineAttrs(inlineKind, kind === 'flowers' ? 'name' : 'title', { index })}>${esc(title || 'UNTITLED')}</h3>${credit ? `<small class="about-archive-credit">CREDIT · ${esc(credit)}</small>` : ''}${extra}<div class="about-archive-links">${open}</div>${admin}</div></article>`;
     }).join('')}</div>`;
   }
 
@@ -357,6 +398,8 @@
     const dialog = $('#about-item-dialog');
     if (!dialog || !dialogItem) return;
     const isAlbum = dialogItem.startsWith('album:');
+    dialog.classList.toggle('is-compact-archive', ['camera', 'music', 'favorites'].includes(dialogItem));
+    dialog.dataset.aboutSection = presentationKey(dialogItem);
     const index = isAlbum ? Number(dialogItem.slice(6)) : -1;
     const meta = presentation(dialogItem);
     const kicker = $('#about-dialog-kicker');
@@ -392,11 +435,12 @@
     const item = data.calendar.importantDates.find(entry => entry.date === date);
     if (!root) return;
     if (!window.SUY_IS_ADMIN) {
-      root.innerHTML = `<article class="about-note-view" style="--event-color:${item.color}"><button type="button" data-note-close aria-label="Close">×</button><time>${esc(date)}</time><span class="about-note-view-symbol">${esc(item.symbol)}</span><h3>${esc(item.title)}</h3>${item.note ? `<p>${esc(item.note)}</p>` : ''}</article>`;
+      root.innerHTML = `<article class="about-note-view ${noteFontClass(item.font)}" style="--event-color:${item.color}"><button type="button" data-note-close aria-label="Close">×</button><time>${esc(date)}</time><span class="about-note-view-symbol">${esc(item.symbol)}</span><h3>${esc(item.title)}</h3>${item.note ? `<p>${esc(item.note)}</p>` : ''}</article>`;
       $('[data-note-close]', root).addEventListener('click', () => $('#about-calendar-note').close());
       return;
     }
     const symbol = marker(item?.symbol);
+    const noteFont = validNoteFont(item?.font);
     const presets = ['●', '★', '♥', '✦', '✓', '○'];
     const custom = !presets.includes(symbol);
     root.innerHTML = `<form id="about-note-form" class="about-note-form">
@@ -406,6 +450,7 @@
         <label id="about-note-custom-wrap"${custom ? '' : ' hidden'}>CUSTOM<input id="about-note-custom" maxlength="6" value="${custom ? esc(symbol) : ''}"></label>
         <label>COLOR<input id="about-note-color" type="color" value="${validColor(item?.color)}"></label>
       </div>
+      <label>TYPEFACE<select id="about-note-font"><option value="mono"${noteFont === 'mono' ? ' selected' : ''}>MONO</option><option value="serif"${noteFont === 'serif' ? ' selected' : ''}>SERIF</option><option value="hand"${noteFont === 'hand' ? ' selected' : ''}>HAND</option></select></label>
       <label>TITLE<input id="about-note-title" value="${esc(item?.title || '')}" maxlength="80"></label>
       <label>NOTE<textarea id="about-note-text" rows="5">${esc(item?.note || '')}</textarea></label>
       <p id="about-note-status" role="status"></p>
@@ -447,6 +492,7 @@
         date,
         symbol:marker(choice === 'custom' ? custom : choice),
         color:validColor($('#about-note-color', form).value),
+        font:validNoteFont($('#about-note-font', form).value),
         title:text($('#about-note-title', form).value),
         note:text($('#about-note-text', form).value)
       };
@@ -527,11 +573,13 @@
       flowers:['FLOWER', 'NAME', 'PHOTO']
     }[kind];
     $('#about-editor-title').textContent = `${index >= 0 ? 'EDIT' : 'NEW'} ${labels[0]}`;
-    const linkField = ['music', 'favorites'].includes(kind) ? `<label>LINK<input id="about-card-link" type="url" value="${esc(current.url || '')}" placeholder="https://"></label>` : '';
+    const linkLabel = kind === 'music' ? 'OFFICIAL PLAYER / AUDIO LINK' : 'SOURCE LINK';
+    const linkField = ['music', 'favorites'].includes(kind) ? `<label>${linkLabel}<input id="about-card-link" type="url" value="${esc(current.url || '')}" placeholder="https://"></label>` : '';
+    const creditField = kind === 'music' ? `<label>CREDIT / SOURCE<input id="about-card-credit" value="${esc(current.artist || '')}" maxlength="100" placeholder="Artist · platform"></label>` : '';
     const descriptionField = kind === 'flowers' ? `<label>DESCRIPTION<textarea id="about-card-description" rows="3">${esc(current.description || '')}</textarea></label>` : '';
     $('#about-editor-body').innerHTML = `<section class="about-card-editor-fields">
       <label>${labels[1]}<input id="about-card-title" value="${esc(kind === 'flowers' ? current.name || '' : current.title || '')}" maxlength="80" required></label>
-      ${linkField}${descriptionField}
+      ${linkField}${creditField}${descriptionField}
       <label class="about-card-upload">${labels[2]}<input id="about-card-files" type="file" accept="image/*"${kind === 'camera' ? ' multiple' : ''}></label>
       <div id="about-editor-media-preview" class="about-editor-media-preview">${editorMediaMarkup()}</div>
     </section>`;
@@ -580,7 +628,7 @@
       const current = editorState.index >= 0 ? { ...itemsFor(editorState.kind)[editorState.index] } : {};
       let item;
       if (editorState.kind === 'camera') item = { ...current, title:titleValue, description:'', photos:[...editorState.existingMedia, ...uploaded], layout:'grid' };
-      if (editorState.kind === 'music') item = { ...current, title:titleValue, artist:'', image:uploaded[0] || editorState.existingMedia[0] || '', url:safeLink(linkValue) };
+      if (editorState.kind === 'music') item = { ...current, title:titleValue, artist:text($('#about-card-credit')?.value), image:uploaded[0] || editorState.existingMedia[0] || '', url:safeLink(linkValue) };
       if (editorState.kind === 'favorites') item = { ...current, title:titleValue, type:'', note:'', image:uploaded[0] || editorState.existingMedia[0] || '', url:safeLink(linkValue) };
       if (editorState.kind === 'flowers') item = { ...current, name:titleValue, description:text($('#about-card-description')?.value), image:uploaded[0] || editorState.existingMedia[0] || '' };
       const target = editorState.kind === 'camera' ? next.albums : editorState.kind === 'music' ? next.music : editorState.kind === 'favorites' ? next.favorites : next.flowers;
@@ -620,6 +668,42 @@
     if (dialog && !dialog.open) dialog.showModal();
   }
 
+  function toggleMusicPlayer(index, trigger) {
+    const card = trigger.closest('.about-archive-card');
+    const existing = card?.querySelector('.about-inline-player');
+    $$('.about-inline-player', $('#about-item-dialog')).forEach(player => player.remove());
+    $$('[data-play-music]', $('#about-item-dialog')).forEach(button => button.setAttribute('aria-expanded', 'false'));
+    if (!card || existing) return;
+    const item = data.music[index];
+    const spec = playerSpec(item?.url);
+    if (!spec) return;
+    const panel = document.createElement('div');
+    panel.className = `about-inline-player is-${spec.kind}`;
+    const label = document.createElement('small');
+    label.textContent = `PLAYER · ${spec.provider}`;
+    panel.appendChild(label);
+    if (spec.kind === 'audio') {
+      const audio = document.createElement('audio');
+      audio.controls = true;
+      audio.preload = 'metadata';
+      audio.src = spec.src;
+      panel.appendChild(audio);
+      audio.play().catch(() => {});
+    } else {
+      const iframe = document.createElement('iframe');
+      iframe.src = spec.src;
+      iframe.title = `${item?.title || 'Music'} · ${spec.provider}`;
+      iframe.loading = 'lazy';
+      iframe.allow = 'autoplay; encrypted-media; fullscreen; picture-in-picture';
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+      iframe.setAttribute('allowfullscreen', '');
+      panel.appendChild(iframe);
+    }
+    card.appendChild(panel);
+    $$('[data-play-music]', card).forEach(button => button.setAttribute('aria-expanded', 'true'));
+    panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
+
   $$('[data-about-hotspot]').forEach(button => button.addEventListener('click', () => openItem(button.dataset.aboutHotspot)));
   $('#about-dialog-close')?.addEventListener('click', () => $('#about-item-dialog')?.close());
   $('#about-dialog-back')?.addEventListener('click', () => { dialogItem = 'camera'; renderDialog(); });
@@ -643,6 +727,8 @@
     if (day) { openCalendarNote(day.dataset.calendarDate); return; }
     const indexLink = event.target.closest('[data-calendar-index]');
     if (indexLink) { jumpToDate(indexLink.dataset.calendarIndex); return; }
+    const musicPlayer = event.target.closest('[data-play-music]');
+    if (musicPlayer) { toggleMusicPlayer(Number(musicPlayer.dataset.playMusic), musicPlayer); return; }
     const album = event.target.closest('[data-open-album]');
     if (album) { dialogItem = `album:${album.dataset.openAlbum}`; renderDialog(); return; }
     const photo = event.target.closest('[data-open-photo]');
