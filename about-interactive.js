@@ -68,6 +68,19 @@
   try { lampOn = localStorage.getItem(lampStorageKey) === 'on'; } catch {}
 
   const itemTitle = key => labels[key] || 'ABOUT';
+  const editorSectionFor = key => {
+    const item = String(key || '').startsWith('album:') ? 'camera' : key;
+    return ({ calendar:'date', flowers:'flower', music:'music', camera:'album', personal:'personal', favorites:'favorite' })[item] || '';
+  };
+  const syncAdminControls = (admin = !!window.SUY_IS_ADMIN) => {
+    const pageEdit = $('#about-edit');
+    if (pageEdit) pageEdit.hidden = !admin;
+    const dialogEdit = $('#about-dialog-edit');
+    if (!dialogEdit) return;
+    const section = editorSectionFor(dialogItem);
+    dialogEdit.dataset.editorSection = section;
+    dialogEdit.hidden = !(admin && section);
+  };
   const setLampState = next => {
     lampOn = !!next;
     document.body.classList.toggle('about-lamp-on', lampOn);
@@ -151,6 +164,7 @@
     $('#about-dialog-body').innerHTML = publicMarkup(dialogItem);
     const back = $('#about-dialog-back');
     if (back) back.hidden = !isAlbum;
+    syncAdminControls();
     dialog.querySelectorAll('[data-about-toggle-lamp]').forEach(button => button.addEventListener('click', () => { setLampState(!lampOn); renderDialog(); }));
     dialog.querySelectorAll('[data-about-album]').forEach(button => button.addEventListener('click', () => { dialogItem = `album:${button.dataset.aboutAlbum}`; renderDialog(); }));
   }
@@ -169,6 +183,12 @@
   });
   $('#about-dialog-close')?.addEventListener('click', () => $('#about-item-dialog')?.close());
   $('#about-dialog-back')?.addEventListener('click', () => { dialogItem = 'camera'; renderDialog(); });
+  $('#about-dialog-edit')?.addEventListener('click', event => {
+    const section = event.currentTarget.dataset.editorSection;
+    if (!section || !window.SUY_IS_ADMIN) return;
+    $('#about-item-dialog')?.close();
+    openEditor(section);
+  });
   $('#about-item-dialog')?.addEventListener('click', event => { if (event.target === event.currentTarget) event.currentTarget.close(); });
 
   function editorRow(type, item = {}) {
@@ -180,7 +200,7 @@
     return '';
   }
 
-  const sectionMarkup = (type, title, rows) => `<section class="about-editor-section"><div class="about-editor-section-head"><h3>${title}</h3><button type="button" data-add-row="${type}">+ ADD</button></div><div class="about-editor-rows" data-editor-rows="${type}">${rows.length ? rows.map(item => editorRow(type, item)).join('') : `<p class="about-editor-empty">暂无内容</p>`}</div></section>`;
+  const sectionMarkup = (type, title, rows) => `<section class="about-editor-section" data-about-editor-section="${type}"><div class="about-editor-section-head"><h3>${title}</h3><button type="button" data-add-row="${type}">+ ADD</button></div><div class="about-editor-rows" data-editor-rows="${type}">${rows.length ? rows.map(item => editorRow(type, item)).join('') : `<p class="about-editor-empty">暂无内容</p>`}</div></section>`;
 
   function renderEditor() {
     const root = $('#about-editor-body');
@@ -189,8 +209,27 @@
       ${sectionMarkup('flower', '2 · FLOWERS', data.flowers)}
       ${sectionMarkup('music', '3 · MUSIC', data.music)}
       ${sectionMarkup('album', '5 · PHOTO ALBUMS', data.albums)}
-      <section class="about-editor-section"><div class="about-editor-section-head"><h3>7 · PERSONAL INTRODUCTION</h3></div><label>TITLE<input id="about-personal-title" type="text" value="${esc(data.personal.title)}" placeholder="About me"></label><label>TEXT<textarea id="about-personal-text" rows="5" placeholder="Write a short introduction">${esc(data.personal.text)}</textarea></label></section>
+      <section class="about-editor-section" data-about-editor-section="personal"><div class="about-editor-section-head"><h3>7 · PERSONAL INTRODUCTION</h3></div><label>TITLE<input id="about-personal-title" type="text" value="${esc(data.personal.title)}" placeholder="About me"></label><label>TEXT<textarea id="about-personal-text" rows="5" placeholder="Write a short introduction">${esc(data.personal.text)}</textarea></label></section>
       ${sectionMarkup('favorite', '8 · FILM & TV FAVORITES', data.favorites)}`;
+  }
+
+  function openEditor(sectionKey = '') {
+    if (!window.SUY_IS_ADMIN) return;
+    renderEditor();
+    const dialog = $('#about-editor-dialog');
+    if (!dialog) return;
+    if (!dialog.open) dialog.showModal();
+    if (!sectionKey) { dialog.scrollTop = 0; return; }
+    requestAnimationFrame(() => {
+      const section = $(`[data-about-editor-section="${sectionKey}"]`, dialog);
+      if (!section) return;
+      $$('.about-editor-section.is-targeted', dialog).forEach(item => item.classList.remove('is-targeted'));
+      section.classList.add('is-targeted');
+      dialog.scrollTo({ top:Math.max(0, section.offsetTop - 70), behavior:'smooth' });
+      const field = $('input:not([type="file"]), textarea, button', section);
+      if (field) setTimeout(() => field.focus({ preventScroll:true }), 260);
+      setTimeout(() => section.classList.remove('is-targeted'), 1400);
+    });
   }
 
   $('#about-editor-body')?.addEventListener('click', event => {
@@ -260,10 +299,7 @@
     }
   }
 
-  $('#about-edit')?.addEventListener('click', () => {
-    renderEditor();
-    $('#about-editor-dialog')?.showModal();
-  });
+  $('#about-edit')?.addEventListener('click', () => openEditor());
   $('#about-editor-close')?.addEventListener('click', () => $('#about-editor-dialog')?.close());
   $('#about-editor-save')?.addEventListener('click', saveEditor);
   $('#about-editor-form')?.addEventListener('submit', event => event.preventDefault());
@@ -281,9 +317,8 @@
       } catch {}
     }
     setLampState(lampOn);
-    const edit = $('#about-edit');
-    if (edit) edit.hidden = !window.SUY_IS_ADMIN;
-    document.addEventListener('suyoon-admin-state', event => { if (edit) edit.hidden = !event.detail?.admin; });
+    syncAdminControls();
+    document.addEventListener('suyoon-admin-state', event => syncAdminControls(!!event.detail?.admin));
   }
   load();
 })();
