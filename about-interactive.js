@@ -266,6 +266,7 @@
   });
   $('#about-editor-close')?.addEventListener('click', () => $('#about-editor-dialog')?.close());
   $('#about-editor-save')?.addEventListener('click', saveEditor);
+  $('#about-editor-form')?.addEventListener('submit', event => event.preventDefault());
   $('#about-editor-dialog')?.addEventListener('click', event => { if (event.target === event.currentTarget) event.currentTarget.close(); });
 
   async function load() {
