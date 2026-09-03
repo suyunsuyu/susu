@@ -14,7 +14,7 @@
     flowers:'FLOWERS · 花',
     music:'MUSIC',
     camera:'CAMERA',
-    personal:'ABOUT ME',
+    personal:'INSTAGRAM',
     favorites:'FILM & TV'
   };
 
@@ -60,6 +60,41 @@
     } catch {}
     return null;
   };
+  const youtubeId = value => {
+    const url = safeLink(value);
+    if (!url) return '';
+    try {
+      const parsed = new URL(url);
+      const host = parsed.hostname.replace(/^www\./, '');
+      if (host === 'youtu.be') return parsed.pathname.split('/').filter(Boolean)[0] || '';
+      if (!host.endsWith('youtube.com')) return '';
+      return parsed.searchParams.get('v') || /^\/shorts\/([^/]+)/.exec(parsed.pathname)?.[1] || /^\/embed\/([^/]+)/.exec(parsed.pathname)?.[1] || '';
+    } catch { return ''; }
+  };
+  async function linkPreview(value) {
+    const url = safeLink(value);
+    if (!url) return null;
+    const id = youtubeId(url);
+    if (/^[A-Za-z0-9_-]{6,15}$/.test(id)) {
+      const fallback = { title:'', author:'YOUTUBE', image:`https://i.ytimg.com/vi/${id}/hqdefault.jpg` };
+      try {
+        const response = await fetch(`https://www.youtube.com/oembed?format=json&url=${encodeURIComponent(url)}`);
+        if (!response.ok) return fallback;
+        const result = await response.json();
+        return { title:text(result.title), author:text(result.author_name) || 'YOUTUBE', image:safeLink(result.thumbnail_url) || fallback.image };
+      } catch { return fallback; }
+    }
+    try {
+      const parsed = new URL(url);
+      if (parsed.hostname.replace(/^www\./, '') === 'open.spotify.com') {
+        const response = await fetch(`https://open.spotify.com/oembed?url=${encodeURIComponent(url)}`);
+        if (!response.ok) return null;
+        const result = await response.json();
+        return { title:text(result.title), author:text(result.provider_name) || 'SPOTIFY', image:safeLink(result.thumbnail_url) };
+      }
+    } catch {}
+    return null;
+  }
   const normalizeDate = value => {
     const match = /^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})$/.exec(text(value));
     if (!match) return '';
@@ -76,7 +111,7 @@
     flowers:[],
     music:[],
     albums:[],
-    personal:{ title:'ABOUT ME', text:'' },
+    personal:{ title:'INSTAGRAM', handle:'', text:'', url:'', image:'' },
     favorites:[],
     presentation:Object.fromEntries(sectionKeys.map(key => [key, makePresentation(key)]))
   });
@@ -119,8 +154,11 @@
     })).filter(item => item.title || item.photos.length);
     base.personal = {
       ...(source.personal && typeof source.personal === 'object' ? source.personal : {}),
-      title:text(source.personal?.title) || 'ABOUT ME',
-      text:text(source.personal?.text)
+      title:['ABOUT ME', '个人简介'].includes(text(source.personal?.title).toUpperCase()) ? 'INSTAGRAM' : text(source.personal?.title) || 'INSTAGRAM',
+      handle:text(source.personal?.handle),
+      text:text(source.personal?.text),
+      url:safeLink(source.personal?.url),
+      image:text(source.personal?.image)
     };
     base.favorites = list(source.favorites).map(item => ({
       ...item,
@@ -132,10 +170,11 @@
     })).filter(item => item.title || item.image || item.url);
     sectionKeys.forEach(key => {
       const raw = source.presentation?.[key] && typeof source.presentation[key] === 'object' ? source.presentation[key] : {};
+      const storedTitle = text(raw.title);
       base.presentation[key] = {
         ...raw,
         kicker:text(raw.kicker) || 'ABOUT',
-        title:text(raw.title) || sectionTitles[key]
+        title:key === 'personal' && ['ABOUT ME', '个人简介'].includes(storedTitle.toUpperCase()) ? 'INSTAGRAM' : storedTitle || sectionTitles[key]
       };
     });
     return base;
@@ -234,7 +273,7 @@
     else if (kind === 'music' && next.music[index] && field === 'title') next.music[index].title = value;
     else if (kind === 'favorite' && next.favorites[index] && field === 'title') next.favorites[index].title = value;
     else if (kind === 'flower' && next.flowers[index] && ['name', 'description'].includes(field)) next.flowers[index][field] = value;
-    else if (kind === 'personal' && ['title', 'text'].includes(field)) next.personal[field] = value;
+    else if (kind === 'personal' && ['title', 'handle', 'text'].includes(field)) next.personal[field] = value;
     else throw new Error('这个位置不能直接编辑。');
   }
 
@@ -353,13 +392,22 @@
           ? `${spec ? `<button type="button" class="about-archive-open" data-play-music="${index}" aria-expanded="false">PLAY</button>` : ''}${source}`
           : source;
       const admin = window.SUY_IS_ADMIN ? `<div class="about-archive-admin"><button type="button" data-edit-card="${kind}" data-card-index="${index}">EDIT</button><button type="button" data-delete-card="${kind}" data-card-index="${index}">DELETE</button></div>` : '';
-      return `<article class="about-archive-card">${coverMarkup(kind, item, index)}<div class="about-archive-meta"><small>${String(index + 1).padStart(2, '0')}</small><h3${inlineAttrs(inlineKind, kind === 'flowers' ? 'name' : 'title', { index })}>${esc(title || 'UNTITLED')}</h3>${credit ? `<small class="about-archive-credit">CREDIT · ${esc(credit)}</small>` : ''}${extra}<div class="about-archive-links">${open}</div>${admin}</div></article>`;
+      const meta = `<div class="about-archive-meta"><h3${inlineAttrs(inlineKind, kind === 'flowers' ? 'name' : 'title', { index })}>${esc(title || 'UNTITLED')}</h3>${credit ? `<small class="about-archive-credit">CREDIT · ${esc(credit)}</small>` : ''}${extra}</div>`;
+      if (['camera', 'music', 'favorites'].includes(kind)) return `<article class="about-archive-card">${coverMarkup(kind, item, index)}${meta}<div class="about-archive-tail"><div class="about-archive-links">${open}</div>${admin}</div></article>`;
+      return `<article class="about-archive-card">${coverMarkup(kind, item, index)}<div class="about-archive-meta"><h3${inlineAttrs(inlineKind, 'name', { index })}>${esc(title || 'UNTITLED')}</h3>${extra}<div class="about-archive-links">${open}</div>${admin}</div></article>`;
     }).join('')}</div>`;
   }
 
   function personalMarkup() {
-    const value = data.personal.text;
-    return `<article class="about-personal-card"><h3${inlineAttrs('personal', 'title')}>${esc(data.personal.title)}</h3>${value || window.SUY_IS_ADMIN ? `<div class="about-personal-text${value ? '' : ' is-admin-placeholder'}"${inlineAttrs('personal', 'text', { multiline:true })}>${esc(value || '双击添加个人介绍')}</div>` : ''}</article>`;
+    const value = data.personal;
+    const destination = safeLink(value.url);
+    const art = value.image ? `<img src="${esc(value.image)}" alt="${esc(value.title)}" loading="lazy">` : '<span aria-hidden="true">◎</span>';
+    const link = destination ? `<a class="about-instagram-open" href="${esc(destination)}" target="_blank" rel="noreferrer">OPEN INSTAGRAM ↗</a>` : '';
+    return `<article class="about-instagram-card">
+      <div class="about-instagram-cover">${art}</div>
+      <div class="about-instagram-meta"><small>INSTAGRAM</small><h3${inlineAttrs('personal', 'title')}>${esc(value.title)}</h3>${value.handle || window.SUY_IS_ADMIN ? `<p class="about-instagram-handle${value.handle ? '' : ' is-admin-placeholder'}"${inlineAttrs('personal', 'handle')}>${esc(value.handle || '@username')}</p>` : ''}${value.text || window.SUY_IS_ADMIN ? `<div class="about-personal-text${value.text ? '' : ' is-admin-placeholder'}"${inlineAttrs('personal', 'text', { multiline:true })}>${esc(value.text || '双击添加简介')}</div>` : ''}</div>
+      <div class="about-instagram-tail">${link}</div>
+    </article>`;
   }
 
   function albumMarkup(index) {
@@ -389,6 +437,7 @@
     if (dialogItem === 'music') label = '+ MUSIC';
     if (dialogItem === 'camera') label = '+ ALBUM';
     if (dialogItem === 'favorites') label = '+ FILM / TV';
+    if (dialogItem === 'personal') label = 'EDIT INSTAGRAM';
     if (dialogItem.startsWith('album:')) label = 'EDIT ALBUM';
     button.hidden = !(admin && label);
     button.textContent = label;
@@ -563,23 +612,25 @@
 
   function openCardEditor(kind, index = -1) {
     if (!window.SUY_IS_ADMIN) return;
-    const current = itemsFor(kind)[index] || {};
+    const current = kind === 'personal' ? data.personal : itemsFor(kind)[index] || {};
     const existingMedia = kind === 'camera' ? [...list(current.photos)] : [text(current.image)].filter(Boolean);
     editorState = { kind, index, current:{ ...current }, existingMedia, pendingFiles:[], previewUrls:[] };
     const labels = {
       camera:['ALBUM', 'ALBUM NAME', 'PHOTOS'],
       music:['MUSIC', 'TITLE', 'COVER'],
       favorites:['FILM / TV', 'TITLE', 'COVER'],
-      flowers:['FLOWER', 'NAME', 'PHOTO']
+      flowers:['FLOWER', 'NAME', 'PHOTO'],
+      personal:['INSTAGRAM', 'DISPLAY NAME', 'PROFILE IMAGE']
     }[kind];
-    $('#about-editor-title').textContent = `${index >= 0 ? 'EDIT' : 'NEW'} ${labels[0]}`;
+    $('#about-editor-title').textContent = `${index >= 0 || kind === 'personal' ? 'EDIT' : 'NEW'} ${labels[0]}`;
     const linkLabel = kind === 'music' ? 'OFFICIAL PLAYER / AUDIO LINK' : 'SOURCE LINK';
-    const linkField = ['music', 'favorites'].includes(kind) ? `<label>${linkLabel}<input id="about-card-link" type="url" value="${esc(current.url || '')}" placeholder="https://"></label>` : '';
+    const linkField = ['music', 'favorites', 'personal'].includes(kind) ? `<div class="about-link-import"><label>${kind === 'personal' ? 'INSTAGRAM PROFILE LINK' : linkLabel}<input id="about-card-link" type="url" value="${esc(current.url || '')}" placeholder="https://"></label>${kind === 'personal' ? '' : '<button id="about-detect-cover" type="button">GET COVER</button>'}<small id="about-link-preview-status"></small></div>` : '';
     const creditField = kind === 'music' ? `<label>CREDIT / SOURCE<input id="about-card-credit" value="${esc(current.artist || '')}" maxlength="100" placeholder="Artist · platform"></label>` : '';
-    const descriptionField = kind === 'flowers' ? `<label>DESCRIPTION<textarea id="about-card-description" rows="3">${esc(current.description || '')}</textarea></label>` : '';
+    const handleField = kind === 'personal' ? `<label>INSTAGRAM ID<input id="about-card-handle" value="${esc(current.handle || '')}" maxlength="100" placeholder="@username"></label>` : '';
+    const descriptionField = ['flowers', 'personal'].includes(kind) ? `<label>${kind === 'personal' ? 'SHORT INTRO' : 'DESCRIPTION'}<textarea id="about-card-description" rows="3">${esc(kind === 'personal' ? current.text || '' : current.description || '')}</textarea></label>` : '';
     $('#about-editor-body').innerHTML = `<section class="about-card-editor-fields">
       <label>${labels[1]}<input id="about-card-title" value="${esc(kind === 'flowers' ? current.name || '' : current.title || '')}" maxlength="80" required></label>
-      ${linkField}${creditField}${descriptionField}
+      ${linkField}${creditField}${handleField}${descriptionField}
       <label class="about-card-upload">${labels[2]}<input id="about-card-files" type="file" accept="image/*"${kind === 'camera' ? ' multiple' : ''}></label>
       <div id="about-editor-media-preview" class="about-editor-media-preview">${editorMediaMarkup()}</div>
     </section>`;
@@ -589,6 +640,30 @@
     const dialog = $('#about-editor-dialog');
     if (dialog && !dialog.open) dialog.showModal();
     requestAnimationFrame(() => $('#about-card-title')?.focus());
+  }
+
+  async function detectEditorCover(force = false) {
+    if (!editorState || !['music', 'favorites'].includes(editorState.kind)) return;
+    const input = $('#about-card-link');
+    const status = $('#about-link-preview-status');
+    const url = safeLink(input?.value);
+    if (!url) { if (status) status.textContent = 'ENTER A VALID LINK'; return; }
+    if (!force && (editorState.existingMedia.length || editorState.pendingFiles.length)) return;
+    if (status) status.textContent = 'CHECKING…';
+    const preview = await linkPreview(url).catch(() => null);
+    if (!preview) { if (status) status.textContent = 'NO COVER FOUND · UPLOAD ONE'; return; }
+    if (preview.image) {
+      editorState.previewUrls.forEach(value => URL.revokeObjectURL(value));
+      editorState.pendingFiles = [];
+      editorState.previewUrls = [];
+      editorState.existingMedia = [preview.image];
+      refreshEditorMedia();
+    }
+    const title = $('#about-card-title');
+    if (title && !text(title.value) && preview.title) title.value = preview.title;
+    const credit = $('#about-card-credit');
+    if (credit && !text(credit.value) && preview.author) credit.value = preview.author;
+    if (status) status.textContent = preview.image ? 'COVER FOUND' : 'TITLE FOUND';
   }
 
   function handleEditorFiles(files) {
@@ -625,12 +700,21 @@
         uploaded.push(await window.SUY_ADMIN.uploadPublic(editorState.pendingFiles[index], folder));
       }
       const next = normalize(data);
-      const current = editorState.index >= 0 ? { ...itemsFor(editorState.kind)[editorState.index] } : {};
+      const current = { ...editorState.current };
       let item;
       if (editorState.kind === 'camera') item = { ...current, title:titleValue, description:'', photos:[...editorState.existingMedia, ...uploaded], layout:'grid' };
       if (editorState.kind === 'music') item = { ...current, title:titleValue, artist:text($('#about-card-credit')?.value), image:uploaded[0] || editorState.existingMedia[0] || '', url:safeLink(linkValue) };
       if (editorState.kind === 'favorites') item = { ...current, title:titleValue, type:'', note:'', image:uploaded[0] || editorState.existingMedia[0] || '', url:safeLink(linkValue) };
       if (editorState.kind === 'flowers') item = { ...current, name:titleValue, description:text($('#about-card-description')?.value), image:uploaded[0] || editorState.existingMedia[0] || '' };
+      if (editorState.kind === 'personal') item = { ...current, title:titleValue, handle:text($('#about-card-handle')?.value), text:text($('#about-card-description')?.value), image:uploaded[0] || editorState.existingMedia[0] || '', url:safeLink(linkValue) };
+      if (editorState.kind === 'personal') {
+        next.personal = item;
+        await persist(next);
+        closeEditor();
+        renderDialog();
+        showStatus('SAVED');
+        return;
+      }
       const target = editorState.kind === 'camera' ? next.albums : editorState.kind === 'music' ? next.music : editorState.kind === 'favorites' ? next.favorites : next.flowers;
       if (editorState.index >= 0) target[editorState.index] = item;
       else target.push(item);
@@ -709,7 +793,7 @@
   $('#about-dialog-back')?.addEventListener('click', () => { dialogItem = 'camera'; renderDialog(); });
   $('#about-dialog-edit')?.addEventListener('click', () => {
     if (dialogItem.startsWith('album:')) openCardEditor('camera', Number(dialogItem.slice(6)));
-    else if (['flowers', 'music', 'camera', 'favorites'].includes(dialogItem)) openCardEditor(dialogItem);
+    else if (['flowers', 'music', 'camera', 'favorites', 'personal'].includes(dialogItem)) openCardEditor(dialogItem);
   });
   $('#about-item-dialog')?.addEventListener('click', event => {
     if (event.target === event.currentTarget) { event.currentTarget.close(); return; }
@@ -778,6 +862,7 @@
       handleEditorFiles(event.target.files);
       event.target.value = '';
     }
+    if (event.target?.id === 'about-card-link') void detectEditorCover(false);
   });
   $('#about-editor-body')?.addEventListener('click', event => {
     if (!(event.target instanceof Element) || !editorState) return;
@@ -790,7 +875,9 @@
       editorState.previewUrls.splice(index, 1);
       editorState.pendingFiles.splice(index, 1);
       refreshEditorMedia();
+      return;
     }
+    if (event.target.closest('#about-detect-cover')) void detectEditorCover(true);
   });
   $('#about-editor-dialog')?.addEventListener('click', event => { if (event.target === event.currentTarget) closeEditor(); });
   $('#about-editor-dialog')?.addEventListener('cancel', event => { event.preventDefault(); closeEditor(); });
@@ -805,7 +892,7 @@
       if (loaded) data = normalize(loaded);
       else {
         const profile = await window.SUY_ADMIN?.loadContent?.('profile');
-        if (profile) data.personal = { title:text(profile.name) || 'ABOUT ME', text:[text(profile.info), text(profile.statement)].filter(Boolean).join('\n') };
+        if (profile) data.personal = { title:'INSTAGRAM', handle:'', text:[text(profile.info), text(profile.statement)].filter(Boolean).join('\n'), url:'', image:'' };
       }
     } catch (error) {
       console.warn('Could not load About content', error);
