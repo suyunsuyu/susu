@@ -688,6 +688,7 @@ body[data-weather="clear"] .weather-canvas{opacity:0}
 .about-hotspot[data-about-hotspot="cat"]{left:55%;top:39%;width:29%;height:49%}
 .about-hotspot[data-about-hotspot="personal"]{left:77%;top:62%;width:23%;height:38%}
 .about-hotspot[data-about-hotspot="favorites"]{left:56%;top:3%;width:43%;height:39%}
+.about-hotspot[data-about-hotspot="lamp"],.about-hotspot[data-about-hotspot="cat"]{z-index:3}
 .about-item-dialog{width:min(720px,92vw);max-height:86vh;margin:auto;padding:0;border:1px solid #161616;border-radius:0;background:#fff;color:#161616;box-shadow:0 24px 80px rgba(0,0,0,.14);overflow:auto}
 .about-item-dialog::backdrop,.about-editor-dialog::backdrop{background:rgba(255,255,255,.78);backdrop-filter:blur(4px)}
 .about-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px 14px;border-bottom:1px solid #161616}
