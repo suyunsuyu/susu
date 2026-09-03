@@ -860,3 +860,106 @@ body[data-weather="clear"] .weather-canvas{opacity:0}
   .about-inline-actions{grid-template-columns:1fr 1fr}
   .about-inline-status{grid-column:1/-1}
 }
+
+/* ===== About archive: simple calendar notes and shared collection layout ===== */
+.about-calendar-card{min-height:338px;justify-content:flex-start;background:#fff;padding:28px}
+.about-calendar-month{margin-bottom:24px}
+.about-calendar-month strong{font:500 21px/1 var(--serif);letter-spacing:.015em}
+.about-calendar-month strong span{margin-left:6px;color:#888;font:9px var(--mono);letter-spacing:.1em}
+.about-calendar-weekdays{margin-bottom:10px;color:#8b8b86;font-size:9px;letter-spacing:.08em}
+.about-calendar-day{min-height:34px;border-radius:50%;transition:background-color .2s ease,transform .2s ease,outline-color .2s ease}
+button.about-calendar-day:hover{background:#f0f0ec;transform:translateY(-1px)}
+.about-calendar-day.is-selected{outline:1px solid #161616;outline-offset:-2px;background:#fff}
+.about-calendar-day.is-jump-target{animation:about-calendar-arrive 1s ease}
+.about-calendar-symbol{right:0;bottom:-2px;color:var(--event-color,#e35f86);font:12px/1 var(--serif)}
+.about-calendar-day.is-marked.is-today .about-calendar-symbol{color:var(--event-color,#e35f86)}
+@keyframes about-calendar-arrive{0%,100%{transform:scale(1)}35%{transform:scale(1.22);background:#f1f1ed}}
+.about-date-index{min-height:338px;border-top:1px solid #161616}
+.about-date-index-list{display:grid}
+.about-date-index-list button{display:grid;grid-template-columns:28px 92px minmax(0,1fr);gap:8px;align-items:center;width:100%;min-height:47px;border:0;border-bottom:1px solid #d8d8d2;background:transparent;padding:8px 0;color:#161616;text-align:left;cursor:pointer;transition:padding-left .2s ease,background-color .2s ease}
+.about-date-index-list button:hover,.about-date-index-list button:focus-visible{background:#f5f5f2;padding-left:7px;outline:0}
+.about-date-index-marker{color:var(--event-color,#e35f86);font:18px/1 var(--serif);text-align:center}
+.about-date-index-list time{color:#777;font:9px var(--mono);letter-spacing:.03em}
+.about-date-index-list strong{overflow:hidden;font:500 15px/1.35 'Noto Sans SC',sans-serif;text-overflow:ellipsis;white-space:nowrap}
+
+.about-calendar-note{width:min(430px,calc(100vw - 30px));max-height:90dvh;margin:auto;padding:0;border:1px solid #161616;border-radius:0;background:#fffdf5;color:#161616;box-shadow:0 26px 85px rgba(0,0,0,.22);overflow:auto}
+.about-calendar-note::backdrop{background:rgba(255,255,255,.7);backdrop-filter:blur(6px)}
+.about-note-form{border:0;padding:22px}
+.about-note-head{display:flex;align-items:center;justify-content:space-between;margin:-4px 0 24px;padding-bottom:11px;border-bottom:1px solid #161616}
+.about-note-head time{font:10px var(--mono);letter-spacing:.1em}
+.about-note-head button,.about-note-view>button{border:0;background:none;padding:0;font:27px/1 var(--serif);cursor:pointer}
+.about-note-marker-row{display:grid;grid-template-columns:1fr 1fr 70px;gap:9px;align-items:end}
+.about-note-form label,.about-card-editor-fields label{display:block;margin:0 0 17px;color:#5c5c58;font:9px var(--mono);letter-spacing:.1em}
+.about-note-form input:not([type=color]),.about-note-form textarea,.about-note-form select,.about-card-editor-fields input,.about-card-editor-fields textarea{display:block;width:100%;margin-top:6px;border:0;border-bottom:1px solid #aaa9a2;background:transparent;padding:8px 2px;color:#161616;font:14px/1.55 'Noto Sans SC',sans-serif}
+.about-note-form select{min-height:40px}
+.about-note-form input[type=color]{display:block;width:100%;height:40px;margin-top:6px;border:1px solid #aaa9a2;background:#fff;padding:3px;cursor:pointer}
+.about-note-form textarea{min-height:110px;resize:vertical;background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 27px,rgba(22,22,22,.08) 28px)}
+#about-note-status{min-height:18px;margin:0;color:#8a3333;font:9px var(--mono)}
+.about-note-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:5px}
+.about-note-actions button{min-height:39px;border:1px solid #161616;background:#fffdf5;color:#161616;font:9px var(--mono);letter-spacing:.08em;cursor:pointer}
+.about-note-actions button[type=submit]{background:#161616;color:#fff}
+.about-note-actions button:disabled{opacity:.5;cursor:wait}
+.about-note-view{position:relative;min-height:280px;padding:28px;background:linear-gradient(145deg,#fffef8,#fff9df)}
+.about-note-view>button{position:absolute;top:18px;right:20px}
+.about-note-view time{display:block;padding-bottom:13px;border-bottom:1px solid #161616;font:9px var(--mono);letter-spacing:.1em}
+.about-note-view-symbol{display:block;margin:30px 0 8px;color:var(--event-color,#e35f86);font:34px/1 var(--serif)}
+.about-note-view h3{margin:0 0 18px;font:500 31px/1.05 var(--serif)}
+.about-note-view p{margin:0;white-space:pre-wrap;font:14px/1.8 'Noto Sans SC',sans-serif}
+
+.about-archive-list{display:grid;gap:0}
+.about-archive-card{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(190px,.8fr);gap:clamp(24px,5vw,58px);align-items:center;padding:24px 0 46px;border-top:1px solid #161616}
+.about-archive-card:nth-child(even) .about-archive-cover{order:2}
+.about-archive-card:nth-child(even) .about-archive-meta{order:1;text-align:right}
+.about-archive-cover{position:relative;display:grid;width:100%;aspect-ratio:5/4;place-items:center;overflow:hidden;border:0;background:linear-gradient(145deg,#f5f5f0,#e8e8e2);padding:0;color:#161616;cursor:pointer}
+.about-archive-card:nth-child(3n+2) .about-archive-cover{aspect-ratio:1/1}
+.about-archive-card:nth-child(3n) .about-archive-cover{aspect-ratio:16/10}
+.about-archive-cover img{display:block;width:100%;height:100%;object-fit:cover;filter:none!important;transition:transform .45s cubic-bezier(.22,.61,.36,1)}
+.about-archive-cover:hover img{transform:scale(1.025)}
+.about-archive-letter{font:500 clamp(62px,10vw,115px)/1 var(--serif);text-transform:uppercase;opacity:.2}
+.about-archive-meta>small{color:#888;font:9px var(--mono);letter-spacing:.13em}
+.about-archive-meta h3{margin:11px 0 15px;font:500 clamp(31px,5vw,56px)/.98 var(--serif);letter-spacing:-.025em;overflow-wrap:anywhere}
+.about-archive-meta p{margin:0 0 16px;color:#555;white-space:pre-wrap;font:14px/1.75 'Noto Sans SC',sans-serif}
+.about-archive-open{display:inline-block;margin-top:4px;border-bottom:1px solid #161616;padding:4px 0;font:9px var(--mono);letter-spacing:.1em}
+button.about-archive-open{border-width:0 0 1px;background:none;color:#161616;cursor:pointer}
+.about-archive-admin{display:flex;gap:13px;margin-top:21px}
+.about-archive-card:nth-child(even) .about-archive-admin{justify-content:flex-end}
+.about-archive-admin button{border:0;border-bottom:1px solid #888;background:none;padding:4px 0;color:#555;font:8px var(--mono);letter-spacing:.08em;cursor:pointer}
+.about-archive-empty-add{display:grid;width:100%;min-height:190px;place-items:center;border:1px dashed #aaa;background:#fafaf7;color:#777;font:34px/1 var(--serif);cursor:pointer}
+
+.about-photo-grid{display:block;grid-template-columns:none;columns:3 170px;column-gap:10px}
+.about-photo-button{display:block;width:100%;margin:0 0 10px;border:0;background:#f1f1ed;padding:0;cursor:zoom-in;break-inside:avoid}
+.about-photo-button img{display:block;width:100%;height:auto;max-height:none;object-fit:contain;filter:none!important}
+.about-media-lightbox{max-width:94vw;max-height:94dvh;margin:auto;padding:0;border:0;background:transparent;box-shadow:none;overflow:visible}
+.about-media-lightbox::backdrop{background:rgba(0,0,0,.86)}
+.about-media-lightbox img{display:block;max-width:92vw;max-height:90dvh;object-fit:contain}
+.about-media-lightbox button{position:fixed;top:15px;right:20px;border:0;background:none;color:#fff;font:32px/1 var(--serif);cursor:pointer}
+
+.about-card-editor-fields{padding-top:4px}
+.about-card-editor-fields input,.about-card-editor-fields textarea{border:1px solid #c8c8c1;background:#fff;padding:10px}
+.about-card-upload{display:grid!important;min-height:52px;place-items:center;border:1px dashed #8d8d87;background:#fafaf7;color:#161616!important;cursor:pointer}
+.about-card-upload input{display:none}
+.about-editor-media-preview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:15px 0 22px}
+.about-editor-media-preview figure{position:relative;margin:0;background:#eee}
+.about-editor-media-preview img{display:block;width:100%;height:110px;object-fit:cover}
+.about-editor-media-preview button{position:absolute;top:4px;right:4px;display:grid;width:26px;height:26px;place-items:center;border:0;background:#fff;color:#161616;font:18px/1 var(--serif);cursor:pointer}
+.about-editor-dialog .about-editor-status{margin:0 0 12px}
+.about-editor-dialog .black{width:100%;min-height:42px}
+
+@media(max-width:720px){
+  .about-calendar-card{min-height:0;padding:19px}
+  .about-calendar-month strong{font-size:18px}
+  .about-calendar-day{min-height:38px}
+  .about-date-index{min-height:0}
+  .about-date-index-list button{grid-template-columns:26px 86px minmax(0,1fr);min-height:49px}
+  .about-calendar-note{width:calc(100vw - 20px);max-height:88dvh;margin:auto 10px 10px}
+  .about-note-form{padding:18px}
+  .about-note-marker-row{grid-template-columns:1fr 1fr 62px}
+  .about-note-form input:not([type=color]),.about-note-form textarea,.about-note-form select,.about-card-editor-fields input,.about-card-editor-fields textarea{font-size:16px}
+  .about-archive-card,.about-archive-card:nth-child(even){grid-template-columns:1fr;gap:18px;padding:18px 0 36px}
+  .about-archive-card:nth-child(even) .about-archive-cover,.about-archive-card:nth-child(even) .about-archive-meta{order:initial;text-align:left}
+  .about-archive-card:nth-child(even) .about-archive-admin{justify-content:flex-start}
+  .about-archive-cover,.about-archive-card:nth-child(3n+2) .about-archive-cover,.about-archive-card:nth-child(3n) .about-archive-cover{aspect-ratio:4/3}
+  .about-archive-meta h3{font-size:34px}
+  .about-editor-media-preview{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .about-photo-grid{columns:2 120px}
+}
