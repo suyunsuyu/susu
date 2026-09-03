@@ -8,43 +8,48 @@
   <meta http-equiv="Expires" content="0">
   <script>document.documentElement.classList.add("site-booting");setTimeout(()=>document.documentElement.classList.remove("site-booting"),3500)</script>
   <title>My Cat — Lee Su-yoon</title>
-  <link rel="stylesheet" href="style.css?v=20260901-cat1">
+  <link rel="stylesheet" href="style.css?v=20260903-catarchive1">
   <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
 </head>
 <body class="cat-journal-page">
   <header><a class="brand" href="index.html">LEE SU-YOON</a><a href="index.html">← HOME</a></header>
-  <main class="page cats-page">
+  <main class="page cats-page cat-archive-page">
     <div class="cats-heading">
       <p class="kicker">MY CAT</p>
-      <button id="cat-edit" class="edit" type="button" data-admin-only hidden>EDIT MY CAT</button>
+      <button id="cat-add-album" class="edit" type="button" data-admin-only hidden>+ ADD ALBUM</button>
     </div>
-    <section id="cat-gallery" class="cat-gallery" data-layout="grid" aria-live="polite"></section>
-    <p id="cats-empty" class="cats-empty">A quiet place for my cat.</p>
+    <section id="cat-hero" class="cat-hero" aria-label="My cat main image">
+      <div id="cat-hero-media" class="cat-hero-media"></div>
+      <div id="cat-hero-copy" class="cat-hero-copy"></div>
+      <button id="cat-edit-hero" class="cat-hero-edit" type="button" data-admin-only hidden>EDIT MAIN IMAGE</button>
+    </section>
+    <div class="cat-archive-heading"><span>ARCHIVE</span><span>YEAR · MONTH</span></div>
+    <section id="cat-timeline" class="cat-timeline" aria-live="polite"></section>
+    <p id="cats-empty" class="cats-empty">NO ALBUMS YET</p>
   </main>
 
   <dialog id="cat-editor" class="cat-editor">
-    <div class="cat-editor-inner">
+    <form id="cat-editor-form" class="cat-editor-inner">
       <div class="cat-editor-head"><strong>MY CAT EDITOR</strong><button id="cat-editor-close" type="button" aria-label="Close">×</button></div>
-      <label class="cat-layout-control">PAGE LAYOUT
-        <select id="cat-layout">
-          <option value="grid">SMALL GRID</option>
-          <option value="masonry">FREE MASONRY</option>
-          <option value="journal">LARGE JOURNAL</option>
-        </select>
-      </label>
-      <div id="cat-item-editors" class="cat-item-editors"></div>
-      <div class="cat-editor-actions">
-        <button id="cat-add" class="cat-add" type="button">+ ADD PHOTO & STORY</button>
-        <button id="cat-save" class="cat-save" type="button">SAVE ALL</button>
-      </div>
+      <div id="cat-editor-body"></div>
       <p id="cat-status" class="cat-status"></p>
+      <button id="cat-save" class="cat-save" type="submit">SAVE</button>
+    </form>
+  </dialog>
+
+  <dialog id="cat-album-viewer" class="cat-album-viewer" aria-label="Cat photo album">
+    <div class="cat-album-viewer-head">
+      <div><small id="cat-viewer-month"></small><h2 id="cat-viewer-title"></h2></div>
+      <button id="cat-viewer-close" type="button" aria-label="Close">×</button>
     </div>
+    <p id="cat-viewer-description"></p>
+    <div id="cat-viewer-grid" class="cat-viewer-grid"></div>
   </dialog>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js?v=20260818-imgfix2"></script>
   <script src="supabase-site.js?v=20260902-auth4"></script>
-  <script src="cat-manager.js?v=20260901-cat1"></script>
+  <script src="cat-manager.js?v=20260903-catarchive1"></script>
   <script src="saved-layouts.js?v=20260818-imgfix2"></script>
   <script src="page-editor.js?v=20260902-homeedit4"></script>
   <script src="boot-ready.js?v=20260818-imgfix2"></script>
