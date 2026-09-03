@@ -126,15 +126,27 @@
   };
   const syncAdminControls = (admin = !!window.SUY_IS_ADMIN) => {
     const pageEdit = $('#about-edit');
-    if (pageEdit) pageEdit.hidden = !admin;
+    if (pageEdit) pageEdit.hidden = true;
     const dialogEdit = $('#about-dialog-edit');
     if (!dialogEdit) return;
     const section = editorSectionFor(dialogItem);
     dialogEdit.dataset.editorSection = section;
-    dialogEdit.hidden = !(admin && section);
-    dialogEdit.textContent = dialogEditing ? 'CANCEL' : 'EDIT THIS ↗';
+    dialogEdit.hidden = !(admin && section && dialogItem !== 'calendar');
+    dialogEdit.textContent = dialogEditing ? 'CANCEL' : 'ADD / MANAGE ↗';
     dialogEdit.setAttribute('aria-pressed', String(dialogEditing));
   };
+
+  function setDirectTarget(element, kind, field, { section = '', index = '', multiline = false, placeholder = false } = {}) {
+    if (!element) return;
+    ['inlineKind', 'inlineField', 'inlineSection', 'inlineIndex', 'inlineMultiline', 'inlinePlaceholder'].forEach(key => delete element.dataset[key]);
+    element.dataset.inlineKind = kind;
+    element.dataset.inlineField = field;
+    if (section !== '') element.dataset.inlineSection = section;
+    if (index !== '') element.dataset.inlineIndex = String(index);
+    if (multiline) element.dataset.inlineMultiline = 'true';
+    if (placeholder) element.dataset.inlinePlaceholder = 'true';
+    element.classList.toggle('is-admin-placeholder', !!placeholder && !!window.SUY_IS_ADMIN);
+  }
   const setLampState = next => {
     lampOn = !!next;
     document.body.classList.toggle('about-lamp-on', lampOn);
@@ -146,8 +158,17 @@
   const imageMarkup = (src, alt, className = 'about-content-image') => src
     ? `<img class="${className}" src="${esc(src)}" alt="${esc(alt)}" loading="lazy">`
     : '<div class="about-image-empty">NO IMAGE</div>';
-  const emptyMarkup = key => presentationFor(key).emptyText ? `<p class="about-empty">${esc(presentationFor(key).emptyText)}</p>` : '';
-  const introMarkup = key => presentationFor(key).description ? `<p class="about-dialog-description">${esc(presentationFor(key).description)}</p>` : '';
+  const inlineAttrs = (kind, field, { section = '', index = '', date = '', multiline = false, placeholder = false } = {}) => ` data-inline-kind="${kind}" data-inline-field="${field}"${section !== '' ? ` data-inline-section="${esc(section)}"` : ''}${index !== '' ? ` data-inline-index="${esc(index)}"` : ''}${date !== '' ? ` data-inline-date="${esc(date)}"` : ''}${multiline ? ' data-inline-multiline="true"' : ''}${placeholder ? ' data-inline-placeholder="true"' : ''}`;
+  const emptyMarkup = key => {
+    const text = presentationFor(key).emptyText;
+    if (!text && !window.SUY_IS_ADMIN) return '';
+    return `<p class="about-empty${text ? '' : ' is-admin-placeholder'}"${inlineAttrs('presentation', 'emptyText', { section:presentationKeyFor(key), multiline:true, placeholder:!text })}>${esc(text || '双击添加空内容提示')}</p>`;
+  };
+  const introMarkup = key => {
+    const text = presentationFor(key).description;
+    if (!text && !window.SUY_IS_ADMIN) return '';
+    return `<p class="about-dialog-description${text ? '' : ' is-admin-placeholder'}"${inlineAttrs('presentation', 'description', { section:presentationKeyFor(key), multiline:true, placeholder:!text })}>${esc(text || '双击添加说明')}</p>`;
+  };
   const dateParts = value => {
     const match = /^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})$/.exec(asText(value));
     return match ? { year:Number(match[1]), month:Number(match[2]), day:Number(match[3]) } : null;
@@ -172,7 +193,7 @@
       const selected = interactive && fullDate === calendarSelectedDate;
       const className = `about-calendar-day${item ? ' is-marked' : ''}${today ? ' is-today' : ''}${selected ? ' is-selected' : ''}`;
       const content = `<span class="about-calendar-number">${day}</span>${item ? `<span class="about-calendar-symbol" aria-hidden="true">${esc(limitSymbol(item.symbol))}</span>` : ''}`;
-      if (interactive) cells.push(`<button type="button" class="${className}" data-calendar-date="${fullDate}"${item?.title ? ` title="${esc(item.title)}"` : ''}>${content}</button>`);
+      if (interactive) cells.push(`<button type="button" class="${className}" data-calendar-date="${fullDate}" aria-pressed="${selected}"${item?.title ? ` title="${esc(item.title)}"` : ''}>${content}</button>`);
       else cells.push(`<span class="${className}"${item?.title ? ` title="${esc(item.title)}"` : ''}>${content}</span>`);
     }
     const monthLabel = new Intl.DateTimeFormat('zh-CN', { month:'long' }).format(new Date(year, month, 1));
@@ -183,42 +204,61 @@
         <strong data-calendar-month-label>${esc(monthLabel)} <span>${year}</span></strong>
         <button type="button" data-calendar-shift="1" aria-label="下个月">→</button>
       </div>
-      <div class="about-calendar-weekdays">${weekdays.map(day => `<span>${esc(day)}</span>`).join('')}</div>
+      <div class="about-calendar-weekdays">${weekdays.map((day, index) => `<span${inlineAttrs('calendar-copy', 'weekday', { index })}>${esc(day || '·')}</span>`).join('')}</div>
       <div class="about-calendar-grid" data-calendar-grid>${cells.join('')}</div>
-      <p class="about-calendar-caption">${esc(data.calendar.caption)}</p>
+      <p class="about-calendar-caption${data.calendar.caption ? '' : ' is-admin-placeholder'}"${inlineAttrs('calendar-copy', 'caption', { placeholder:!data.calendar.caption })}>${esc(data.calendar.caption || (window.SUY_IS_ADMIN ? '双击添加日历文字' : ''))}</p>
     </div>`;
   };
+
+  function calendarQuickEditorMarkup() {
+    if (!window.SUY_IS_ADMIN || !calendarSelectedDate) return '';
+    const item = data.calendar.importantDates.find(entry => entry.date === calendarSelectedDate);
+    const symbol = limitSymbol(item?.symbol);
+    const presets = ['●', '★', '♥', '✦', '✓', '○'];
+    const custom = !presets.includes(symbol);
+    return `<div class="about-calendar-quick-editor">
+      <div class="about-calendar-quick-head"><time>${esc(calendarSelectedDate)}</time><button type="button" data-calendar-quick-cancel aria-label="关闭">×</button></div>
+      <div class="about-calendar-quick-fields">
+        <label>标记<select id="about-calendar-quick-symbol"><option value="●"${symbol === '●' ? ' selected' : ''}>●</option><option value="★"${symbol === '★' ? ' selected' : ''}>★</option><option value="♥"${symbol === '♥' ? ' selected' : ''}>♥</option><option value="✦"${symbol === '✦' ? ' selected' : ''}>✦</option><option value="✓"${symbol === '✓' ? ' selected' : ''}>✓</option><option value="○"${symbol === '○' ? ' selected' : ''}>○</option><option value="custom"${custom ? ' selected' : ''}>自定义</option></select></label>
+        <label id="about-calendar-quick-custom-wrap"${custom ? '' : ' hidden'}>自定义<input id="about-calendar-quick-custom" type="text" maxlength="6" value="${custom ? esc(symbol) : ''}" placeholder="符号或 Emoji"></label>
+        <label class="is-wide">标题<input id="about-calendar-quick-title" type="text" value="${esc(item?.title || '')}" placeholder="重要日子"></label>
+        <label class="is-wide">描述<textarea id="about-calendar-quick-note" rows="2" placeholder="可以留空">${esc(item?.note || '')}</textarea></label>
+      </div>
+      <div class="about-calendar-quick-actions">${item ? '<button type="button" data-calendar-quick-remove>删除</button>' : '<span></span>'}<button type="button" data-calendar-quick-save>保存标记</button></div>
+    </div>`;
+  }
 
   function publicMarkup(key) {
     const meta = presentationFor(key);
     if (key === 'calendar') {
       const dates = sortedDates(data.calendar.importantDates);
+      const listTitle = data.calendar.listTitle || (window.SUY_IS_ADMIN ? '双击添加清单标题' : '');
       return `${introMarkup(key)}<div class="about-dialog-columns about-calendar-columns about-layout-${meta.layout}">
-        ${calendarCardMarkup(dates)}
-        <aside class="about-important-list"><div class="about-list-head"><strong>${esc(data.calendar.listTitle)}</strong><span>↗</span></div>${dates.length ? dates.map(item => `<article><time>${esc(item.date || '—')}</time><h3><span class="about-date-symbol">${esc(limitSymbol(item.symbol))}</span>${esc(item.title || '重要日子')}</h3>${item.note ? `<p>${esc(item.note)}</p>` : ''}</article>`).join('') : emptyMarkup(key)}</aside>
+        ${calendarCardMarkup(dates, { interactive:!!window.SUY_IS_ADMIN })}
+        <aside class="about-important-list">${calendarQuickEditorMarkup()}<div class="about-list-head"><strong class="${data.calendar.listTitle ? '' : 'is-admin-placeholder'}"${inlineAttrs('calendar-copy', 'listTitle', { placeholder:!data.calendar.listTitle })}>${esc(listTitle)}</strong><span>↗</span></div>${dates.length ? dates.map(item => `<article><time>${esc(item.date || '—')}</time><h3><span class="about-date-symbol">${esc(limitSymbol(item.symbol))}</span><span${inlineAttrs('calendar-event', 'title', { date:item.date })}>${esc(item.title || '重要日子')}</span></h3>${item.note || window.SUY_IS_ADMIN ? `<p class="${item.note ? '' : 'is-admin-placeholder'}"${inlineAttrs('calendar-event', 'note', { date:item.date, multiline:true, placeholder:!item.note })}>${esc(item.note || '双击添加日期描述')}</p>` : ''}</article>`).join('') : emptyMarkup(key)}</aside>
       </div>`;
     }
     if (key === 'flowers') {
-      return `${introMarkup(key)}${data.flowers.length ? `<div class="about-card-grid about-layout-${meta.layout}">${data.flowers.map(item => `<article class="about-content-card">${imageMarkup(item.image, item.name || 'flower')}<div><h3>${esc(item.name || '未命名的花')}</h3>${item.description ? `<p>${esc(item.description)}</p>` : ''}</div></article>`).join('')}</div>` : emptyMarkup(key)}`;
+      return `${introMarkup(key)}${data.flowers.length ? `<div class="about-card-grid about-layout-${meta.layout}">${data.flowers.map((item, index) => `<article class="about-content-card">${imageMarkup(item.image, item.name || 'flower')}<div><h3${inlineAttrs('flower', 'name', { index })}>${esc(item.name || '未命名的花')}</h3>${item.description || window.SUY_IS_ADMIN ? `<p class="${item.description ? '' : 'is-admin-placeholder'}"${inlineAttrs('flower', 'description', { index, multiline:true, placeholder:!item.description })}>${esc(item.description || '双击添加描述')}</p>` : ''}</div></article>`).join('')}</div>` : emptyMarkup(key)}`;
     }
     if (key === 'music') {
-      return `${introMarkup(key)}${data.music.length ? `<ol class="about-music-list about-layout-${meta.layout}">${data.music.map((item, index) => `<li><span class="about-list-index">${String(index + 1).padStart(2, '0')}</span><div><strong>${esc(item.title || '未命名音乐')}</strong>${item.artist ? `<small>${esc(item.artist)}</small>` : ''}</div>${item.url ? `<a href="${esc(item.url)}" target="_blank" rel="noreferrer">OPEN ↗</a>` : ''}</li>`).join('')}</ol>` : emptyMarkup(key)}`;
+      return `${introMarkup(key)}${data.music.length ? `<ol class="about-music-list about-layout-${meta.layout}">${data.music.map((item, index) => `<li><span class="about-list-index">${String(index + 1).padStart(2, '0')}</span><div><strong${inlineAttrs('music', 'title', { index })}>${esc(item.title || '未命名音乐')}</strong>${item.artist || window.SUY_IS_ADMIN ? `<small class="${item.artist ? '' : 'is-admin-placeholder'}"${inlineAttrs('music', 'artist', { index, placeholder:!item.artist })}>${esc(item.artist || '双击添加歌手')}</small>` : ''}</div>${item.url ? `<a href="${esc(item.url)}" target="_blank" rel="noreferrer">OPEN ↗</a>` : ''}</li>`).join('')}</ol>` : emptyMarkup(key)}`;
     }
     if (key === 'camera') {
-      return `${introMarkup(key)}${data.albums.length ? `<div class="about-album-grid about-layout-${meta.layout}">${data.albums.map((album, index) => `<article class="about-album-card"><button type="button" class="about-album-open" data-about-album="${index}">${album.photos[0] ? imageMarkup(album.photos[0], album.title || 'album cover', 'about-album-cover') : '<div class="about-album-cover about-image-empty">NO COVER</div>'}<span class="about-album-arrow">OPEN ↗</span></button><h3>${esc(album.title || '未命名相册')}</h3>${album.description ? `<p>${esc(album.description)}</p>` : ''}<small>${album.photos.length} PHOTO${album.photos.length === 1 ? '' : 'S'}</small></article>`).join('')}</div>` : emptyMarkup(key)}`;
+      return `${introMarkup(key)}${data.albums.length ? `<div class="about-album-grid about-layout-${meta.layout}">${data.albums.map((album, index) => `<article class="about-album-card"><button type="button" class="about-album-open" data-about-album="${index}">${album.photos[0] ? imageMarkup(album.photos[0], album.title || 'album cover', 'about-album-cover') : '<div class="about-album-cover about-image-empty">NO COVER</div>'}<span class="about-album-arrow">OPEN ↗</span></button><h3${inlineAttrs('album', 'title', { index })}>${esc(album.title || '未命名相册')}</h3>${album.description || window.SUY_IS_ADMIN ? `<p class="${album.description ? '' : 'is-admin-placeholder'}"${inlineAttrs('album', 'description', { index, multiline:true, placeholder:!album.description })}>${esc(album.description || '双击添加相册描述')}</p>` : ''}<small>${album.photos.length} PHOTO${album.photos.length === 1 ? '' : 'S'}</small></article>`).join('')}</div>` : emptyMarkup(key)}`;
     }
     if (key === 'personal') {
       const text = data.personal.text;
-      return `${introMarkup(key)}<article class="about-personal-card about-layout-${meta.layout}"><h3>${esc(data.personal.title || 'ABOUT ME')}</h3>${text ? text.split(/\n+/).map(paragraph => `<p>${esc(paragraph)}</p>`).join('') : emptyMarkup(key)}</article>`;
+      return `${introMarkup(key)}<article class="about-personal-card about-layout-${meta.layout}"><h3${inlineAttrs('personal', 'title')}>${esc(data.personal.title || 'ABOUT ME')}</h3>${text || window.SUY_IS_ADMIN ? `<div class="about-personal-text${text ? '' : ' is-admin-placeholder'}"${inlineAttrs('personal', 'text', { multiline:true, placeholder:!text })}>${esc(text || '双击添加个人介绍')}</div>` : emptyMarkup(key)}</article>`;
     }
     if (key === 'favorites') {
-      return `${introMarkup(key)}${data.favorites.length ? `<div class="about-favorites-list about-layout-${meta.layout}">${data.favorites.map((item, index) => `<article><span class="about-list-index">${String(index + 1).padStart(2, '0')}</span><div><h3>${esc(item.title || '未命名收藏')}</h3>${item.type ? `<small>${esc(item.type)}</small>` : ''}${item.note ? `<p>${esc(item.note)}</p>` : ''}</div>${item.url ? `<a href="${esc(item.url)}" target="_blank" rel="noreferrer">LINK ↗</a>` : ''}</article>`).join('')}</div>` : emptyMarkup(key)}`;
+      return `${introMarkup(key)}${data.favorites.length ? `<div class="about-favorites-list about-layout-${meta.layout}">${data.favorites.map((item, index) => `<article><span class="about-list-index">${String(index + 1).padStart(2, '0')}</span><div><h3${inlineAttrs('favorite', 'title', { index })}>${esc(item.title || '未命名收藏')}</h3>${item.type || window.SUY_IS_ADMIN ? `<small class="${item.type ? '' : 'is-admin-placeholder'}"${inlineAttrs('favorite', 'type', { index, placeholder:!item.type })}>${esc(item.type || '双击添加类型')}</small>` : ''}${item.note || window.SUY_IS_ADMIN ? `<p class="${item.note ? '' : 'is-admin-placeholder'}"${inlineAttrs('favorite', 'note', { index, multiline:true, placeholder:!item.note })}>${esc(item.note || '双击添加说明')}</p>` : ''}</div>${item.url ? `<a href="${esc(item.url)}" target="_blank" rel="noreferrer">LINK ↗</a>` : ''}</article>`).join('')}</div>` : emptyMarkup(key)}`;
     }
     if (key.startsWith('album:')) {
       const index = Number(key.slice(6));
       const album = data.albums[index];
       if (!album) return emptyMarkup(key);
-      return `<article class="about-album-detail"><p>${album.description ? esc(album.description) : esc(meta.emptyText)}</p><div class="about-photo-grid about-layout-${album.layout || 'grid'}">${album.photos.length ? album.photos.map((photo, photoIndex) => imageMarkup(photo, `${album.title || 'album'} photo ${photoIndex + 1}`, 'about-album-photo')).join('') : emptyMarkup(key)}</div></article>`;
+      return `<article class="about-album-detail"><p class="${album.description ? '' : 'is-admin-placeholder'}"${inlineAttrs('album', 'description', { index, multiline:true, placeholder:!album.description })}>${esc(album.description || meta.emptyText || '双击添加相册描述')}</p><div class="about-photo-grid about-layout-${album.layout || 'grid'}">${album.photos.length ? album.photos.map((photo, photoIndex) => imageMarkup(photo, `${album.title || 'album'} photo ${photoIndex + 1}`, 'about-album-photo')).join('') : emptyMarkup(key)}</div></article>`;
     }
     return emptyMarkup(key);
   }
@@ -231,8 +271,16 @@
     if (dialogEditing && !editing) dialogEditing = false;
     dialog.classList.toggle('is-editing', editing);
     const meta = presentationFor(dialogItem);
-    $('#about-dialog-kicker').textContent = editing ? 'EDIT MODE' : (isAlbum ? `${meta.kicker} · ALBUM` : meta.kicker);
-    $('#about-dialog-title').textContent = isAlbum ? (data.albums[Number(dialogItem.slice(6))]?.title || 'ALBUM') : itemTitle(dialogItem);
+    const kicker = $('#about-dialog-kicker');
+    const kickerValue = meta.kicker;
+    kicker.textContent = editing ? 'EDIT MODE' : (kickerValue || (window.SUY_IS_ADMIN ? '双击添加顶部文字' : ''));
+    setDirectTarget(kicker, 'presentation', 'kicker', { section:presentationKeyFor(dialogItem), placeholder:!kickerValue });
+    const title = $('#about-dialog-title');
+    const albumIndex = isAlbum ? Number(dialogItem.slice(6)) : -1;
+    const titleValue = isAlbum ? (data.albums[albumIndex]?.title || '') : itemTitle(dialogItem);
+    title.textContent = titleValue || (window.SUY_IS_ADMIN ? '双击添加标题' : '');
+    if (isAlbum) setDirectTarget(title, 'album', 'title', { index:albumIndex, placeholder:!titleValue });
+    else setDirectTarget(title, 'presentation', 'title', { section:presentationKeyFor(dialogItem), placeholder:!titleValue });
     $('#about-dialog-body').innerHTML = editing ? popupEditorMarkup(dialogItem) : publicMarkup(dialogItem);
     const back = $('#about-dialog-back');
     if (back) back.hidden = editing || !isAlbum;
@@ -244,6 +292,7 @@
       if (dialogItem === 'calendar') bindCalendarEditor();
     } else {
       bindCalendarNavigation(dialog);
+      bindCalendarQuickEditor();
       dialog.querySelectorAll('[data-about-album]').forEach(button => button.addEventListener('click', () => {
         dialogEditing = false;
         dialogItem = `album:${button.dataset.aboutAlbum}`;
@@ -261,6 +310,7 @@
       const now = new Date();
       calendarViewYear = now.getFullYear();
       calendarViewMonth = now.getMonth();
+      calendarSelectedDate = '';
     }
     renderDialog();
     const dialog = $('#about-item-dialog');
@@ -285,6 +335,30 @@
     if (event.target !== event.currentTarget) return;
     dialogEditing = false;
     event.currentTarget.close();
+  });
+  $('#about-item-dialog')?.addEventListener('dblclick', event => {
+    if (!(event.target instanceof Element)) return;
+    const target = event.target.closest('[data-inline-kind]');
+    if (!target) return;
+    event.preventDefault();
+    startDirectTextEdit(target);
+  });
+  let lastDirectTapTarget = null;
+  let lastDirectTapAt = 0;
+  $('#about-item-dialog')?.addEventListener('click', event => {
+    if (!(event.target instanceof Element) || !window.SUY_IS_ADMIN || dialogEditing) return;
+    const target = event.target.closest('[data-inline-kind]');
+    if (!target) return;
+    const now = Date.now();
+    if (target === lastDirectTapTarget && now - lastDirectTapAt < 430) {
+      event.preventDefault();
+      lastDirectTapTarget = null;
+      lastDirectTapAt = 0;
+      startDirectTextEdit(target);
+    } else {
+      lastDirectTapTarget = target;
+      lastDirectTapAt = now;
+    }
   });
 
   function editorRow(type, item = {}) {
@@ -365,7 +439,7 @@
     }
     if (section === 'personal') content = `<section class="about-editor-section" data-about-editor-section="personal"><div class="about-editor-section-head"><h3>7 · PERSONAL INTRODUCTION</h3></div><label>TITLE<input id="about-inline-personal-title" type="text" value="${esc(data.personal.title)}" placeholder="About me"></label><label>TEXT<textarea id="about-inline-personal-text" rows="5" placeholder="Write a short introduction">${esc(data.personal.text)}</textarea></label></section>`;
     if (section === 'favorite') content = sectionMarkup('favorite', '8 · FILM & TV FAVORITES', data.favorites);
-    return `<form id="about-inline-editor-form" class="about-inline-editor">${popupSettingsMarkup(key)}${content}<div class="about-inline-actions"><p id="about-inline-status" class="about-inline-status" role="status"></p><button id="about-inline-cancel" class="about-inline-cancel" type="button">CANCEL</button><button id="about-inline-save" class="about-inline-save" type="button">SAVE THIS</button></div></form>`;
+    return `<form id="about-inline-editor-form" class="about-inline-editor">${content}<div class="about-inline-actions"><p id="about-inline-status" class="about-inline-status" role="status"></p><button id="about-inline-cancel" class="about-inline-cancel" type="button">CANCEL</button><button id="about-inline-save" class="about-inline-save" type="button">SAVE THIS</button></div></form>`;
   }
 
   function bindCalendarNavigation(root) {
@@ -373,8 +447,173 @@
       const next = new Date(calendarViewYear, calendarViewMonth + Number(button.dataset.calendarShift), 1);
       calendarViewYear = next.getFullYear();
       calendarViewMonth = next.getMonth();
+      calendarSelectedDate = '';
       renderDialog();
     }));
+    if (!window.SUY_IS_ADMIN) return;
+    root.querySelectorAll('[data-calendar-date]').forEach(button => button.addEventListener('click', () => {
+      calendarSelectedDate = button.dataset.calendarDate;
+      renderDialog();
+      requestAnimationFrame(() => $('#about-calendar-quick-title')?.focus());
+    }));
+  }
+
+  let directStatusTimer = 0;
+  function showDirectStatus(message, failed = false) {
+    const dialog = $('#about-item-dialog');
+    if (!dialog) return;
+    let status = $('.about-direct-status', dialog);
+    if (!status) {
+      status = document.createElement('div');
+      status.className = 'about-direct-status';
+      status.setAttribute('role', 'status');
+      dialog.appendChild(status);
+    }
+    status.textContent = message;
+    status.classList.toggle('is-error', failed);
+    status.classList.add('is-visible');
+    clearTimeout(directStatusTimer);
+    directStatusTimer = setTimeout(() => status.classList.remove('is-visible'), failed ? 3200 : 1500);
+  }
+
+  async function persistDirectChange(next) {
+    if (!window.SUY_ADMIN || !await window.SUY_ADMIN.ensureAdminSession()) throw new Error('只有管理员可以保存。');
+    await window.SUY_ADMIN.saveContent(aboutKey, next);
+    data = normalize(next);
+  }
+
+  function bindCalendarQuickEditor() {
+    const choice = $('#about-calendar-quick-symbol');
+    choice?.addEventListener('change', () => {
+      const wrap = $('#about-calendar-quick-custom-wrap');
+      if (wrap) wrap.hidden = choice.value !== 'custom';
+      if (!wrap?.hidden) $('#about-calendar-quick-custom')?.focus();
+    });
+    $('[data-calendar-quick-cancel]')?.addEventListener('click', () => { calendarSelectedDate = ''; renderDialog(); });
+    $('[data-calendar-quick-save]')?.addEventListener('click', async event => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      showDirectStatus('SAVING…');
+      try {
+        const next = normalize(data);
+        const selectedChoice = asText($('#about-calendar-quick-symbol')?.value);
+        const custom = asText($('#about-calendar-quick-custom')?.value);
+        const item = {
+          date:calendarSelectedDate,
+          symbol:limitSymbol(selectedChoice === 'custom' ? custom : selectedChoice),
+          title:asText($('#about-calendar-quick-title')?.value),
+          note:asText($('#about-calendar-quick-note')?.value)
+        };
+        const index = next.calendar.importantDates.findIndex(entry => entry.date === calendarSelectedDate);
+        if (index >= 0) next.calendar.importantDates[index] = item;
+        else next.calendar.importantDates.push(item);
+        next.calendar.importantDates = sortedDates(next.calendar.importantDates);
+        await persistDirectChange(next);
+        renderDialog();
+        showDirectStatus('SAVED');
+      } catch (error) {
+        console.error(error);
+        showDirectStatus(error?.message || 'SAVE FAILED', true);
+      } finally {
+        button.disabled = false;
+      }
+    });
+    $('[data-calendar-quick-remove]')?.addEventListener('click', async event => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      showDirectStatus('SAVING…');
+      try {
+        const next = normalize(data);
+        next.calendar.importantDates = next.calendar.importantDates.filter(item => item.date !== calendarSelectedDate);
+        await persistDirectChange(next);
+        calendarSelectedDate = '';
+        renderDialog();
+        showDirectStatus('SAVED');
+      } catch (error) {
+        console.error(error);
+        showDirectStatus(error?.message || 'SAVE FAILED', true);
+      } finally {
+        button.disabled = false;
+      }
+    });
+  }
+
+  function inlineValueFor(element) {
+    const { inlineKind:kind, inlineField:field, inlineSection:section, inlineIndex:indexText, inlineDate:date } = element.dataset;
+    const index = Number(indexText);
+    if (kind === 'presentation') return asText(data.presentation?.[section]?.[field]);
+    if (kind === 'calendar-copy') return field === 'weekday' ? asText(data.calendar.weekdays[index]) : asText(data.calendar[field]);
+    if (kind === 'calendar-event') return asText(data.calendar.importantDates.find(item => item.date === date)?.[field]);
+    if (kind === 'flower') return asText(data.flowers[index]?.[field]);
+    if (kind === 'music') return asText(data.music[index]?.[field]);
+    if (kind === 'album') return asText(data.albums[index]?.[field]);
+    if (kind === 'personal') return asText(data.personal?.[field]);
+    if (kind === 'favorite') return asText(data.favorites[index]?.[field]);
+    return asText(element.textContent);
+  }
+
+  function assignInlineValue(next, element, value) {
+    const { inlineKind:kind, inlineField:field, inlineSection:section, inlineIndex:indexText, inlineDate:date } = element.dataset;
+    const index = Number(indexText);
+    if (kind === 'presentation' && next.presentation?.[section] && ['kicker', 'title', 'description', 'emptyText'].includes(field)) next.presentation[section][field] = value;
+    else if (kind === 'calendar-copy' && field === 'weekday' && Number.isInteger(index) && index >= 0 && index < 7) next.calendar.weekdays[index] = value;
+    else if (kind === 'calendar-copy' && ['caption', 'listTitle'].includes(field)) next.calendar[field] = value;
+    else if (kind === 'calendar-event' && ['title', 'note'].includes(field)) {
+      const item = next.calendar.importantDates.find(entry => entry.date === date);
+      if (item) item[field] = value;
+    } else if (kind === 'flower' && next.flowers[index] && ['name', 'description'].includes(field)) next.flowers[index][field] = value;
+    else if (kind === 'music' && next.music[index] && ['title', 'artist'].includes(field)) next.music[index][field] = value;
+    else if (kind === 'album' && next.albums[index] && ['title', 'description'].includes(field)) next.albums[index][field] = value;
+    else if (kind === 'personal' && ['title', 'text'].includes(field)) next.personal[field] = value;
+    else if (kind === 'favorite' && next.favorites[index] && ['title', 'type', 'note'].includes(field)) next.favorites[index][field] = value;
+    else throw new Error('这个位置暂时不能编辑。');
+  }
+
+  function startDirectTextEdit(element) {
+    if (!window.SUY_IS_ADMIN || dialogEditing || element.isContentEditable) return;
+    const original = inlineValueFor(element);
+    element.textContent = original;
+    element.contentEditable = 'true';
+    element.spellcheck = false;
+    element.classList.remove('is-admin-placeholder');
+    element.classList.add('is-direct-editing');
+    element.focus({ preventScroll:true });
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    let finished = false;
+    const finish = async save => {
+      if (finished) return;
+      finished = true;
+      const value = asText(element.innerText ?? element.textContent);
+      element.removeEventListener('blur', onBlur);
+      element.removeEventListener('keydown', onKeydown);
+      element.contentEditable = 'false';
+      element.classList.remove('is-direct-editing');
+      if (!save || value === original) { renderDialog(); return; }
+      showDirectStatus('SAVING…');
+      try {
+        const next = normalize(data);
+        assignInlineValue(next, element, value);
+        await persistDirectChange(next);
+        renderDialog();
+        showDirectStatus('SAVED');
+      } catch (error) {
+        console.error(error);
+        renderDialog();
+        showDirectStatus(error?.message || 'SAVE FAILED', true);
+      }
+    };
+    const onBlur = () => finish(true);
+    const onKeydown = event => {
+      if (event.isComposing) return;
+      if (event.key === 'Escape') { event.preventDefault(); finish(false); return; }
+      if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); finish(true); }
+    };
+    element.addEventListener('blur', onBlur);
+    element.addEventListener('keydown', onKeydown);
   }
 
   function fillCalendarMarkForm() {
