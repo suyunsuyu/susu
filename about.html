@@ -2,54 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,user-scalable=yes">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <script>document.documentElement.classList.add('site-booting');setTimeout(()=>document.documentElement.classList.remove('site-booting'),5000)</script>
-  <title>My Room — Lee Su-yoon</title>
-  <link rel="stylesheet" href="style.css?v=20260902-room7">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <script>document.documentElement.classList.add("site-booting");setTimeout(()=>document.documentElement.classList.remove("site-booting"),3500)</script>
+  <title>About — Lee Su-yoon</title>
+  <link rel="stylesheet" href="style.css?v=20260903-static1">
   <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
 </head>
-<body class="room3d-body">
-  <header class="room3d-header">
-    <a href="index.html" class="brand">LEE SU-YOON</a>
-    <div class="room3d-header-actions">
-      <span id="room-light-label">DAY</span>
-      <a href="index.html">← HOME</a>
+<body>
+  <header><a href="index.html" class="brand">LEE SU-YOON</a><a href="index.html">← HOME</a></header>
+  <main class="page">
+    <p class="kicker">ABOUT ME</p>
+    <div class="about-layout">
+      <div class="profile-photo-slot">
+        <img id="profile-image" class="profile-image" src="" alt="profile" hidden>
+        <div id="profile-photo-empty" class="profile-photo-empty">NO PROFILE PHOTO</div>
+        <button id="edit-button" class="edit" data-admin-only hidden>EDIT PROFILE ↗</button>
+      </div>
+      <article id="profile-content">
+        <h1 id="profile-name">이수윤</h1>
+        <div id="profile-info" class="info"></div>
+        <section><div id="profile-statement" class="statement"></div></section>
+      </article>
     </div>
-  </header>
-
-  <main class="room3d-page" aria-label="My room">
-    <section id="room3d-stage" class="room3d-stage" aria-label="Interactive isometric personal room">
-      <div id="room3d-canvas" class="room3d-canvas" aria-hidden="true"></div>
-      <div id="room3d-loading" class="room3d-loading"><span></span><p>BUILDING MY ROOM</p></div>
-      <button id="room-edit-entry" class="room3d-edit-entry" type="button" data-admin-only hidden>EDIT</button>
-    </section>
   </main>
-
-  <dialog id="room-content" class="room-content" aria-label="Room content">
-    <div class="room-content-head">
-      <button id="room-content-back" type="button" hidden>← BACK</button>
-      <small id="room-content-index">MY ROOM</small>
-      <button id="room-content-close" type="button" aria-label="Close">×</button>
-    </div>
-    <div id="room-content-body" class="room-content-body"></div>
+  <dialog id="editor">
+    <form id="profile-form">
+      <button type="button" id="close-editor" class="close">×</button>
+      <p class="kicker">PROFILE SETTINGS</p>
+      <label>NAME<input id="edit-name"></label>
+      <div class="unit-controls" data-unit="name"></div>
+      <label class="profile-color-setting">NAME COLOR<span><input id="name-color" type="color" value="#161616"><input id="name-color-hex" type="text" value="#161616" maxlength="7"></span></label>
+      <label>INFO <small>(one line each)</small><textarea id="edit-info" rows="7"></textarea></label>
+      <div class="unit-controls" data-unit="info"></div>
+      <label class="profile-color-setting">INFO COLOR<span><input id="info-color" type="color" value="#161616"><input id="info-color-hex" type="text" value="#161616" maxlength="7"></span></label>
+      <label>TEXT<textarea id="edit-statement" rows="12"></textarea></label>
+      <div class="unit-controls" data-unit="statement"></div>
+      <label class="profile-color-setting">TEXT COLOR<span><input id="statement-color" type="color" value="#161616"><input id="statement-color-hex" type="text" value="#161616" maxlength="7"></span></label>
+      <label>PROFILE PHOTO SIZE
+        <div class="profile-size-control">
+          <input id="edit-photo-scale" type="range" min="10" max="160" step="1" value="100">
+          <input id="edit-photo-scale-number" type="number" min="10" max="160" step="1" value="100"><span>%</span>
+        </div>
+        <small>10% — 160%</small>
+      </label>
+      <label>NEW PROFILE PHOTO<input id="edit-image" type="file" accept="image/*"></label>
+      <button class="black" type="button" id="save-profile">SAVE</button>
+    </form>
   </dialog>
-
-  <dialog id="room-photo-lightbox" class="room-photo-lightbox">
-    <button id="room-photo-close" type="button" aria-label="Close">×</button>
-    <button id="room-photo-prev" type="button" aria-label="Previous photo">←</button>
-    <figure><img id="room-photo-image" alt=""><figcaption><span id="room-photo-date"></span><span id="room-photo-location"></span><p id="room-photo-caption"></p></figcaption></figure>
-    <button id="room-photo-next" type="button" aria-label="Next photo">→</button>
-  </dialog>
-
-  <div id="room3d-toast" class="room3d-toast" role="status" aria-live="polite"></div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js?v=20260818-imgfix2"></script>
   <script src="supabase-site.js?v=20260902-auth4"></script>
-  <script src="room-content.js?v=20260902-room8"></script>
-  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
-  <script type="module" src="room3d.js?v=20260902-room8"></script>
+  <script src="saved-layouts.js?v=20260818-imgfix2"></script>
+  <script src="page-editor.js?v=20260902-homeedit4"></script>
   <script src="boot-ready.js?v=20260818-imgfix2"></script>
 </body>
 </html>
