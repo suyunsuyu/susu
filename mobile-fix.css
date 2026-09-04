@@ -95,10 +95,16 @@
     pointer-events: auto !important;
   }
 
-  body.home #home-nav > a:nth-child(5) {
+  body.home #home-nav > #home-link-tools,
+  body.home #home-nav > #home-link-tools.pe-transformed,
+  body.home #home-nav > #home-link-tools.pe-hidden-by-editor {
     position: absolute !important;
-    right: 0 !important;
+    left: auto !important;
+    right: 7% !important;
+    top: auto !important;
     bottom: 0 !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
   }
 
   body.home #home-nav > a > span {
