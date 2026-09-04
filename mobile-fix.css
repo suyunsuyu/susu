@@ -1,32 +1,70 @@
-/* Homepage mobile guardrails: keep the five primary destinations in view. */
+/* Responsive homepage composition for phones. */
 @media (max-width: 720px) {
-  body.home #home-nav,
-  body.home #home-nav.pe-hidden-by-editor {
+  body.home .home-main,
+  body.home.mobile-layout-recommended .home-main,
+  body.home.mobile-layout-compact .home-main,
+  body.home.mobile-layout-visual .home-main {
+    position: relative !important;
+    display: flex !important;
+    min-height: 100svh !important;
+    height: 100svh !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 24px 10px max(24px, env(safe-area-inset-bottom)) !important;
+    gap: 0 !important;
+    overflow: hidden !important;
+  }
+
+  body.home #home-cat,
+  body.home #home-cat.pe-transformed,
+  body.home.mobile-layout-recommended #home-cat,
+  body.home.mobile-layout-compact #home-cat,
+  body.home.mobile-layout-visual #home-cat {
     position: relative !important;
     inset: auto !important;
-    z-index: 20 !important;
-    display: grid !important;
-    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
-    align-items: center !important;
-    justify-content: stretch !important;
-    flex: 0 0 auto !important;
-    width: min(96vw, 520px) !important;
-    max-width: none !important;
+    z-index: 3 !important;
+    display: block !important;
+    width: min(66.666vw, 360px) !important;
+    max-width: 360px !important;
     height: auto !important;
+    max-height: 54svh !important;
     margin: 0 auto !important;
-    padding: 0 !important;
-    gap: 0 !important;
-    overflow: visible !important;
-    color: #777 !important;
-    font-size: clamp(6px, 1.9vw, 8px) !important;
-    line-height: 1 !important;
-    letter-spacing: .02em !important;
+    object-fit: contain !important;
     visibility: visible !important;
     opacity: 1 !important;
     translate: none !important;
     scale: none !important;
     transform: none !important;
-    pointer-events: auto !important;
+  }
+
+  body.home #home-nav,
+  body.home #home-nav.pe-hidden-by-editor {
+    position: absolute !important;
+    inset: auto !important;
+    top: 22svh !important;
+    left: 50% !important;
+    z-index: 20 !important;
+    display: grid !important;
+    grid-template-columns: repeat(4, max-content) !important;
+    align-items: start !important;
+    justify-content: space-between !important;
+    width: min(82vw, 520px) !important;
+    max-width: none !important;
+    height: 50svh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    overflow: visible !important;
+    color: #777 !important;
+    font-size: clamp(7px, 2vw, 9px) !important;
+    line-height: 1 !important;
+    letter-spacing: .08em !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    translate: none !important;
+    scale: none !important;
+    transform: translateX(-50%) !important;
+    pointer-events: none !important;
   }
 
   body.home #home-nav > a,
@@ -57,6 +95,12 @@
     pointer-events: auto !important;
   }
 
+  body.home #home-nav > a:nth-child(5) {
+    position: absolute !important;
+    right: 0 !important;
+    bottom: 0 !important;
+  }
+
   body.home #home-nav > a > span {
     display: block !important;
     min-width: 0 !important;
@@ -70,5 +114,16 @@
     translate: none !important;
     scale: none !important;
     transform: none !important;
+  }
+}
+
+@media (max-width: 360px) {
+  body.home #home-nav,
+  body.home #home-nav.pe-hidden-by-editor {
+    top: 20svh !important;
+    width: 90vw !important;
+    height: 54svh !important;
+    font-size: 7px !important;
+    letter-spacing: .04em !important;
   }
 }
