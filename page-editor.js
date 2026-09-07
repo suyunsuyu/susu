@@ -208,7 +208,10 @@
   function applySaved() {
     renderCustom();
     renderSubnav();
-    Object.entries(state.styles).forEach(([key, data]) => applyStyle(findTarget(key), data));
+    Object.entries(state.styles).forEach(([key, data]) => {
+      const target = findTarget(key);
+      if (!isProtectedElement(target)) applyStyle(target, data);
+    });
     Object.entries(state.content).forEach(([key, text]) => {
       const el = findTarget(key);
       if (el && !isProtectedElement(el)) setEditableText(el, text);
@@ -332,6 +335,7 @@
   }
 
   function selectElement(el) {
+    if (isProtectedElement(el)) el = null;
     if (selected) selected.classList.remove('pe-selected-outline');
     selected = el;
     if (selected) selected.classList.add('pe-selected-outline');
@@ -343,7 +347,7 @@
 
   function updateSelected(prop, value) {
     const d = getSelectedData();
-    if (!selected || !d) return;
+    if (!selected || isProtectedElement(selected) || !d) return;
     if (value === '' || value === null) delete d[prop]; else d[prop] = value;
     applyStyle(selected, d);
     save();

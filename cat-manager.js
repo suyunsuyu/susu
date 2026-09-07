@@ -126,6 +126,7 @@
       const hero = payload.hero;
       const heroMedia = $('#cat-hero-media');
       heroMedia.innerHTML = hero.image ? `<img src="${esc(hero.image)}" alt="${esc(hero.title || 'My cat')}">` : '<span>MAIN IMAGE</span>';
+      heroMedia.classList.toggle('has-image', !!hero.image);
       $('#cat-hero').classList.toggle('is-empty', !hero.image);
       $('#cat-hero-copy').innerHTML = `${hero.title ? `<h1>${esc(hero.title)}</h1>` : ''}${hero.description ? `<p>${esc(hero.description)}</p>` : ''}`;
       $('#cat-edit-hero').hidden = !admin;
