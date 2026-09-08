@@ -8,7 +8,7 @@
   <meta http-equiv="Expires" content="0">
   <script>document.documentElement.classList.add("site-booting");setTimeout(()=>document.documentElement.classList.remove("site-booting"),3500)</script>
   <title>My Cat — Lee Su-yoon</title>
-  <link rel="stylesheet" href="style.css?v=20260904-cathero4">
+  <link rel="stylesheet" href="style.css?v=20260907-catdates1">
   <link rel="stylesheet" href="cursor.css?v=20260904-states2">
   <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
 </head>
@@ -17,17 +17,30 @@
   <main class="page cats-page cat-archive-page">
     <div class="cats-heading">
       <p class="kicker">MY CAT</p>
-      <button id="cat-add-album" class="edit" type="button" data-admin-only hidden>+ ADD ALBUM</button>
+      <button id="cat-add-album" class="edit" type="button" data-admin-only hidden>+ ADD PHOTOS</button>
     </div>
     <section id="cat-hero" class="cat-hero" aria-label="My cat main image" data-editor-protected>
-      <div id="cat-hero-media" class="cat-hero-media"></div>
-      <div id="cat-hero-copy" class="cat-hero-copy"></div>
-      <button id="cat-edit-hero" class="cat-hero-edit" type="button" data-admin-only hidden>EDIT MAIN IMAGE</button>
+      <button id="cat-copy-open" class="cat-hero-copy" type="button" aria-label="Open my cat text"></button>
+      <button id="cat-hero-open" class="cat-hero-open" type="button" aria-label="Open my cat profile">
+        <span id="cat-hero-media" class="cat-hero-media"></span>
+      </button>
+      <button id="cat-edit-hero" class="cat-hero-edit" type="button" data-admin-only hidden>CHANGE IMAGE</button>
     </section>
-    <div class="cat-archive-heading"><span>ARCHIVE</span><span>YEAR · MONTH</span></div>
+    <div class="cat-archive-heading"><span>DATES</span></div>
     <section id="cat-timeline" class="cat-timeline" aria-live="polite"></section>
-    <p id="cats-empty" class="cats-empty">NO ALBUMS YET</p>
+    <p id="cats-empty" class="cats-empty">NO DATES YET</p>
   </main>
+
+  <dialog id="cat-profile" class="cat-profile" aria-label="My cat profile">
+    <div class="cat-profile-head"><small>MY CAT</small><button id="cat-profile-close" type="button" aria-label="Close">×</button></div>
+    <div id="cat-profile-view" class="cat-profile-view"></div>
+    <form id="cat-profile-form" class="cat-profile-form" data-admin-only hidden>
+      <label>NAME<input id="cat-profile-title" maxlength="80"></label>
+      <label>TEXT<textarea id="cat-profile-description" rows="6"></textarea></label>
+      <p id="cat-profile-status" class="cat-status"></p>
+      <button id="cat-profile-save" class="cat-save" type="submit">SAVE</button>
+    </form>
+  </dialog>
 
   <dialog id="cat-editor" class="cat-editor">
     <form id="cat-editor-form" class="cat-editor-inner">
@@ -38,19 +51,18 @@
     </form>
   </dialog>
 
-  <dialog id="cat-album-viewer" class="cat-album-viewer" aria-label="Cat photo album">
+  <dialog id="cat-album-viewer" class="cat-album-viewer" aria-label="Cat photos by date">
     <div class="cat-album-viewer-head">
-      <div><small id="cat-viewer-month"></small><h2 id="cat-viewer-title"></h2></div>
+      <time id="cat-viewer-month"></time>
       <button id="cat-viewer-close" type="button" aria-label="Close">×</button>
     </div>
-    <p id="cat-viewer-description"></p>
     <div id="cat-viewer-grid" class="cat-viewer-grid"></div>
   </dialog>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js?v=20260818-imgfix2"></script>
   <script src="supabase-site.js?v=20260902-auth4"></script>
-  <script src="cat-manager.js?v=20260904-catarchive2"></script>
+  <script src="cat-manager.js?v=20260907-catdates1"></script>
   <script src="saved-layouts.js?v=20260818-imgfix2"></script>
   <script src="page-editor.js?v=20260904-homeedit5"></script>
   <script src="boot-ready.js?v=20260818-imgfix2"></script>

@@ -1164,35 +1164,31 @@ button.about-archive-open{border-width:0 0 1px;background:none;color:#161616;cur
 .cat-archive-page .cats-heading .kicker{margin:0;color:#777}
 .cat-archive-page .cats-heading .edit{border:0;border-bottom:1px solid #777;background:none;padding:4px 0;color:#666;font:8px var(--mono);letter-spacing:.09em}
 .cat-hero{position:relative;margin-bottom:64px}
+.cat-hero-copy{display:grid;width:100%;grid-template-columns:minmax(0,1fr) minmax(220px,.45fr);gap:30px;margin:0 0 13px;border:0;background:none;padding:0;color:#858580;text-align:left;cursor:pointer}
+.cat-hero-copy[hidden]{display:none}
+.cat-hero-copy strong{color:#666;font:9px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.cat-hero-copy span{color:#8b8b86;font:10px/1.65 'Noto Sans SC',sans-serif;white-space:pre-wrap}
+.cat-hero-copy:hover{opacity:.6}
+.cat-hero-open{display:block;width:100%;border:0;background:none;padding:0;color:inherit;text-align:inherit;cursor:pointer}
+.cat-hero-open:focus-visible{outline:1px solid #161616;outline-offset:5px}
 .cat-hero-media{display:grid;width:100%;aspect-ratio:16/7;place-items:center;overflow:hidden;background:#f2f2ee;color:#aaa;font:8px var(--mono);letter-spacing:.16em}
 .cat-hero.is-empty .cat-hero-media{border:1px dashed #c9c9c3;background:#fafaf8}
 .cat-hero-media.has-image{display:block;aspect-ratio:auto;min-height:0;overflow:visible}
 .cat-hero-media img{display:block;width:100%;height:auto;max-width:100%;max-height:none;object-fit:contain;object-position:center;filter:none!important}
-.cat-hero-copy{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,.45fr);gap:30px;margin-top:11px}
-.cat-hero-copy h1{margin:0;color:#666;font:9px/1.3 var(--mono);letter-spacing:.12em;text-transform:uppercase}
-.cat-hero-copy p{margin:0;color:#8b8b86;font:10px/1.65 'Noto Sans SC',sans-serif;white-space:pre-wrap}
+.cat-hero-open:hover .cat-hero-media img{opacity:.92}
 .cat-hero-edit{position:absolute;right:10px;top:10px;border:1px solid #d0d0ca;background:rgba(255,255,255,.92);padding:7px 9px;color:#666;font:8px var(--mono);letter-spacing:.08em}
-.cat-archive-heading{display:flex;justify-content:space-between;margin-bottom:0;border-bottom:1px solid #161616;padding:0 0 9px;color:#7d7d78;font:8px var(--mono);letter-spacing:.12em}
+.cat-archive-heading{display:flex;margin-bottom:0;border-bottom:1px solid #161616;padding:0 0 9px;color:#7d7d78;font:8px var(--mono);letter-spacing:.12em}
 .cat-timeline{display:grid}
-.cat-month-group{display:grid;grid-template-columns:132px minmax(0,1fr);gap:24px;padding:28px 0 42px;border-bottom:1px solid #d7d7d1}
-.cat-month-label{display:flex;flex-direction:column;gap:8px}
-.cat-month-label time{color:#555;font:500 17px/1 var(--serif);letter-spacing:.01em}
-.cat-month-label span{color:#999;font:8px var(--mono);letter-spacing:.09em}
-.cat-album-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px 12px}
-.cat-album-card{position:relative;min-width:0}
-.cat-album-open{display:block;width:100%;border:0;background:none;padding:0;color:#161616;text-align:left}
-.cat-album-open figure{display:grid;margin:0;aspect-ratio:4/3;place-items:center;overflow:hidden;background:#f1f1ed;color:#aaa;font:8px var(--mono);letter-spacing:.08em}
-.cat-album-open img{display:block;width:100%;height:100%;object-fit:cover;filter:none!important;transition:transform .35s ease}
-.cat-album-open:hover img{transform:scale(1.025)}
-.cat-album-open h2{overflow:hidden;margin:8px 0 3px;color:#6f6f6a;font:9px/1.25 var(--mono);letter-spacing:.04em;text-overflow:ellipsis;white-space:nowrap}
-.cat-album-open p{display:-webkit-box;overflow:hidden;margin:0 0 4px;color:#999;font:9px/1.45 'Noto Sans SC',sans-serif;-webkit-box-orient:vertical;-webkit-line-clamp:2}
-.cat-album-open small{color:#aaa;font:7px var(--mono);letter-spacing:.08em}
-.cat-card-admin{display:flex;gap:10px;margin-top:7px}
-.cat-card-admin button{border:0;border-bottom:1px solid #aaa;background:none;padding:2px 0;color:#777;font:7px var(--mono);letter-spacing:.06em}
-.cat-card-admin button:last-child{color:#9c5555}
+.cat-date-row{display:flex;align-items:center;min-height:58px;border-bottom:1px solid #d7d7d1}
+.cat-date-open{flex:1;align-self:stretch;border:0;background:none;padding:0;color:#6d6d68;text-align:left;cursor:pointer}
+.cat-date-open time{font:500 15px/1 var(--mono);letter-spacing:.07em}
+.cat-date-open:hover,.cat-date-open:focus-visible{padding-left:8px;background:#f7f7f4;outline:0}
+.cat-date-admin{display:flex;gap:12px;margin-left:14px}
+.cat-date-admin button{border:0;border-bottom:1px solid #aaa;background:none;padding:3px 0;color:#777;font:7px var(--mono);letter-spacing:.06em;cursor:pointer}
+.cat-date-admin button:last-child{color:#9c5555}
 .cat-archive-page .cats-empty{min-height:28vh;color:#aaa;font-size:8px}
 .cat-editor{width:min(680px,94vw);max-height:90vh;padding:0;border:1px solid #161616;background:#fff}
-.cat-editor::backdrop,.cat-album-viewer::backdrop{background:rgba(255,255,255,.78);backdrop-filter:blur(4px)}
+.cat-editor::backdrop,.cat-album-viewer::backdrop,.cat-profile::backdrop{background:rgba(255,255,255,.78);backdrop-filter:blur(4px)}
 .cat-editor-inner{margin:0;padding:0 22px 22px}
 .cat-editor-head{top:0;margin:0 -22px 20px;padding:16px 22px;background:#fff}
 .cat-editor-fields{display:grid;gap:12px}
@@ -1206,15 +1202,24 @@ button.about-archive-open{border-width:0 0 1px;background:none;color:#161616;cur
 .cat-editor-media img{display:block;width:100%;height:100%;object-fit:contain;filter:none!important}
 .cat-editor-media button{position:absolute;right:3px;top:3px;display:grid;width:23px;height:23px;place-items:center;border:0;background:#fff;color:#161616;font:17px/1 var(--serif)}
 .cat-editor .cat-save{display:block;width:100%;margin-top:12px;background:#161616;color:#fff}
+.cat-profile{width:min(560px,94vw);max-height:86vh;padding:0 24px 28px;border:1px solid #161616;background:#fff;color:#161616}
+.cat-profile-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;margin:0 -24px 24px;padding:17px 24px 14px;border-bottom:1px solid #161616;background:#fff}
+.cat-profile-head small{color:#888;font:8px var(--mono);letter-spacing:.12em}
+.cat-profile-head button{border:0;background:none;padding:0;font:28px/1 var(--serif);cursor:pointer}
+.cat-profile-view h2{margin:0 0 18px;color:#666;font:500 22px/1.25 var(--serif)}
+.cat-profile-view p{margin:0;color:#777;font:14px/1.85 'Noto Sans SC',sans-serif}
+.cat-profile-form{border:0;padding:0}
+.cat-profile-form label{color:#777;font:8px var(--mono);letter-spacing:.09em}
+.cat-profile-form input,.cat-profile-form textarea{display:block;width:100%;margin-top:6px;border:1px solid #c8c8c1;background:#fff;padding:10px;color:#161616;font:14px/1.6 'Noto Sans SC',sans-serif}
+.cat-profile-form textarea{resize:vertical}
+.cat-profile-form .cat-save{display:block;width:100%;min-height:42px;border:1px solid #161616;background:#161616;color:#fff;font:9px var(--mono);letter-spacing:.08em;cursor:pointer}
 .cat-album-viewer{width:min(860px,94vw);max-height:88vh;padding:0 24px 30px;border:1px solid #161616;background:#fff;color:#161616}
-.cat-album-viewer-head{position:sticky;top:0;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;margin:0 -24px 20px;padding:17px 24px 14px;border-bottom:1px solid #161616;background:#fff}
-.cat-album-viewer-head small{color:#888;font:8px var(--mono);letter-spacing:.1em}
-.cat-album-viewer-head h2{margin:5px 0 0;color:#666;font:10px var(--mono);letter-spacing:.08em}
+.cat-album-viewer-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;margin:0 -24px 20px;padding:17px 24px 14px;border-bottom:1px solid #161616;background:#fff}
+.cat-album-viewer-head time{color:#777;font:10px var(--mono);letter-spacing:.1em}
 .cat-album-viewer-head button{border:0;background:none;padding:0;font:28px/1 var(--serif)}
-.cat-album-viewer>p{margin:0 0 18px;color:#777;font:10px/1.7 'Noto Sans SC',sans-serif;white-space:pre-wrap}
 .cat-viewer-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .cat-viewer-grid figure{margin:0;aspect-ratio:4/3;overflow:hidden;background:#f2f2ee}
-.cat-viewer-grid img{display:block;width:100%;height:100%;object-fit:cover;filter:none!important}
+.cat-viewer-grid img{display:block;width:100%;height:100%;object-fit:contain;filter:none!important}
 
 /* ===== About · clean archive tails and Instagram ===== */
 .about-item-dialog.is-compact-archive .about-archive-card,
@@ -1241,16 +1246,16 @@ button.about-archive-open{border-width:0 0 1px;background:none;color:#161616;cur
   .cat-archive-page{padding-inline:14px!important}
   .cat-archive-page .cats-heading{margin-bottom:18px}
   .cat-hero{margin-bottom:44px}
+  .cat-hero-copy{grid-template-columns:1fr;gap:4px}
   .cat-hero-media.has-image{aspect-ratio:auto;min-height:0;overflow:visible}
-  .cat-hero-copy{grid-template-columns:1fr;gap:5px}
-  .cat-month-group{grid-template-columns:1fr;gap:14px;padding:22px 0 34px}
-  .cat-month-label{flex-direction:row;align-items:center;justify-content:space-between}
-  .cat-month-label time{font-size:15px}
-  .cat-album-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 9px}
-  .cat-album-open h2{font-size:8px}
+  .cat-date-row{min-height:56px}
+  .cat-date-open time{font-size:14px}
   .cat-editor{width:100vw;max-width:none;max-height:92dvh;margin:auto 0 0;border-width:1px 0 0}
   .cat-editor-media{grid-template-columns:repeat(3,minmax(0,1fr))}
   .cat-editor-fields input,.cat-editor-fields textarea{min-height:44px;font-size:16px}
+  .cat-profile{width:100vw;max-width:none;max-height:88dvh;margin:auto 0 0;padding-inline:16px;border-width:1px 0 0}
+  .cat-profile-head{margin-inline:-16px;padding-inline:16px}
+  .cat-profile-form input,.cat-profile-form textarea{min-height:44px;font-size:16px}
   .cat-album-viewer{width:100vw;max-width:none;max-height:92dvh;margin:auto 0 0;padding-inline:14px;border-width:1px 0 0}
   .cat-album-viewer-head{margin-inline:-14px;padding-inline:14px}
   .cat-viewer-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
