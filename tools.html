@@ -8,8 +8,8 @@
   <meta http-equiv="Expires" content="0">
   <script>document.documentElement.classList.add("site-booting");setTimeout(()=>document.documentElement.classList.remove("site-booting"),3500)</script>
   <title>My Cat — Lee Su-yoon</title>
-  <link rel="stylesheet" href="style.css?v=20260907-catdates1">
-  <link rel="stylesheet" href="cursor.css?v=20260904-states2">
+  <link rel="stylesheet" href="style.css?v=20260921-profile1">
+  <link rel="stylesheet" href="cursor.css?v=20260921-pointer1">
   <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
 </head>
 <body class="cat-journal-page">
@@ -20,10 +20,10 @@
       <button id="cat-add-album" class="edit" type="button" data-admin-only hidden>+ ADD PHOTOS</button>
     </div>
     <section id="cat-hero" class="cat-hero" aria-label="My cat main image" data-editor-protected>
-      <button id="cat-copy-open" class="cat-hero-copy" type="button" aria-label="Open my cat text"></button>
       <button id="cat-hero-open" class="cat-hero-open" type="button" aria-label="Open my cat profile">
         <span id="cat-hero-media" class="cat-hero-media"></span>
       </button>
+      <button id="cat-copy-open" class="cat-hero-copy" type="button" aria-label="Open my cat statement"></button>
       <button id="cat-edit-hero" class="cat-hero-edit" type="button" data-admin-only hidden>CHANGE IMAGE</button>
     </section>
     <div class="cat-archive-heading"><span>DATES</span></div>
@@ -36,7 +36,7 @@
     <div id="cat-profile-view" class="cat-profile-view"></div>
     <form id="cat-profile-form" class="cat-profile-form" data-admin-only hidden>
       <label>NAME<input id="cat-profile-title" maxlength="80"></label>
-      <label>TEXT<textarea id="cat-profile-description" rows="6"></textarea></label>
+      <label>STATEMENT<textarea id="cat-profile-description" rows="6"></textarea></label>
       <p id="cat-profile-status" class="cat-status"></p>
       <button id="cat-profile-save" class="cat-save" type="submit">SAVE</button>
     </form>
@@ -62,7 +62,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js?v=20260818-imgfix2"></script>
   <script src="supabase-site.js?v=20260902-auth4"></script>
-  <script src="cat-manager.js?v=20260907-catdates1"></script>
+  <script src="cat-manager.js?v=20260921-profile1"></script>
   <script src="saved-layouts.js?v=20260818-imgfix2"></script>
   <script src="page-editor.js?v=20260904-homeedit5"></script>
   <script src="boot-ready.js?v=20260818-imgfix2"></script>

@@ -126,7 +126,7 @@
       const form = $('#cat-profile-form');
       view.hidden = admin;
       form.hidden = !admin;
-      view.innerHTML = `${hero.title ? `<h2>${esc(hero.title)}</h2>` : '<h2>MY CAT</h2>'}${hero.description ? `<p>${esc(hero.description).replace(/\n/g, '<br>')}</p>` : ''}`;
+      view.innerHTML = `${hero.title ? `<h2>${esc(hero.title)}</h2>` : ''}${hero.description ? `<p>${esc(hero.description).replace(/\n/g, '<br>')}</p>` : '<div class="cat-profile-empty" aria-hidden="true"></div>'}`;
       if (admin) {
         $('#cat-profile-title').value = hero.title;
         $('#cat-profile-description').value = hero.description;
@@ -162,8 +162,7 @@
       $('#cat-hero').classList.toggle('is-empty', !hero.image);
       const heroCopy = $('#cat-copy-open');
       heroCopy.innerHTML = `${hero.title ? `<strong>${esc(hero.title)}</strong>` : ''}${hero.description ? `<span>${esc(hero.description).replace(/\n/g, '<br>')}</span>` : ''}`;
-      if (admin && !heroCopy.innerHTML) heroCopy.innerHTML = '<span>+ ADD TEXT</span>';
-      heroCopy.hidden = !admin && !hero.title && !hero.description;
+      heroCopy.hidden = false;
       $('#cat-edit-hero').hidden = !admin;
       $('#cat-add-album').hidden = !admin;
 

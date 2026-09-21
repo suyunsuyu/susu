@@ -14,7 +14,7 @@
     flowers:'FLOWERS · 花',
     music:'MUSIC',
     camera:'CAMERA',
-    personal:'INSTAGRAM',
+    personal:'PROFILE',
     favorites:'FILM & TV'
   };
 
@@ -111,7 +111,7 @@
     flowers:[],
     music:[],
     albums:[],
-    personal:{ title:'INSTAGRAM', handle:'', text:'', url:'', image:'' },
+    personal:{ name:'', birthDate:'', mbti:'', favoriteFlower:'', hobbies:'', dream:'', message:'', image:'' },
     favorites:[],
     presentation:Object.fromEntries(sectionKeys.map(key => [key, makePresentation(key)]))
   });
@@ -139,12 +139,11 @@
       image:text(item?.image)
     })).filter(item => item.name || item.description || item.image);
     base.music = list(source.music).map(item => ({
-      ...item,
       title:text(item?.title),
       artist:text(item?.artist),
-      image:text(item?.image),
+      reason:text(item?.reason || item?.note),
       url:text(item?.url)
-    })).filter(item => item.title || item.image || item.url);
+    })).filter(item => item.title || item.artist || item.reason || item.url);
     base.albums = list(source.albums).map(item => ({
       ...item,
       title:text(item?.title),
@@ -152,12 +151,15 @@
       photos:list(item?.photos || item?.images).map(text).filter(Boolean),
       layout:['grid', 'list'].includes(text(item?.layout)) ? text(item.layout) : 'grid'
     })).filter(item => item.title || item.photos.length);
+    const oldPersonalText = text(source.personal?.text);
     base.personal = {
-      ...(source.personal && typeof source.personal === 'object' ? source.personal : {}),
-      title:['ABOUT ME', '个人简介'].includes(text(source.personal?.title).toUpperCase()) ? 'INSTAGRAM' : text(source.personal?.title) || 'INSTAGRAM',
-      handle:text(source.personal?.handle),
-      text:text(source.personal?.text),
-      url:safeLink(source.personal?.url),
+      name:text(source.personal?.name),
+      birthDate:normalizeDate(source.personal?.birthDate),
+      mbti:text(source.personal?.mbti),
+      favoriteFlower:text(source.personal?.favoriteFlower),
+      hobbies:text(source.personal?.hobbies),
+      dream:text(source.personal?.dream),
+      message:text(source.personal?.message || (oldPersonalText === '-' ? '' : oldPersonalText)),
       image:text(source.personal?.image)
     };
     base.favorites = list(source.favorites).map(item => ({
@@ -167,14 +169,14 @@
       note:text(item?.note),
       image:text(item?.image),
       url:text(item?.url)
-    })).filter(item => item.title || item.image || item.url);
+    })).filter(item => item.title || item.note || item.image || item.url);
     sectionKeys.forEach(key => {
       const raw = source.presentation?.[key] && typeof source.presentation[key] === 'object' ? source.presentation[key] : {};
       const storedTitle = text(raw.title);
       base.presentation[key] = {
         ...raw,
         kicker:text(raw.kicker) || 'ABOUT',
-        title:key === 'personal' && ['ABOUT ME', '个人简介'].includes(storedTitle.toUpperCase()) ? 'INSTAGRAM' : storedTitle || sectionTitles[key]
+        title:key === 'personal' && ['ABOUT ME', '个人简介', 'INSTAGRAM', 'INS'].includes(storedTitle.toUpperCase()) ? 'PROFILE' : storedTitle || sectionTitles[key]
       };
     });
     return base;
@@ -270,10 +272,10 @@
     if (kind === 'presentation' && next.presentation[node.dataset.inlineSection] && ['kicker', 'title'].includes(field)) next.presentation[node.dataset.inlineSection][field] = value;
     else if (kind === 'calendar' && field === 'listTitle') next.calendar.listTitle = value || 'INDEX';
     else if (kind === 'album' && next.albums[index] && field === 'title') next.albums[index].title = value;
-    else if (kind === 'music' && next.music[index] && field === 'title') next.music[index].title = value;
-    else if (kind === 'favorite' && next.favorites[index] && field === 'title') next.favorites[index].title = value;
+    else if (kind === 'music' && next.music[index] && ['title', 'reason'].includes(field)) next.music[index][field] = value;
+    else if (kind === 'favorite' && next.favorites[index] && ['title', 'note'].includes(field)) next.favorites[index][field] = value;
     else if (kind === 'flower' && next.flowers[index] && ['name', 'description'].includes(field)) next.flowers[index][field] = value;
-    else if (kind === 'personal' && ['title', 'handle', 'text'].includes(field)) next.personal[field] = value;
+    else if (kind === 'personal' && ['name', 'birthDate', 'mbti', 'favoriteFlower', 'hobbies', 'dream', 'message'].includes(field)) next.personal[field] = field === 'birthDate' ? normalizeDate(value) : value;
     else throw new Error('这个位置不能直接编辑。');
   }
 
@@ -381,7 +383,7 @@
     return `<div class="about-archive-list">${items.map((item, index) => {
       const title = kind === 'flowers' ? item.name : item.title;
       const inlineKind = kind === 'favorites' ? 'favorite' : kind === 'camera' ? 'album' : kind === 'flowers' ? 'flower' : 'music';
-      const extra = kind === 'flowers' && item.description ? `<p${inlineAttrs('flower', 'description', { index, multiline:true })}>${esc(item.description)}</p>` : '';
+      const extra = kind === 'flowers' && (item.description || window.SUY_IS_ADMIN) ? `<div class="about-item-reason"><small>WHY I LIKE IT</small><p${inlineAttrs('flower', 'description', { index, multiline:true })}>${item.description ? esc(item.description) : '&#8203;'}</p></div>` : kind === 'favorites' && (item.note || window.SUY_IS_ADMIN) ? `<div class="about-item-reason"><small>WHY I LIKE IT</small><p${inlineAttrs('favorite', 'note', { index, multiline:true })}>${item.note ? esc(item.note) : '&#8203;'}</p></div>` : '';
       const url = safeLink(item.url);
       const spec = kind === 'music' ? playerSpec(url) : null;
       const credit = kind === 'music' ? text(item.artist) || sourceName(url) : '';
@@ -392,7 +394,9 @@
           ? `${spec ? `<button type="button" class="about-archive-open" data-play-music="${index}" aria-expanded="false">PLAY</button>` : ''}${source}`
           : source;
       const admin = window.SUY_IS_ADMIN ? `<div class="about-archive-admin"><button type="button" data-edit-card="${kind}" data-card-index="${index}">EDIT</button><button type="button" data-delete-card="${kind}" data-card-index="${index}">DELETE</button></div>` : '';
-      const meta = `<div class="about-archive-meta"><h3${inlineAttrs(inlineKind, kind === 'flowers' ? 'name' : 'title', { index })}>${esc(title || 'UNTITLED')}</h3>${credit ? `<small class="about-archive-credit">CREDIT · ${esc(credit)}</small>` : ''}${extra}</div>`;
+      const reason = kind === 'music' && (item.reason || window.SUY_IS_ADMIN) ? `<div class="about-item-reason"><small>WHY I LIKE IT</small><p${inlineAttrs('music', 'reason', { index, multiline:true })}>${item.reason ? esc(item.reason) : '&#8203;'}</p></div>` : '';
+      const meta = `<div class="about-archive-meta"><h3${inlineAttrs(inlineKind, kind === 'flowers' ? 'name' : 'title', { index })}>${esc(title || 'UNTITLED')}</h3>${credit ? `<small class="about-archive-credit">CREDIT · ${esc(credit)}</small>` : ''}${extra}${reason}</div>`;
+      if (kind === 'music') return `<article class="about-archive-card about-music-card">${meta}<div class="about-archive-tail"><div class="about-archive-links">${open}</div>${admin}</div></article>`;
       if (['camera', 'music', 'favorites'].includes(kind)) return `<article class="about-archive-card">${coverMarkup(kind, item, index)}${meta}<div class="about-archive-tail"><div class="about-archive-links">${open}</div>${admin}</div></article>`;
       return `<article class="about-archive-card">${coverMarkup(kind, item, index)}<div class="about-archive-meta"><h3${inlineAttrs(inlineKind, 'name', { index })}>${esc(title || 'UNTITLED')}</h3>${extra}<div class="about-archive-links">${open}</div>${admin}</div></article>`;
     }).join('')}</div>`;
@@ -400,13 +404,19 @@
 
   function personalMarkup() {
     const value = data.personal;
-    const destination = safeLink(value.url);
-    const art = value.image ? `<img src="${esc(value.image)}" alt="${esc(value.title)}" loading="lazy">` : '<span aria-hidden="true">◎</span>';
-    const link = destination ? `<a class="about-instagram-open" href="${esc(destination)}" target="_blank" rel="noreferrer">OPEN INSTAGRAM ↗</a>` : '';
-    return `<article class="about-instagram-card">
-      <div class="about-instagram-cover">${art}</div>
-      <div class="about-instagram-meta"><small>INSTAGRAM</small><h3${inlineAttrs('personal', 'title')}>${esc(value.title)}</h3>${value.handle || window.SUY_IS_ADMIN ? `<p class="about-instagram-handle${value.handle ? '' : ' is-admin-placeholder'}"${inlineAttrs('personal', 'handle')}>${esc(value.handle || '@username')}</p>` : ''}${value.text || window.SUY_IS_ADMIN ? `<div class="about-personal-text${value.text ? '' : ' is-admin-placeholder'}"${inlineAttrs('personal', 'text', { multiline:true })}>${esc(value.text || '双击添加简介')}</div>` : ''}</div>
-      <div class="about-instagram-tail">${link}</div>
+    const field = (label, key, multiline = false) => `<div class="about-profile-field"><dt>${label}</dt><dd${inlineAttrs('personal', key, { multiline })}>${value[key] ? esc(value[key]) : '&#8203;'}</dd></div>`;
+    const art = value.image ? `<img src="${esc(value.image)}" alt="" loading="lazy">` : '<span aria-hidden="true">PHOTO</span>';
+    return `<article class="about-profile-book">
+      <figure class="about-profile-photo">${art}</figure>
+      <dl class="about-profile-details">
+        ${field('NAME', 'name')}
+        ${field('DATE OF BIRTH', 'birthDate')}
+        ${field('MBTI', 'mbti')}
+        ${field('FAVORITE FLOWER', 'favoriteFlower')}
+        ${field('HOBBIES', 'hobbies', true)}
+        ${field('DREAM', 'dream', true)}
+      </dl>
+      <section class="about-profile-message"><small>SOMETHING I WANT TO SAY</small><p${inlineAttrs('personal', 'message', { multiline:true })}>${value.message ? esc(value.message) : '&#8203;'}</p></section>
     </article>`;
   }
 
@@ -437,7 +447,7 @@
     if (dialogItem === 'music') label = '+ MUSIC';
     if (dialogItem === 'camera') label = '+ ALBUM';
     if (dialogItem === 'favorites') label = '+ FILM / TV';
-    if (dialogItem === 'personal') label = 'EDIT INSTAGRAM';
+    if (dialogItem === 'personal') label = 'EDIT PROFILE';
     if (dialogItem.startsWith('album:')) label = 'EDIT ALBUM';
     button.hidden = !(admin && label);
     button.textContent = label;
@@ -613,26 +623,45 @@
   function openCardEditor(kind, index = -1) {
     if (!window.SUY_IS_ADMIN) return;
     const current = kind === 'personal' ? data.personal : itemsFor(kind)[index] || {};
-    const existingMedia = kind === 'camera' ? [...list(current.photos)] : [text(current.image)].filter(Boolean);
+    const existingMedia = kind === 'camera' ? [...list(current.photos)] : kind === 'music' ? [] : [text(current.image)].filter(Boolean);
     editorState = { kind, index, current:{ ...current }, existingMedia, pendingFiles:[], previewUrls:[] };
+    if (kind === 'personal') {
+      $('#about-editor-title').textContent = 'EDIT PROFILE';
+      $('#about-editor-body').innerHTML = `<section class="about-card-editor-fields about-profile-editor-fields">
+        <label>NAME<input id="about-profile-name" value="${esc(current.name || '')}" maxlength="80"></label>
+        <label>DATE OF BIRTH<input id="about-profile-birth" type="date" value="${esc(current.birthDate || '')}"></label>
+        <label>MBTI<input id="about-profile-mbti" value="${esc(current.mbti || '')}" maxlength="20"></label>
+        <label>FAVORITE FLOWER<input id="about-profile-flower" value="${esc(current.favoriteFlower || '')}" maxlength="80"></label>
+        <label>HOBBIES<textarea id="about-profile-hobbies" rows="3">${esc(current.hobbies || '')}</textarea></label>
+        <label>DREAM<textarea id="about-profile-dream" rows="3">${esc(current.dream || '')}</textarea></label>
+        <label>SOMETHING I WANT TO SAY<textarea id="about-profile-message" rows="5">${esc(current.message || '')}</textarea></label>
+        <label class="about-card-upload">ID PHOTO<input id="about-card-files" type="file" accept="image/*"></label>
+        <div id="about-editor-media-preview" class="about-editor-media-preview">${editorMediaMarkup()}</div>
+      </section>`;
+      $('#about-editor-status').textContent = '';
+      $('#about-editor-save').textContent = 'SAVE';
+      $('#about-editor-save').disabled = false;
+      const dialog = $('#about-editor-dialog');
+      if (dialog && !dialog.open) dialog.showModal();
+      requestAnimationFrame(() => $('#about-profile-name')?.focus());
+      return;
+    }
     const labels = {
       camera:['ALBUM', 'ALBUM NAME', 'PHOTOS'],
-      music:['MUSIC', 'TITLE', 'COVER'],
+      music:['MUSIC', 'TITLE', ''],
       favorites:['FILM / TV', 'TITLE', 'COVER'],
-      flowers:['FLOWER', 'NAME', 'PHOTO'],
-      personal:['INSTAGRAM', 'DISPLAY NAME', 'PROFILE IMAGE']
+      flowers:['FLOWER', 'NAME', 'PHOTO']
     }[kind];
-    $('#about-editor-title').textContent = `${index >= 0 || kind === 'personal' ? 'EDIT' : 'NEW'} ${labels[0]}`;
+    $('#about-editor-title').textContent = `${index >= 0 ? 'EDIT' : 'NEW'} ${labels[0]}`;
     const linkLabel = kind === 'music' ? 'OFFICIAL PLAYER / AUDIO LINK' : 'SOURCE LINK';
-    const linkField = ['music', 'favorites', 'personal'].includes(kind) ? `<div class="about-link-import"><label>${kind === 'personal' ? 'INSTAGRAM PROFILE LINK' : linkLabel}<input id="about-card-link" type="url" value="${esc(current.url || '')}" placeholder="https://"></label>${kind === 'personal' ? '' : '<button id="about-detect-cover" type="button">GET COVER</button>'}<small id="about-link-preview-status"></small></div>` : '';
+    const linkField = ['music', 'favorites'].includes(kind) ? `<div class="about-link-import"><label>${linkLabel}<input id="about-card-link" type="url" value="${esc(current.url || '')}" placeholder="https://"></label>${kind === 'favorites' ? '<button id="about-detect-cover" type="button">GET COVER</button>' : ''}<small id="about-link-preview-status"></small></div>` : '';
     const creditField = kind === 'music' ? `<label>CREDIT / SOURCE<input id="about-card-credit" value="${esc(current.artist || '')}" maxlength="100" placeholder="Artist · platform"></label>` : '';
-    const handleField = kind === 'personal' ? `<label>INSTAGRAM ID<input id="about-card-handle" value="${esc(current.handle || '')}" maxlength="100" placeholder="@username"></label>` : '';
-    const descriptionField = ['flowers', 'personal'].includes(kind) ? `<label>${kind === 'personal' ? 'SHORT INTRO' : 'DESCRIPTION'}<textarea id="about-card-description" rows="3">${esc(kind === 'personal' ? current.text || '' : current.description || '')}</textarea></label>` : '';
+    const descriptionField = kind === 'flowers' ? `<label>WHY I LIKE IT<textarea id="about-card-description" rows="3">${esc(current.description || '')}</textarea></label>` : '';
+    const reasonField = ['music', 'favorites'].includes(kind) ? `<label>WHY I LIKE IT<textarea id="about-card-reason" rows="4">${esc(kind === 'music' ? current.reason || '' : current.note || '')}</textarea></label>` : '';
+    const uploadField = kind === 'music' ? '' : `<label class="about-card-upload">${labels[2]}<input id="about-card-files" type="file" accept="image/*"${kind === 'camera' ? ' multiple' : ''}></label><div id="about-editor-media-preview" class="about-editor-media-preview">${editorMediaMarkup()}</div>`;
     $('#about-editor-body').innerHTML = `<section class="about-card-editor-fields">
       <label>${labels[1]}<input id="about-card-title" value="${esc(kind === 'flowers' ? current.name || '' : current.title || '')}" maxlength="80" required></label>
-      ${linkField}${creditField}${handleField}${descriptionField}
-      <label class="about-card-upload">${labels[2]}<input id="about-card-files" type="file" accept="image/*"${kind === 'camera' ? ' multiple' : ''}></label>
-      <div id="about-editor-media-preview" class="about-editor-media-preview">${editorMediaMarkup()}</div>
+      ${linkField}${creditField}${reasonField}${descriptionField}${uploadField}
     </section>`;
     $('#about-editor-status').textContent = '';
     $('#about-editor-save').textContent = 'SAVE';
@@ -643,7 +672,7 @@
   }
 
   async function detectEditorCover(force = false) {
-    if (!editorState || !['music', 'favorites'].includes(editorState.kind)) return;
+    if (!editorState || editorState.kind !== 'favorites') return;
     const input = $('#about-card-link');
     const status = $('#about-link-preview-status');
     const url = safeLink(input?.value);
@@ -686,10 +715,11 @@
     if (!editorState) return;
     const status = $('#about-editor-status');
     const saveButton = $('#about-editor-save');
+    const isPersonal = editorState.kind === 'personal';
     const titleValue = text($('#about-card-title')?.value);
-    if (!titleValue) { status.textContent = 'PLEASE ENTER A NAME.'; return; }
+    if (!isPersonal && !titleValue) { status.textContent = 'PLEASE ENTER A NAME.'; return; }
     const linkValue = text($('#about-card-link')?.value);
-    if (linkValue && !safeLink(linkValue)) { status.textContent = 'PLEASE ENTER A VALID HTTP LINK.'; return; }
+    if (!isPersonal && linkValue && !safeLink(linkValue)) { status.textContent = 'PLEASE ENTER A VALID HTTP LINK.'; return; }
     saveButton.disabled = true;
     status.textContent = 'SAVING…';
     try {
@@ -702,19 +732,27 @@
       const next = normalize(data);
       const current = { ...editorState.current };
       let item;
-      if (editorState.kind === 'camera') item = { ...current, title:titleValue, description:'', photos:[...editorState.existingMedia, ...uploaded], layout:'grid' };
-      if (editorState.kind === 'music') item = { ...current, title:titleValue, artist:text($('#about-card-credit')?.value), image:uploaded[0] || editorState.existingMedia[0] || '', url:safeLink(linkValue) };
-      if (editorState.kind === 'favorites') item = { ...current, title:titleValue, type:'', note:'', image:uploaded[0] || editorState.existingMedia[0] || '', url:safeLink(linkValue) };
-      if (editorState.kind === 'flowers') item = { ...current, name:titleValue, description:text($('#about-card-description')?.value), image:uploaded[0] || editorState.existingMedia[0] || '' };
-      if (editorState.kind === 'personal') item = { ...current, title:titleValue, handle:text($('#about-card-handle')?.value), text:text($('#about-card-description')?.value), image:uploaded[0] || editorState.existingMedia[0] || '', url:safeLink(linkValue) };
-      if (editorState.kind === 'personal') {
-        next.personal = item;
+      if (isPersonal) {
+        next.personal = {
+          name:text($('#about-profile-name')?.value),
+          birthDate:normalizeDate($('#about-profile-birth')?.value),
+          mbti:text($('#about-profile-mbti')?.value),
+          favoriteFlower:text($('#about-profile-flower')?.value),
+          hobbies:text($('#about-profile-hobbies')?.value),
+          dream:text($('#about-profile-dream')?.value),
+          message:text($('#about-profile-message')?.value),
+          image:uploaded[0] || editorState.existingMedia[0] || ''
+        };
         await persist(next);
         closeEditor();
         renderDialog();
         showStatus('SAVED');
         return;
       }
+      if (editorState.kind === 'camera') item = { ...current, title:titleValue, description:'', photos:[...editorState.existingMedia, ...uploaded], layout:'grid' };
+      if (editorState.kind === 'music') item = { title:titleValue, artist:text($('#about-card-credit')?.value), reason:text($('#about-card-reason')?.value), url:safeLink(linkValue) };
+      if (editorState.kind === 'favorites') item = { ...current, title:titleValue, type:'', note:text($('#about-card-reason')?.value), image:uploaded[0] || editorState.existingMedia[0] || '', url:safeLink(linkValue) };
+      if (editorState.kind === 'flowers') item = { ...current, name:titleValue, description:text($('#about-card-description')?.value), image:uploaded[0] || editorState.existingMedia[0] || '' };
       const target = editorState.kind === 'camera' ? next.albums : editorState.kind === 'music' ? next.music : editorState.kind === 'favorites' ? next.favorites : next.flowers;
       if (editorState.index >= 0) target[editorState.index] = item;
       else target.push(item);
@@ -892,7 +930,7 @@
       if (loaded) data = normalize(loaded);
       else {
         const profile = await window.SUY_ADMIN?.loadContent?.('profile');
-        if (profile) data.personal = { title:'INSTAGRAM', handle:'', text:[text(profile.info), text(profile.statement)].filter(Boolean).join('\n'), url:'', image:'' };
+        if (profile) data.personal = { ...data.personal, message:[text(profile.info), text(profile.statement)].filter(Boolean).join('\n') };
       }
     } catch (error) {
       console.warn('Could not load About content', error);
