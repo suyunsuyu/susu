@@ -160,6 +160,8 @@
       fillSpread(spread, currentIndex);
       prevPage.disabled = currentIndex <= 0;
       nextPage.disabled = currentIndex < 0 || currentIndex >= items.length - 1;
+      role('left-page', spread).classList.toggle('is-turn-ready', !prevPage.disabled);
+      role('right-page', spread).classList.toggle('is-turn-ready', !nextPage.disabled);
       updateActiveCalendarDate();
     }
 
@@ -266,16 +268,33 @@
 
       const leaf = document.createElement('div');
       leaf.className = 'diary-turn-leaf';
+      const bend = document.createElement('div');
+      bend.className = 'diary-turn-bend';
       if (direction === 'forward') {
-        leaf.append(createTurnFace('diary-turn-face-front', currentRight));
-        leaf.append(createTurnFace('diary-turn-face-back', targetLeft));
+        bend.append(createTurnFace('diary-turn-face-front', currentRight));
+        bend.append(createTurnFace('diary-turn-face-back', targetLeft));
       } else {
-        leaf.append(createTurnFace('diary-turn-face-front', currentLeft));
-        leaf.append(createTurnFace('diary-turn-face-back', targetRight));
+        bend.append(createTurnFace('diary-turn-face-front', currentLeft));
+        bend.append(createTurnFace('diary-turn-face-back', targetRight));
       }
+      leaf.append(bend);
 
       turnStage.replaceChildren(stationary, leaf);
       turnStage.className = `diary-turn-stage is-${direction}`;
+      const turnOrigin = Math.max(.12, Math.min(.88, Number(options.turnOriginY) || .5));
+      const turnTilt = (turnOrigin - .5) * 7;
+      const turnLift = -5 - Math.abs(turnTilt) * .7;
+      turnStage.style.setProperty('--turn-origin-y', `${Math.round(turnOrigin * 100)}%`);
+      turnStage.style.setProperty('--turn-tilt', `${turnTilt.toFixed(2)}deg`);
+      turnStage.style.setProperty('--turn-tilt-half', `${(turnTilt * .55).toFixed(2)}deg`);
+      turnStage.style.setProperty('--turn-tilt-soft', `${(turnTilt * .38).toFixed(2)}deg`);
+      turnStage.style.setProperty('--turn-tilt-tiny', `${(turnTilt * .2).toFixed(2)}deg`);
+      turnStage.style.setProperty('--turn-tilt-reverse', `${(turnTilt * -.2).toFixed(2)}deg`);
+      turnStage.style.setProperty('--turn-tilt-negative', `${(turnTilt * -1).toFixed(2)}deg`);
+      turnStage.style.setProperty('--turn-tilt-negative-half', `${(turnTilt * -.55).toFixed(2)}deg`);
+      turnStage.style.setProperty('--turn-tilt-negative-soft', `${(turnTilt * -.38).toFixed(2)}deg`);
+      turnStage.style.setProperty('--turn-lift', `${turnLift.toFixed(2)}px`);
+      turnStage.style.setProperty('--turn-lift-soft', `${(turnLift * .45).toFixed(2)}px`);
       turnStage.hidden = false;
       prevPage.disabled = true;
       nextPage.disabled = true;
@@ -284,16 +303,19 @@
       window.setTimeout(() => {
         currentIndex = nextIndex;
         syncCalendarToCurrentPage();
-      }, 390);
-      window.setTimeout(() => stationary.classList.add('is-releasing'), 455);
+      }, 470);
+      window.setTimeout(() => stationary.classList.add('is-releasing'), 555);
       window.setTimeout(() => {
         turnStage.hidden = true;
         turnStage.className = 'diary-turn-stage';
+        ['--turn-origin-y', '--turn-tilt', '--turn-tilt-half', '--turn-tilt-soft', '--turn-tilt-tiny', '--turn-tilt-reverse',
+          '--turn-tilt-negative', '--turn-tilt-negative-half', '--turn-tilt-negative-soft', '--turn-lift', '--turn-lift-soft']
+          .forEach(property => turnStage.style.removeProperty(property));
         turnStage.replaceChildren();
         turning = false;
         renderPage();
         if (options.scroll) bookSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 960);
+      }, 1140);
     }
 
     function readEditorStyle() {
@@ -418,6 +440,16 @@
 
     prevPage.addEventListener('click', () => selectPage(currentIndex - 1));
     nextPage.addEventListener('click', () => selectPage(currentIndex + 1));
+    spread.addEventListener('click', event => {
+      if (turning || dialog.open || event.target.closest('a,button,input,textarea,select,label,[contenteditable="true"]')) return;
+      if (window.getSelection()?.toString()) return;
+      const page = event.target.closest('.diary-paper');
+      if (!page || page.parentElement !== spread) return;
+      const bounds = page.getBoundingClientRect();
+      const turnOriginY = bounds.height ? (event.clientY - bounds.top) / bounds.height : .5;
+      const isLeftPage = page.matches('.diary-paper-left');
+      selectPage(currentIndex + (isLeftPage ? -1 : 1), { turnOriginY });
+    });
     $('#diary-calendar-prev').addEventListener('click', () => {
       calendarCursor = new Date(calendarCursor.getFullYear(), calendarCursor.getMonth() - 1, 1);
       renderCalendar();
