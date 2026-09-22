@@ -9,7 +9,7 @@
   <script>document.documentElement.classList.add("site-booting");setTimeout(()=>document.documentElement.classList.remove("site-booting"),3500)</script>
   <title>Diary — Lee Su-yoon</title>
   <link rel="stylesheet" href="style.css?v=20260903-catarchive1">
-  <link rel="stylesheet" href="diary-journal.css?v=20260922-book1">
+  <link rel="stylesheet" href="diary-journal.css?v=20260922-book2">
   <link rel="stylesheet" href="cursor.css?v=20260921-pointer1">
   <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
 </head>
@@ -27,22 +27,41 @@
         <button id="diary-prev-page" class="diary-book-arrow" type="button" aria-label="Previous diary page">←</button>
 
         <div id="diary-book" class="diary-book">
-          <div class="diary-book-edge" aria-hidden="true"></div>
+          <div class="diary-book-stitch" aria-hidden="true"></div>
           <div id="diary-book-viewport" class="diary-book-viewport" aria-live="polite">
-            <article id="diary-book-page" class="diary-book-page">
-              <header class="diary-book-page-head">
-                <time id="diary-page-date"></time>
-                <span id="diary-page-number"></span>
-              </header>
-              <figure id="diary-page-photo-wrap" class="diary-page-photo-wrap" hidden>
-                <img id="diary-page-photo" alt="">
-              </figure>
-              <p id="diary-page-copy" class="diary-page-copy"></p>
-              <p id="diary-page-empty" class="diary-page-empty" hidden>NO DIARY ENTRIES YET.</p>
-              <span class="diary-page-corner" aria-hidden="true"></span>
-            </article>
-            <div id="diary-turn-sheet" class="diary-turn-sheet" hidden aria-hidden="true"></div>
+            <div id="diary-book-spread" class="diary-book-spread">
+              <article class="diary-paper diary-paper-left" data-diary-role="left-page">
+                <header class="diary-paper-head">
+                  <time data-diary-role="date"></time>
+                  <span data-diary-role="photo-count"></span>
+                </header>
+                <div class="diary-photo-collage" data-diary-role="photos"></div>
+                <div class="diary-photo-placeholder" data-diary-role="photo-placeholder" hidden aria-hidden="true">
+                  <span></span><span></span><span></span>
+                </div>
+              </article>
+
+              <article class="diary-paper diary-paper-right" data-diary-role="right-page">
+                <header class="diary-paper-head">
+                  <span data-diary-role="page-number"></span>
+                  <span class="diary-paper-mark" aria-hidden="true">✶</span>
+                </header>
+                <h2 class="diary-page-title" data-diary-role="title" hidden></h2>
+                <p class="diary-page-copy" data-diary-role="copy"></p>
+                <p class="diary-page-empty" data-diary-role="empty" hidden>NO DIARY ENTRIES YET.</p>
+                <span class="diary-paper-tape" aria-hidden="true"></span>
+              </article>
+            </div>
+
+            <div class="diary-binding" aria-hidden="true">
+              <span style="--ring:0"></span><span style="--ring:1"></span><span style="--ring:2"></span>
+              <span style="--ring:3"></span><span style="--ring:4"></span><span style="--ring:5"></span>
+            </div>
+            <div id="diary-turn-sheet" class="diary-turn-stage" hidden aria-hidden="true"></div>
           </div>
+          <span class="diary-book-tab diary-book-tab-top" aria-hidden="true"></span>
+          <span class="diary-book-tab diary-book-tab-bottom" aria-hidden="true"></span>
+          <span class="diary-book-strap" aria-hidden="true"></span>
         </div>
 
         <button id="diary-next-page" class="diary-book-arrow" type="button" aria-label="Next diary page">→</button>
@@ -76,6 +95,7 @@
 
       <input id="diary-edit-id" type="hidden">
       <label>DATE<input id="diary-date" type="date" required></label>
+      <label>PAGE TITLE · OPTIONAL<input id="diary-title" type="text" maxlength="80" placeholder="A short title"></label>
       <label>NOTE<textarea id="diary-text" rows="9" placeholder="Write here…" required></textarea></label>
 
       <div class="diary-style-controls">
@@ -111,8 +131,9 @@
         <p id="diary-style-preview">Write here…</p>
       </div>
 
-      <label>PHOTO · OPTIONAL<input id="diary-image" type="file" accept="image/*"></label>
-      <label id="diary-remove-photo-wrap" class="diary-remove-photo" hidden><input id="diary-remove-photo" type="checkbox"> REMOVE CURRENT PHOTO</label>
+      <label>PHOTOS · UP TO 4<input id="diary-images" type="file" accept="image/*" multiple></label>
+      <div id="diary-existing-photos" class="diary-existing-photos" hidden></div>
+      <label id="diary-remove-photo-wrap" class="diary-remove-photo" hidden><input id="diary-remove-photo" type="checkbox"> REMOVE CURRENT PHOTOS</label>
       <button class="black diary-save-entry" type="submit" id="save-diary-entry">SAVE PAGE</button>
       <p id="diary-editor-status" class="diary-editor-status" role="status"></p>
 
@@ -125,7 +146,7 @@
   <script src="config.js?v=20260818-imgfix2"></script>
   <script src="app.js?v=20260818-imgfix2"></script>
   <script src="supabase-site.js?v=20260902-auth4"></script>
-  <script src="diary-journal.js?v=20260922-book1"></script>
+  <script src="diary-journal.js?v=20260922-book2"></script>
   <script src="saved-layouts.js?v=20260818-imgfix2"></script>
   <script src="page-editor.js?v=20260902-homeedit4"></script>
   <script src="boot-ready.js?v=20260818-imgfix2"></script>

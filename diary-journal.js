@@ -3,6 +3,7 @@
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+  const role = (name, root) => root.querySelector(`[data-diary-role="${name}"]`);
   const pad = value => String(value).padStart(2, '0');
   const isoDate = date => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
   const today = () => isoDate(new Date());
@@ -27,14 +28,22 @@
     return { font, size, color };
   };
 
+  const normalizeImages = source => {
+    const values = Array.isArray(source?.images) ? source.images : (source?.image ? [source.image] : []);
+    return values.map(String).filter(Boolean).slice(0, 4);
+  };
+
   const normalizeEntry = (entry, index) => {
     const source = entry && typeof entry === 'object' ? entry : {};
+    const images = normalizeImages(source);
     return {
       ...source,
       id: String(source.id || `legacy-${source.date || 'undated'}-${index}`),
       date: validDate(source.date) ? source.date : '',
+      title: String(source.title || ''),
       text: String(source.text || ''),
-      image: String(source.image || ''),
+      images,
+      image: images[0] || '',
       style: normalizeStyle(source.style)
     };
   };
@@ -81,14 +90,8 @@
     })();
     let turning = false;
 
-    const page = $('#diary-book-page');
-    const turnSheet = $('#diary-turn-sheet');
-    const pageDate = $('#diary-page-date');
-    const pageNumber = $('#diary-page-number');
-    const pagePhotoWrap = $('#diary-page-photo-wrap');
-    const pagePhoto = $('#diary-page-photo');
-    const pageCopy = $('#diary-page-copy');
-    const pageEmpty = $('#diary-page-empty');
+    const spread = $('#diary-book-spread');
+    const turnStage = $('#diary-turn-sheet');
     const prevPage = $('#diary-prev-page');
     const nextPage = $('#diary-next-page');
     const calendarMonth = $('#diary-calendar-month');
@@ -105,34 +108,59 @@
       element.style.color = normalized.color;
     };
 
-    function renderPage() {
-      const entry = items[currentIndex];
+    function fillSpread(root, index) {
+      const entry = items[index];
       const hasEntry = Boolean(entry);
-      pageDate.textContent = hasEntry ? formatLongDate(entry.date) : '';
-      pageDate.dateTime = hasEntry ? entry.date : '';
-      pageNumber.textContent = hasEntry ? `PAGE ${currentIndex + 1} / ${items.length}` : 'PAGE 0 / 0';
-      pageCopy.textContent = hasEntry ? entry.text : '';
-      pageCopy.hidden = !hasEntry;
-      pageEmpty.hidden = hasEntry;
-      applyEntryStyle(pageCopy, entry?.style);
+      const images = hasEntry ? normalizeImages(entry) : [];
+      const date = role('date', root);
+      const photoCount = role('photo-count', root);
+      const photos = role('photos', root);
+      const placeholder = role('photo-placeholder', root);
+      const pageNumber = role('page-number', root);
+      const title = role('title', root);
+      const copy = role('copy', root);
+      const empty = role('empty', root);
 
-      if (entry?.image) {
-        pagePhoto.src = entry.image;
-        pagePhoto.alt = entry.date ? `Diary photo from ${entry.date}` : 'Diary photo';
-        pagePhotoWrap.hidden = false;
-      } else {
-        pagePhotoWrap.hidden = true;
-        pagePhoto.removeAttribute('src');
-        pagePhoto.alt = '';
-      }
+      date.textContent = hasEntry ? formatLongDate(entry.date) : '';
+      date.dateTime = hasEntry ? entry.date : '';
+      photoCount.textContent = images.length ? `${pad(images.length)} PHOTO${images.length === 1 ? '' : 'S'}` : '';
+      pageNumber.textContent = hasEntry ? `PAGE ${index + 1} / ${items.length}` : 'PAGE 0 / 0';
+      title.textContent = hasEntry ? entry.title : '';
+      title.hidden = !entry?.title;
+      copy.textContent = hasEntry ? entry.text : '';
+      copy.hidden = !hasEntry;
+      empty.hidden = hasEntry;
+      applyEntryStyle(copy, entry?.style);
 
+      photos.replaceChildren();
+      photos.dataset.count = String(images.length);
+      images.forEach((src, photoIndex) => {
+        const figure = document.createElement('figure');
+        figure.className = 'diary-snapshot';
+        figure.style.zIndex = String(photoIndex + 1);
+        const image = document.createElement('img');
+        image.src = src;
+        image.alt = entry.date ? `Diary photo from ${entry.date}, ${photoIndex + 1} of ${images.length}` : `Diary photo ${photoIndex + 1}`;
+        image.loading = 'lazy';
+        figure.append(image);
+        photos.append(figure);
+      });
+      photos.hidden = !images.length;
+      placeholder.hidden = Boolean(images.length);
+    }
+
+    function updateActiveCalendarDate() {
+      $$('.diary-calendar-day.is-active', calendarGrid).forEach(button => button.classList.remove('is-active'));
+      const date = items[currentIndex]?.date;
+      if (!date) return;
+      calendarGrid.querySelector(`[data-date="${date}"]`)?.classList.add('is-active');
+    }
+
+    function renderPage() {
+      fillSpread(spread, currentIndex);
       prevPage.disabled = currentIndex <= 0;
       nextPage.disabled = currentIndex < 0 || currentIndex >= items.length - 1;
-      $$('.diary-calendar-day.is-active', calendarGrid).forEach(button => button.classList.remove('is-active'));
-      if (entry?.date) {
-        const active = calendarGrid.querySelector(`[data-date="${entry.date}"]`);
-        active?.classList.add('is-active');
-      }
+      updateActiveCalendarDate();
     }
 
     function renderCalendar() {
@@ -198,11 +226,24 @@
       }
     }
 
+    const cleanClone = node => {
+      const clone = node.cloneNode(true);
+      clone.removeAttribute('id');
+      $$('[id]', clone).forEach(element => element.removeAttribute('id'));
+      return clone;
+    };
+
+    function createTurnFace(className, paper) {
+      const face = document.createElement('div');
+      face.className = `diary-turn-face ${className}`;
+      face.append(cleanClone(paper));
+      return face;
+    }
+
     function selectPage(index, options = {}) {
-      if (index < 0 || index >= items.length) return;
+      if (index < 0 || index >= items.length || turning) return;
       const nextIndex = Number(index);
       const direction = nextIndex > currentIndex ? 'forward' : 'backward';
-      if (turning) return;
       if (nextIndex === currentIndex || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         currentIndex = nextIndex;
         syncCalendarToCurrentPage();
@@ -211,25 +252,48 @@
       }
 
       turning = true;
-      const pageClone = page.cloneNode(true);
-      pageClone.removeAttribute('id');
-      $$('[id]', pageClone).forEach(element => element.removeAttribute('id'));
-      turnSheet.replaceChildren(pageClone);
-      turnSheet.className = `diary-turn-sheet is-${direction}`;
-      turnSheet.hidden = false;
-      requestAnimationFrame(() => requestAnimationFrame(() => turnSheet.classList.add('is-turning')));
+      const currentSnapshot = cleanClone(spread);
+      const targetSnapshot = cleanClone(spread);
+      fillSpread(targetSnapshot, nextIndex);
+      const currentLeft = role('left-page', currentSnapshot);
+      const currentRight = role('right-page', currentSnapshot);
+      const targetLeft = role('left-page', targetSnapshot);
+      const targetRight = role('right-page', targetSnapshot);
+
+      const stationary = document.createElement('div');
+      stationary.className = `diary-turn-stationary is-${direction === 'forward' ? 'left' : 'right'}`;
+      stationary.append(cleanClone(direction === 'forward' ? currentLeft : currentRight));
+
+      const leaf = document.createElement('div');
+      leaf.className = 'diary-turn-leaf';
+      if (direction === 'forward') {
+        leaf.append(createTurnFace('diary-turn-face-front', currentRight));
+        leaf.append(createTurnFace('diary-turn-face-back', targetLeft));
+      } else {
+        leaf.append(createTurnFace('diary-turn-face-front', currentLeft));
+        leaf.append(createTurnFace('diary-turn-face-back', targetRight));
+      }
+
+      turnStage.replaceChildren(stationary, leaf);
+      turnStage.className = `diary-turn-stage is-${direction}`;
+      turnStage.hidden = false;
+      prevPage.disabled = true;
+      nextPage.disabled = true;
+      requestAnimationFrame(() => requestAnimationFrame(() => turnStage.classList.add('is-turning')));
 
       window.setTimeout(() => {
         currentIndex = nextIndex;
         syncCalendarToCurrentPage();
-      }, 250);
+      }, 390);
+      window.setTimeout(() => stationary.classList.add('is-releasing'), 455);
       window.setTimeout(() => {
-        turnSheet.hidden = true;
-        turnSheet.className = 'diary-turn-sheet';
-        turnSheet.replaceChildren();
+        turnStage.hidden = true;
+        turnStage.className = 'diary-turn-stage';
+        turnStage.replaceChildren();
         turning = false;
+        renderPage();
         if (options.scroll) bookSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 660);
+      }, 960);
     }
 
     function readEditorStyle() {
@@ -257,16 +321,30 @@
       updatePreview();
     }
 
+    function renderExistingPhotos(images = []) {
+      const root = $('#diary-existing-photos');
+      root.replaceChildren();
+      images.forEach((src, index) => {
+        const image = document.createElement('img');
+        image.src = src;
+        image.alt = `Current diary photo ${index + 1}`;
+        root.append(image);
+      });
+      root.hidden = !images.length;
+      $('#diary-remove-photo-wrap').hidden = !images.length;
+    }
+
     function resetEditor(date = today()) {
       form.reset();
       $('#diary-edit-id').value = '';
       $('#diary-date').value = date;
+      $('#diary-title').value = '';
       $('#diary-font').value = 'hand';
       $('#diary-size').value = '';
       $('#diary-color').value = '#30302d';
       $('#diary-color-hex').value = '#30302D';
-      $('#diary-remove-photo-wrap').hidden = true;
       $('#diary-remove-photo').checked = false;
+      renderExistingPhotos([]);
       $('#save-diary-entry').textContent = 'SAVE PAGE';
       status.textContent = '';
       updatePreview();
@@ -278,14 +356,15 @@
       const style = normalizeStyle(entry.style);
       $('#diary-edit-id').value = entry.id;
       $('#diary-date').value = entry.date;
+      $('#diary-title').value = entry.title || '';
       $('#diary-text').value = entry.text;
       $('#diary-font').value = style.font;
       $('#diary-size').value = style.size;
       $('#diary-color').value = style.color;
       $('#diary-color-hex').value = style.color;
-      $('#diary-image').value = '';
-      $('#diary-remove-photo-wrap').hidden = !entry.image;
+      $('#diary-images').value = '';
       $('#diary-remove-photo').checked = false;
+      renderExistingPhotos(normalizeImages(entry));
       $('#save-diary-entry').textContent = 'UPDATE PAGE';
       status.textContent = '';
       updatePreview();
@@ -307,7 +386,7 @@
         const row = document.createElement('div');
         row.className = 'diary-row';
         const label = document.createElement('span');
-        label.textContent = entry.date || 'UNDATED';
+        label.textContent = entry.title ? `${entry.date || 'UNDATED'} · ${entry.title}` : (entry.date || 'UNDATED');
         const edit = document.createElement('button');
         edit.type = 'button';
         edit.textContent = 'EDIT';
@@ -373,26 +452,37 @@
         return;
       }
 
-      status.textContent = 'SAVING…';
+      const editId = $('#diary-edit-id').value;
+      const existingIndex = items.findIndex(item => item.id === editId);
+      const existing = existingIndex >= 0 ? items[existingIndex] : null;
+      const files = [...($('#diary-images').files || [])];
+      let images = $('#diary-remove-photo').checked ? [] : normalizeImages(existing);
+      if (images.length + files.length > 4) {
+        status.textContent = 'A PAGE CAN HOLD UP TO 4 PHOTOS. REMOVE CURRENT PHOTOS OR SELECT FEWER FILES.';
+        return;
+      }
+
+      status.textContent = files.length ? `UPLOADING 0 / ${files.length}…` : 'SAVING…';
       try {
-        const editId = $('#diary-edit-id').value;
-        const existingIndex = items.findIndex(item => item.id === editId);
-        const existing = existingIndex >= 0 ? items[existingIndex] : null;
-        let image = existing?.image || '';
-        const file = $('#diary-image').files?.[0];
-        if ($('#diary-remove-photo').checked) image = '';
-        if (file) image = await api.uploadPublic(file, 'diary');
+        for (let index = 0; index < files.length; index += 1) {
+          status.textContent = `UPLOADING ${index + 1} / ${files.length}…`;
+          images.push(await api.uploadPublic(files[index], 'diary'));
+        }
 
         const entry = {
+          ...(existing || {}),
           id: existing?.id || makeId(),
           date,
+          title: $('#diary-title').value.trim(),
           text,
-          image,
+          images,
+          image: images[0] || '',
           style: readEditorStyle()
         };
         if (existingIndex >= 0) items[existingIndex] = entry;
         else items.push(entry);
         items = sortEntries(items);
+        status.textContent = 'SAVING…';
         await api.saveContent('diary', { ...payload, items });
         payload = { ...payload, items };
         currentIndex = items.findIndex(item => item.id === entry.id);
