@@ -11,75 +11,37 @@
   <link rel="stylesheet" href="style.css?v=20260921-profile1">
   <link rel="stylesheet" href="cursor.css?v=20260921-pointer1">
   <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
+  <link rel="stylesheet" href="book-calendar.css?v=1">
 </head>
-<body class="about-interactive-page">
-  <header>
-    <a href="index.html" class="brand">LEE SU-YOON</a>
-    <div class="about-header-actions">
-      <button id="about-edit" class="about-edit-button" type="button" data-admin-only hidden>EDIT ABOUT ↗</button>
-      <a href="index.html">← HOME</a>
-    </div>
-  </header>
-
-  <main class="about-page" aria-label="About Lee Su-yoon">
-    <div class="about-page-head">
-      <p class="kicker">ABOUT ME</p>
-      <p class="about-page-hint">CLICK A DRAWING</p>
-    </div>
-    <section id="about-art" class="about-art" aria-label="Interactive about illustration">
-      <img id="about-main-image" src="assets/about-main.png?v=20260903-about1" alt="A hand-drawn collection of things I love">
-      <div id="about-light-glow" class="about-light-glow" aria-hidden="true"></div>
-      <div class="about-hotspots" aria-label="About sections">
-        <button type="button" class="about-hotspot" data-about-hotspot="calendar" aria-label="Calendar and important dates"></button>
-        <button type="button" class="about-hotspot" data-about-hotspot="flowers" aria-label="Flowers"></button>
-        <button type="button" class="about-hotspot" data-about-hotspot="music" aria-label="Music playlist"></button>
-        <button type="button" class="about-hotspot" data-about-hotspot="lamp" aria-label="Lamp and lighting"></button>
-        <button type="button" class="about-hotspot" data-about-hotspot="camera" aria-label="Photo albums"></button>
-        <button type="button" class="about-hotspot" data-about-hotspot="cat" aria-label="My cat"></button>
-        <button type="button" class="about-hotspot" data-about-hotspot="personal" aria-label="Personal profile"></button>
-        <button type="button" class="about-hotspot" data-about-hotspot="favorites" aria-label="Favorite films and television"></button>
+<body class="about-book-page"><script>if(new URLSearchParams(location.search).has("embedded"))document.body.classList.add("embedded-book")</script>
+  <header class="book-header"><a href="index.html" class="brand">LEE SU-YOON</a><a href="index.html">← HOME</a></header>
+  <main class="book-main">
+    <div class="book-wrap">
+      <div id="about-book" class="about-book is-closed" aria-live="polite">
+        <button id="book-cover" class="book-cover" type="button" aria-label="Open About book">
+          <img src="assets/about-main.png" alt="Hand-drawn About cover"><span>ABOUT ME <small>OPEN THE BOOK →</small></span>
+        </button>
+        <div class="book-spread" id="book-spread" hidden>
+          <div class="book-page book-left" id="book-left"></div>
+          <div class="book-page book-right" id="book-right"></div>
+        </div>
       </div>
-    </section>
+      <nav class="book-tabs" aria-label="About book tabs">
+        <button type="button" data-book-tab="profile">关于我</button>
+        <button type="button" data-book-tab="cat">关于我的猫</button>
+        <a href="guestbook.html" target="_top">给我留言</a>
+        <button type="button" data-book-tab="contact">联系我</button>
+        <a href="diary.html" target="_top">我的日历</a>
+        <button type="button" data-book-tab="thoughts">一些我想说的话</button>
+      </nav>
+    </div>
+    <div class="book-actions"><button id="book-close" type="button" hidden>← 关闭书本</button><button id="book-edit" type="button" data-admin-only hidden>EDIT PAGE ↗</button></div>
   </main>
-
-  <dialog id="about-item-dialog" class="about-item-dialog" aria-label="About detail">
-    <div class="about-dialog-head">
-      <button id="about-dialog-back" type="button" class="about-dialog-back" hidden>← BACK</button>
-      <small id="about-dialog-kicker">ABOUT</small>
-      <div class="about-dialog-actions">
-        <button id="about-dialog-edit" class="about-dialog-edit" type="button" data-admin-only hidden>EDIT THIS ↗</button>
-        <button id="about-dialog-close" type="button" class="about-dialog-close" aria-label="Close">×</button>
-      </div>
-    </div>
-    <h2 id="about-dialog-title"></h2>
-    <div id="about-dialog-body" class="about-dialog-body"></div>
-  </dialog>
-
-  <dialog id="about-editor-dialog" class="about-editor-dialog" aria-label="Edit About content">
-    <form id="about-editor-form" class="about-editor-form">
-      <div class="about-editor-head">
-        <strong id="about-editor-title">EDIT</strong>
-        <button id="about-editor-close" type="button" aria-label="Close">×</button>
-      </div>
-      <div id="about-editor-body"></div>
-      <p id="about-editor-status" class="about-editor-status" role="status"></p>
-      <button id="about-editor-save" class="black" type="submit">SAVE</button>
-    </form>
-  </dialog>
-
-  <dialog id="about-calendar-note" class="about-calendar-note" aria-label="Calendar note">
-    <div id="about-calendar-note-body"></div>
-  </dialog>
-
-  <dialog id="about-media-lightbox" class="about-media-lightbox" aria-label="Image preview">
-    <button id="about-media-close" type="button" aria-label="Close">×</button>
-    <img id="about-media-image" alt="">
-  </dialog>
-
+  <dialog id="book-editor" class="book-editor"><form id="book-form"><button type="button" class="close" id="book-editor-close" aria-label="Close">×</button><h2 id="book-editor-heading">EDIT PAGE</h2><div id="book-editor-fields"></div><label>字体<select id="book-font"><option value="hand">Handwriting</option><option value="serif">Editorial serif</option><option value="sans">Sans serif</option><option value="mono">Monospace</option></select></label><label>字号 <span id="book-size-output"></span><input id="book-size" type="range" min="14" max="36" step="1" value="19"></label><button class="black" type="submit">SAVE</button><p id="book-status" role="status"></p></form></dialog>
+  <dialog id="book-photo-dialog" class="book-photo-dialog"><button type="button" class="close" aria-label="Close">×</button><img alt="Cat photo"></dialog>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js?v=20260818-imgfix2"></script>
   <script src="supabase-site.js?v=20260903-auth5"></script>
-  <script src="about-interactive.js?v=20260921-profile1"></script>
+  <script src="book-about.js?v=1"></script>
   <script src="boot-ready.js?v=20260818-imgfix2"></script>
-</body>
-</html>
+</body></html>
