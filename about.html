@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="style.css?v=20260921-profile1">
   <link rel="stylesheet" href="cursor.css?v=20260921-pointer1">
   <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
-  <link rel="stylesheet" href="book-calendar.css?v=1">
+  <link rel="stylesheet" href="book-calendar.css?v=2">
 </head>
 <body class="about-book-page"><script>if(new URLSearchParams(location.search).has("embedded"))document.body.classList.add("embedded-book")</script>
   <header class="book-header"><a href="index.html" class="brand">LEE SU-YOON</a><a href="index.html">← HOME</a></header>
@@ -19,7 +19,7 @@
     <div class="book-wrap">
       <div id="about-book" class="about-book is-closed" aria-live="polite">
         <button id="book-cover" class="book-cover" type="button" aria-label="Open About book">
-          <img src="assets/about-main.png" alt="Hand-drawn About cover"><span>ABOUT ME <small>OPEN THE BOOK →</small></span>
+          <img src="assets/about-main.png" alt="Hand-drawn About cover"><span class="cover-open-hint">OPEN THE BOOK →</span>
         </button>
         <div class="book-spread" id="book-spread" hidden>
           <div class="book-page book-left" id="book-left"></div>
@@ -27,21 +27,22 @@
         </div>
       </div>
       <nav class="book-tabs" aria-label="About book tabs">
-        <button type="button" data-book-tab="profile">关于我</button>
-        <button type="button" data-book-tab="cat">关于我的猫</button>
-        <a href="guestbook.html" target="_top">给我留言</a>
-        <button type="button" data-book-tab="contact">联系我</button>
-        <a href="diary.html" target="_top">我的日历</a>
-        <button type="button" data-book-tab="thoughts">一些我想说的话</button>
+        <button type="button" data-book-tab="profile">ABOUT ME</button>
+        <button type="button" data-book-tab="cat">MY CAT</button>
+        <a href="works.html" target="_top">WORKS</a>
+        <a href="guestbook.html" target="_top">GUESTBOOK</a>
+        <button type="button" data-book-tab="contact">CONTACT</button>
+        <a href="diary.html" target="_top">CALENDAR</a>
+        <button type="button" data-book-tab="thoughts">MY WORDS</button>
       </nav>
     </div>
-    <div class="book-actions"><button id="book-close" type="button" hidden>← 关闭书本</button><button id="book-edit" type="button" data-admin-only hidden>EDIT PAGE ↗</button></div>
+    <div class="book-actions"><button id="book-close" type="button" hidden>← CLOSE BOOK</button><button id="book-edit" type="button" data-admin-only hidden>EDIT PAGE ↗</button></div>
   </main>
-  <dialog id="book-editor" class="book-editor"><form id="book-form"><button type="button" class="close" id="book-editor-close" aria-label="Close">×</button><h2 id="book-editor-heading">EDIT PAGE</h2><div id="book-editor-fields"></div><label>字体<select id="book-font"><option value="hand">Handwriting</option><option value="serif">Editorial serif</option><option value="sans">Sans serif</option><option value="mono">Monospace</option></select></label><label>字号 <span id="book-size-output"></span><input id="book-size" type="range" min="14" max="36" step="1" value="19"></label><button class="black" type="submit">SAVE</button><p id="book-status" role="status"></p></form></dialog>
+  <dialog id="book-editor" class="book-editor"><form id="book-form"><button type="button" class="close" id="book-editor-close" aria-label="Close">×</button><h2 id="book-editor-heading">EDIT PAGE</h2><div class="book-editor-mode"><button type="button" id="book-mode-content" class="active">CONTENT</button><button type="button" id="book-mode-layout">FREE LAYOUT</button></div><div id="book-editor-fields"></div><div id="book-layout-fields" hidden><p class="layout-help">Write directly on either page. Select text to style it, or add a photo at the cursor.</p><div class="book-layout-toolbar"><button type="button" data-format="bold" aria-label="Bold"><b>B</b></button><button type="button" data-format="italic" aria-label="Italic"><i>I</i></button><button type="button" data-format="justifyLeft" aria-label="Align left">≡</button><button type="button" data-format="justifyCenter" aria-label="Center">☷</button><button type="button" data-format="justifyRight" aria-label="Align right">≡→</button><select id="layout-font" aria-label="Text font"><option value="Caveat">Handwriting</option><option value="Cormorant Garamond">Editorial serif</option><option value="Noto Sans SC">Sans serif</option><option value="DM Mono">Monospace</option></select><select id="layout-font-size" aria-label="Text size"><option value="3">Small</option><option value="4" selected>Medium</option><option value="5">Large</option><option value="6">Extra large</option></select><label class="book-layout-upload">+ PHOTO<input id="book-layout-image" type="file" accept="image/*"></label></div><div class="book-layout-pages"><div><span>LEFT PAGE</span><div id="layout-left" class="book-layout-editable" contenteditable="true" role="textbox" aria-label="Left page content" aria-multiline="true"></div></div><div><span>RIGHT PAGE</span><div id="layout-right" class="book-layout-editable" contenteditable="true" role="textbox" aria-label="Right page content" aria-multiline="true"></div></div></div><button type="button" id="book-reset-layout">RESET TO STANDARD LAYOUT</button></div><label>FONT<select id="book-font"><option value="hand">Handwriting</option><option value="serif">Editorial serif</option><option value="sans">Sans serif</option><option value="mono">Monospace</option></select></label><label>SIZE <span id="book-size-output"></span><input id="book-size" type="range" min="14" max="36" step="1" value="19"></label><button class="black" type="submit">SAVE</button><p id="book-status" role="status"></p></form></dialog>
   <dialog id="book-photo-dialog" class="book-photo-dialog"><button type="button" class="close" aria-label="Close">×</button><img alt="Cat photo"></dialog>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js?v=20260818-imgfix2"></script>
   <script src="supabase-site.js?v=20260903-auth5"></script>
-  <script src="book-about.js?v=1"></script>
+  <script src="book-about.js?v=2"></script>
   <script src="boot-ready.js?v=20260818-imgfix2"></script>
 </body></html>
