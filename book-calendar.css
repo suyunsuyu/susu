@@ -71,3 +71,16 @@ body.home .home-feature iframe{height:100%;width:100%}
 .about-book-page .book-tabs>:nth-child(1){background:#f3e1dc}.about-book-page .book-tabs>:nth-child(2){background:#e7e9da}.about-book-page .book-tabs>:nth-child(3){background:#e2e6ee}.about-book-page .book-tabs>:nth-child(4){background:#f5e9d8}.about-book-page .book-tabs>:nth-child(5){background:#eadfe9}.about-book-page .book-tabs>:nth-child(6){background:#dfeae8}.about-book-page .book-tabs>:nth-child(7){background:#eee7dd}
 .about-book-page .book-tabs button:hover,.about-book-page .book-tabs button.active,.about-book-page .book-tabs a:hover{color:#222;background:#dbd3c6;transform:translateX(3px)}
 @media(max-width:720px){.about-book-page .book-cover img{padding:18px 10px 18px 14px}.about-book-page .cover-open-hint{font-size:8px}}
+/* Administrator-controlled cover and profile typography. */
+.about-book-page .book-cover{background:repeating-linear-gradient(6deg,rgba(130,113,79,.025) 0 1px,transparent 1px 6px),linear-gradient(115deg,color-mix(in srgb,var(--cover-color,#f6f2e7) 85%,#b9a993) 0%,color-mix(in srgb,var(--cover-color,#f6f2e7) 88%,white) 12%,var(--cover-color,#f6f2e7) 60%,color-mix(in srgb,var(--cover-color,#f6f2e7) 88%,#ad9b80) 100%)}
+.book-admin-actions{display:flex;align-items:center;gap:18px;margin-left:auto}
+.book-color-control{display:flex;align-items:center;gap:8px;font:12px var(--mono);letter-spacing:.05em;cursor:pointer}
+.book-color-control[hidden]{display:none}
+.book-color-control input{width:38px;height:30px;padding:2px;border:1px solid #a9a092;background:#fff;cursor:pointer}
+.about-book-page .book-profile-name{font-size:var(--profile-name-size,52px);line-height:1.2;transform:translate(var(--profile-name-x,0px),var(--profile-name-y,0px));overflow-wrap:anywhere}
+.about-book-page .book-profile-details{font-size:var(--profile-detail-size,19px);transform:translate(var(--profile-detail-x,0px),var(--profile-detail-y,0px))}
+.about-book-page .book-profile-details .book-profile{font-size:inherit}
+.about-book-page .book-profile-details .book-copy{font-size:inherit}
+.profile-adjust{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0 20px}
+.profile-adjust label{min-width:0;font-size:11px}.profile-adjust input{width:100%;min-width:0;accent-color:#ad9b80}
+@media(max-width:600px){.profile-adjust{grid-template-columns:1fr}.book-color-control{font-size:10px}}

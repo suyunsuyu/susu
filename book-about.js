@@ -2,10 +2,12 @@
   const $ = s => document.querySelector(s);
   const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const safeUrl = value => { if(!String(value||'').trim())return ''; try { const u = new URL(value,location.href); return ['https:','http:','mailto:'].includes(u.protocol) ? u.href : ''; } catch { return ''; } };
-  const defaults = {catText:'',catPhotos:[],instagram:'',email:'',thoughts:'',profile:{name:'',birthDate:'',mbti:'',favoriteFlower:'',hobbies:'',dream:'',message:'',image:''},style:{},pages:{}};
+  const defaults = {catText:'',catPhotos:[],instagram:'',email:'',thoughts:'',coverColor:'#f6f2e7',profile:{name:'',birthDate:'',mbti:'',favoriteFlower:'',hobbies:'',dream:'',message:'',image:'',nameSize:52,nameX:0,nameY:0,detailSize:19,detailX:0,detailY:0},style:{},pages:{}};
   const fonts = {hand:"'Caveat','Nanum Pen Script',cursive",serif:"'Cormorant Garamond','Noto Sans SC',serif",sans:"'Noto Sans SC',sans-serif",mono:"'DM Mono','Noto Sans SC',monospace"};
   let data = structuredClone(defaults), legacy = null, tab = '', turning = false, editMode = 'content', activeEditable = null;
   const book = $('#about-book'), cover = $('#book-cover'), spread = $('#book-spread');
+  const validColor = color => /^#[\da-f]{6}$/i.test(color) ? color : defaults.coverColor;
+  function applyCoverColor(){const color=validColor(data.coverColor);book.style.setProperty('--cover-color',color);$('#book-cover-color').value=color;}
   function sanitize(html) {
     const permitted=new Set(['P','DIV','SPAN','BR','B','STRONG','I','EM','U','H2','H3','UL','OL','LI','A','IMG','FIGURE','SMALL','DL','DT','DD','BUTTON','FONT']);
     const input=document.createElement('template');input.innerHTML=String(html||'');
@@ -40,8 +42,14 @@
     const left = $('#book-left'), right = $('#book-right'); style();
     if (tab === 'profile') {
       const p = data.profile || {};
-      left.innerHTML = `<span class="book-folio">01 / ABOUT ME</span>${p.image ? `<img class="book-portrait" src="${esc(p.image)}" alt="Profile portrait">` : '<div class="book-portrait-empty">ABOUT<br>ME</div>'}<h2>${esc(p.name || 'ABOUT ME')}</h2>`;
-      right.innerHTML = `<span class="book-folio">PROFILE</span><dl class="book-profile">${[['BIRTHDAY',p.birthDate],['MBTI',p.mbti],['FAVORITE FLOWER',p.favoriteFlower],['HOBBIES',p.hobbies],['DREAM',p.dream]].filter(x=>x[1]).map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl><p class="book-copy">${esc(p.message)}</p>`;
+      left.innerHTML = `<span class="book-folio">01 / ABOUT ME</span>${p.image ? `<img class="book-portrait" src="${esc(p.image)}" alt="Profile portrait">` : ''}<h2 class="book-profile-name">${esc(p.name || '')}</h2>`;
+      right.innerHTML = `<span class="book-folio">PROFILE</span><div class="book-profile-details"><dl class="book-profile">${[['BIRTHDAY',p.birthDate],['MBTI',p.mbti],['FAVORITE FLOWER',p.favoriteFlower],['HOBBIES',p.hobbies],['DREAM',p.dream]].filter(x=>x[1]).map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl><p class="book-copy">${esc(p.message)}</p></div>`;
+      left.style.setProperty('--profile-name-size',`${Math.max(18,Math.min(80,Number(p.nameSize)||52))}px`);
+      left.style.setProperty('--profile-name-x',`${Math.max(-100,Math.min(100,Number(p.nameX)||0))}px`);
+      left.style.setProperty('--profile-name-y',`${Math.max(-100,Math.min(100,Number(p.nameY)||0))}px`);
+      right.style.setProperty('--profile-detail-size',`${Math.max(12,Math.min(36,Number(p.detailSize)||19))}px`);
+      right.style.setProperty('--profile-detail-x',`${Math.max(-100,Math.min(100,Number(p.detailX)||0))}px`);
+      right.style.setProperty('--profile-detail-y',`${Math.max(-100,Math.min(100,Number(p.detailY)||0))}px`);
     } else if (tab === 'cat') {
       left.innerHTML = `<span class="book-folio">02 / MY CAT</span><div class="book-cat-grid">${Array.from({length:6},(_,i)=>data.catPhotos?.[i] ? `<button type="button" class="book-cat-photo" data-photo="${i}" aria-label="Enlarge cat photo ${i+1}"><img src="${esc(data.catPhotos[i])}" alt="Cat photo ${i+1}"></button>` : `<div class="book-cat-empty">${String(i+1).padStart(2,'0')}</div>`).join('')}</div>`;
       right.innerHTML = `<span class="book-folio">ABOUT MY CAT</span><h2>MY CAT</h2><p class="book-copy">${esc(data.catText)}</p><a class="book-link" href="tools.html" target="_top">VISIT MY CAT ↗</a>`;
@@ -54,7 +62,7 @@
       left.innerHTML = '<span class="book-folio">04 / WORDS</span><h2>MY WORDS</h2>';
       right.innerHTML = `<span class="book-folio">NOTES</span><p class="book-copy">${esc(data.thoughts)}</p>`;
     }
-    if (data.pages?.[tab]) {left.innerHTML=sanitize(data.pages[tab].left);right.innerHTML=sanitize(data.pages[tab].right);}
+    if (data.pages?.[tab]) {left.innerHTML=sanitize(data.pages[tab].left);right.innerHTML=sanitize(data.pages[tab].right);if(tab==='profile'){left.querySelectorAll('.book-portrait-empty').forEach(el=>el.remove());left.querySelectorAll('h2').forEach(el=>{if(el.textContent.trim().toUpperCase()==='ABOUT ME')el.remove()});}}
     left.querySelectorAll('[data-photo]').forEach(button => button.onclick = () => {const d=$('#book-photo-dialog');d.querySelector('img').src=data.catPhotos[Number(button.dataset.photo)];d.showModal();});
 
   }
@@ -64,7 +72,8 @@
     else if(tab!==next) { turning=true; book.classList.add('is-turning'); setTimeout(()=>{tab=next;content();book.classList.remove('is-turning');turning=false;},250); }
     sync();
   }
-  function sync() {document.querySelectorAll('[data-book-tab]').forEach(b=>b.classList.toggle('active',b.dataset.bookTab===tab&&!book.classList.contains('is-closed')));$('#book-close').hidden=book.classList.contains('is-closed');$('#book-edit').hidden=book.classList.contains('is-closed')||!window.SUY_IS_ADMIN;}
+  function sync() {document.querySelectorAll('[data-book-tab]').forEach(b=>b.classList.toggle('active',b.dataset.bookTab===tab&&!book.classList.contains('is-closed')));$('#book-close').hidden=book.classList.contains('is-closed');$('#book-edit').hidden=book.classList.contains('is-closed')||!window.SUY_IS_ADMIN;$('#book-color-control').hidden=!window.SUY_IS_ADMIN;}
+  $('#book-cover-color').onchange=async e=>{if(!await window.SUY_ADMIN?.isAdmin())return;const previous=data.coverColor;data.coverColor=validColor(e.target.value);applyCoverColor();try{await window.SUY_ADMIN.saveContent('about-book',data)}catch(error){data.coverColor=previous;applyCoverColor();alert('Could not save book color: '+error.message)}};
   cover.onclick=()=>open('profile');
   document.querySelectorAll('[data-book-tab]').forEach(b=>b.onclick=()=>open(b.dataset.bookTab));
   $('#book-close').onclick=()=>{book.classList.add('is-closed');spread.hidden=true;cover.setAttribute('aria-expanded','false');sync();};
@@ -85,7 +94,7 @@
   $('#book-size').oninput=()=>$('#book-size-output').textContent=$('#book-size').value+' px';
   function fields() {
     const p=data.profile||{};
-    if(tab==='profile') return `<label>NAME<input name="name" value="${esc(p.name)}"></label><label>BIRTHDAY<input name="birthDate" type="date" value="${esc(p.birthDate)}"></label><label>MBTI<input name="mbti" value="${esc(p.mbti)}"></label><label>FAVORITE FLOWER<input name="favoriteFlower" value="${esc(p.favoriteFlower)}"></label><label>HOBBIES<input name="hobbies" value="${esc(p.hobbies)}"></label><label>DREAM<input name="dream" value="${esc(p.dream)}"></label><label>PHOTO<input name="portrait" type="file" accept="image/*"></label><label>PERSONAL WORDS<textarea name="message">${esc(p.message)}</textarea></label>`;
+    if(tab==='profile') return `<label>NAME<input name="name" value="${esc(p.name)}"></label><div class="profile-adjust"><label>NAME SIZE <input name="nameSize" type="range" min="18" max="80" value="${Number(p.nameSize)||52}"></label><label>NAME LEFT / RIGHT <input name="nameX" type="range" min="-100" max="100" value="${Number(p.nameX)||0}"></label><label>NAME UP / DOWN <input name="nameY" type="range" min="-100" max="100" value="${Number(p.nameY)||0}"></label></div><label>BIRTHDAY<input name="birthDate" type="date" value="${esc(p.birthDate)}"></label><label>MBTI<input name="mbti" value="${esc(p.mbti)}"></label><label>FAVORITE FLOWER<input name="favoriteFlower" value="${esc(p.favoriteFlower)}"></label><label>HOBBIES<input name="hobbies" value="${esc(p.hobbies)}"></label><label>DREAM<input name="dream" value="${esc(p.dream)}"></label><label>PHOTO<input name="portrait" type="file" accept="image/*"></label><label>PERSONAL WORDS<textarea name="message">${esc(p.message)}</textarea></label><div class="profile-adjust"><label>DETAIL SIZE <input name="detailSize" type="range" min="12" max="36" value="${Number(p.detailSize)||19}"></label><label>DETAIL LEFT / RIGHT <input name="detailX" type="range" min="-100" max="100" value="${Number(p.detailX)||0}"></label><label>DETAIL UP / DOWN <input name="detailY" type="range" min="-100" max="100" value="${Number(p.detailY)||0}"></label></div>`;
     if(tab==='cat') return `<label>ABOUT MY CAT<textarea name="catText">${esc(data.catText)}</textarea></label><p>Six landscape photos · replace each separately</p>${Array.from({length:6},(_,i)=>`<label>PHOTO ${i+1}${data.catPhotos?.[i]?` <img class="book-editor-thumb" src="${esc(data.catPhotos[i])}" alt="Current photo">`:''}<input name="cat${i}" type="file" accept="image/*"><input type="checkbox" name="remove${i}"> Remove this photo</label>`).join('')}`;
     if(tab==='contact') return `<label>INSTAGRAM URL<input name="instagram" type="url" value="${esc(data.instagram)}" placeholder="https://instagram.com/..."></label><label>EMAIL<input name="email" type="email" value="${esc(data.email)}"></label>`;
     return `<label>WORDS<textarea name="thoughts">${esc(data.thoughts)}</textarea></label>`;
@@ -94,7 +103,7 @@
   $('#book-form').onsubmit=async e=>{
     e.preventDefault();const status=$('#book-status');status.textContent='SAVING…';
     try {if(!await window.SUY_ADMIN.isAdmin())throw Error('Admin login required');const form=new FormData(e.target);const next=structuredClone(data);next.style={...(next.style||{}),[tab]:{font:$('#book-font').value,size:Number($('#book-size').value)}};
-      if(tab==='profile'){next.profile={...next.profile};for(const key of ['name','birthDate','mbti','favoriteFlower','hobbies','dream','message'])next.profile[key]=String(form.get(key)||'');const file=form.get('portrait');if(file?.size)next.profile.image=await window.SUY_ADMIN.uploadPublic(file,'about');legacy={...(legacy||{}),personal:next.profile};await window.SUY_ADMIN.saveContent('about-interactive',legacy);}
+      if(tab==='profile'){next.profile={...next.profile};for(const key of ['name','birthDate','mbti','favoriteFlower','hobbies','dream','message'])next.profile[key]=String(form.get(key)||'');for(const [key,min,max] of [['nameSize',18,80],['nameX',-100,100],['nameY',-100,100],['detailSize',12,36],['detailX',-100,100],['detailY',-100,100]])next.profile[key]=Math.max(min,Math.min(max,Number(form.get(key))||0));const file=form.get('portrait');if(file?.size)next.profile.image=await window.SUY_ADMIN.uploadPublic(file,'about');legacy={...(legacy||{}),personal:next.profile};await window.SUY_ADMIN.saveContent('about-interactive',legacy);}
       if(tab==='cat'){next.catText=String(form.get('catText')||'');next.catPhotos=[...(next.catPhotos||[])];for(let i=0;i<6;i++){if(form.get(`remove${i}`))next.catPhotos[i]='';const file=form.get(`cat${i}`);if(file?.size)next.catPhotos[i]=await window.SUY_ADMIN.uploadPublic(file,'about-cat');}}
       if(tab==='contact'){next.instagram=safeUrl(form.get('instagram'));next.email=String(form.get('email')||'').trim();}
       if(tab==='thoughts')next.thoughts=String(form.get('thoughts')||'');
@@ -102,5 +111,5 @@
       await window.SUY_ADMIN.saveContent('about-book',next);data=next;content();editor.close();
     }catch(error){status.textContent='SAVE FAILED: '+error.message;}
   };
-  (async()=>{try{if(window.SUY_SITE_READY)await window.SUY_SITE_READY;const api=window.SUY_ADMIN;legacy=await api.loadContent('about-interactive')||{};const saved=await api.loadContent('about-book');data={...structuredClone(defaults),...saved,profile:{...defaults.profile,...legacy.personal,...saved?.profile}};sync();}catch(error){console.warn('About content unavailable',error);}})();
+  (async()=>{try{if(window.SUY_SITE_READY)await window.SUY_SITE_READY;const api=window.SUY_ADMIN;legacy=await api.loadContent('about-interactive')||{};const saved=await api.loadContent('about-book');data={...structuredClone(defaults),...saved,profile:{...defaults.profile,...legacy.personal,...saved?.profile}};applyCoverColor();sync();}catch(error){console.warn('About content unavailable',error);}})();
 })();
