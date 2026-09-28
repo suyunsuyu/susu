@@ -11,13 +11,14 @@
   <link rel="stylesheet" href="style.css?v=20260921-profile1">
   <link rel="stylesheet" href="cursor.css?v=20260921-pointer1">
   <link rel="stylesheet" href="fonts.css?v=20260818-imgfix2">
-  <link rel="stylesheet" href="book-calendar.css?v=5">
+  <link rel="stylesheet" href="book-calendar.css?v=6">
 </head>
 <body class="about-book-page"><script>if(new URLSearchParams(location.search).has("embedded"))document.body.classList.add("embedded-book")</script>
   <header class="book-header"><a href="index.html" class="brand">LEE SU-YOON</a><a href="index.html">← HOME</a></header>
   <main class="book-main">
     <div class="book-wrap">
       <div id="about-book" class="about-book is-closed" aria-live="polite">
+        <div class="book-binding" aria-hidden="true"></div>
         <button id="book-cover" class="book-cover" type="button" aria-label="Open About book">
           <img src="assets/about-cover-cutout.png" alt="Hand-drawn About cover"><span class="cover-open-hint">OPEN THE BOOK →</span>
         </button>
@@ -40,9 +41,10 @@
   </main>
   <dialog id="book-editor" class="book-editor"><form id="book-form"><button type="button" class="close" id="book-editor-close" aria-label="Close">×</button><h2 id="book-editor-heading">EDIT PAGE</h2><div class="book-editor-mode"><button type="button" id="book-mode-content" class="active">CONTENT</button><button type="button" id="book-mode-layout">FREE LAYOUT</button></div><div id="book-editor-fields"></div><div id="book-layout-fields" hidden><p class="layout-help">Write directly on either page. Select text to style it, or add a photo at the cursor.</p><div class="book-layout-toolbar"><button type="button" data-format="bold" aria-label="Bold"><b>B</b></button><button type="button" data-format="italic" aria-label="Italic"><i>I</i></button><button type="button" data-format="justifyLeft" aria-label="Align left">≡</button><button type="button" data-format="justifyCenter" aria-label="Center">☷</button><button type="button" data-format="justifyRight" aria-label="Align right">≡→</button><select id="layout-font" aria-label="Text font"><option value="Caveat">Handwriting</option><option value="Cormorant Garamond">Editorial serif</option><option value="Noto Sans SC">Sans serif</option><option value="DM Mono">Monospace</option></select><select id="layout-font-size" aria-label="Text size"><option value="3">Small</option><option value="4" selected>Medium</option><option value="5">Large</option><option value="6">Extra large</option></select><label class="book-layout-upload">+ PHOTO<input id="book-layout-image" type="file" accept="image/*"></label></div><div class="book-layout-pages"><div><span>LEFT PAGE</span><div id="layout-left" class="book-layout-editable" contenteditable="true" role="textbox" aria-label="Left page content" aria-multiline="true"></div></div><div><span>RIGHT PAGE</span><div id="layout-right" class="book-layout-editable" contenteditable="true" role="textbox" aria-label="Right page content" aria-multiline="true"></div></div></div><button type="button" id="book-reset-layout">RESET TO STANDARD LAYOUT</button></div><label>FONT<select id="book-font"><option value="hand">Handwriting</option><option value="serif">Editorial serif</option><option value="sans">Sans serif</option><option value="mono">Monospace</option></select></label><label>SIZE <span id="book-size-output"></span><input id="book-size" type="range" min="14" max="36" step="1" value="19"></label><button class="black" type="submit">SAVE</button><p id="book-status" role="status"></p></form></dialog>
   <dialog id="book-photo-dialog" class="book-photo-dialog"><button type="button" class="close" aria-label="Close">×</button><img alt="Cat photo"></dialog>
+  <dialog id="book-text-editor" class="book-editor book-text-editor"><form id="book-text-form"><button type="button" class="close" id="book-text-close" aria-label="Close">×</button><h2>EDIT TEXT</h2><label>TEXT<input id="book-text-value" maxlength="120"></label><label>SIZE <span id="book-text-size-output"></span><input id="book-text-size" type="range" min="10" max="80" value="18"></label><label>COLOR<input id="book-text-color" type="color" value="#333333"></label><label>LEFT / RIGHT <span id="book-text-x-output"></span><input id="book-text-x" type="range" min="-100" max="100" value="0"></label><label>UP / DOWN <span id="book-text-y-output"></span><input id="book-text-y" type="range" min="-100" max="100" value="0"></label><button class="black" type="submit">SAVE</button><p id="book-text-status" role="status"></p></form></dialog>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js?v=20260818-imgfix2"></script>
   <script src="supabase-site.js?v=20260903-auth5"></script>
-  <script src="book-about.js?v=3"></script>
+  <script src="book-about.js?v=4"></script>
   <script src="boot-ready.js?v=20260818-imgfix2"></script>
 </body></html>
