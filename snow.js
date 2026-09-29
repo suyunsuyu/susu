@@ -7,7 +7,7 @@
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let stored = {};
   try { stored = JSON.parse(localStorage.getItem(storageKey) || '{}') || {}; } catch {}
-  let mode = modes.has(stored.mode) ? stored.mode : 'snow';
+  let mode = modes.has(stored.mode) ? stored.mode : 'clear';
   const speed = 1;
   let width = innerWidth;
   let height = innerHeight;
