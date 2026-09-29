@@ -161,5 +161,5 @@
     }catch(error){status.textContent='SAVE FAILED: '+error.message;}
   };
   setMobileSide('left');content();setThickness();sync();
-  (async()=>{try{if(window.SUY_SITE_READY)await window.SUY_SITE_READY;const api=window.SUY_ADMIN;const [old,saved,diary]=await Promise.all([api.loadContent('about-interactive'),api.loadContent('about-book'),api.loadContent('diary')]);legacy=old||{};diaryItems=Array.isArray(diary?.items)?diary.items:[];data={...structuredClone(defaults),...saved,profile:{...defaults.profile,...legacy.personal,...saved?.profile}};applyCoverColor();content();sync();}catch(error){console.warn('About content unavailable',error);}})();
+  (async()=>{try{if(window.SUY_SITE_READY)await window.SUY_SITE_READY;const api=window.SUY_ADMIN;const [old,saved,diary]=await Promise.all([api.loadContent('about-interactive').catch(()=>null),api.loadContent('about-book'),api.loadContent('diary').catch(()=>null)]);legacy=old||{};diaryItems=Array.isArray(diary?.items)?diary.items:[];data={...structuredClone(defaults),...saved,profile:{...defaults.profile,...legacy.personal,...saved?.profile}};applyCoverColor();content();sync();}catch(error){console.warn('About content unavailable',error);}})();
 })();
