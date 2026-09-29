@@ -89,3 +89,39 @@ body.about-book-page .about-book{position:relative;width:100%;max-width:none;min
 }
 @media(max-width:430px){body.about-book-page .about-book{height:min(77svh,590px);min-height:460px}.about-book-page .book-page h2{font-size:30px}.about-book-page .book-tabs>*{font-size:7px}.about-book-page .book-cat-grid>*{aspect-ratio:1.3}}
 @media(prefers-reduced-motion:reduce){.about-book .turn-leaf,.about-book .book-cover,.about-book .page-corner{animation:none!important;transition:none!important}}
+/* Refinement: a quieter, smaller stationery object with tucked index tabs. */
+body.about-book-page .book-main,body.about-book-page.embedded-book .book-main{padding:clamp(48px,8vh,96px) clamp(32px,7vw,100px)}
+body.about-book-page .book-wrap,body.about-book-page.embedded-book .book-wrap{width:min(1030px,100%);grid-template-columns:minmax(0,1fr) 90px}
+body.about-book-page .about-book{z-index:3;filter:drop-shadow(14px 23px 20px #30353817)}
+.about-book .binder-spine{left:47.8%;width:4.4%;background:linear-gradient(90deg,#bdc2c5,#e2e5e6 13%,#acb2b5 42%,#899196 52%,#d7dcde 88%,#a9b0b3);box-shadow:inset 0 0 5px #53606842,0 0 3px #5d696e2e}
+.about-book .binder-spine::before{inset:1% 45%;background:linear-gradient(90deg,#858d92,#dfe3e5,#8b9599)}
+.binder-ring{width:5.9%;height:3.7%;filter:drop-shadow(1px 2px 1px #4b525b38)}
+.binder-ring .ring-hole{width:17%;top:27%;background:radial-gradient(circle at 50% 50%,#727a7e 0 32%,#b9bfc0 39%,#e7e9e6 72%,#f7f8f5 100%);box-shadow:inset 1px 1px 2px #59616460}
+.binder-ring .ring-back,.binder-ring .ring-front{border-width:clamp(2px,.25vw,3px);border-color:#aab0b3;box-shadow:inset 1px 1px 1px #f3f4f3,1px 1px 1px #616b7255}
+.binder-ring .ring-back{border-top-color:#e5e8e9;border-right-color:#969fa3}.binder-ring .ring-front{border-bottom-color:#8c969a;border-left-color:#e1e5e6;border-right-color:#adb5b8;filter:drop-shadow(0 1px 1px #6e777b55)}
+.about-book .book-cover{transition:transform .95s cubic-bezier(.22,1,.36,1),opacity .48s ease;box-shadow:inset 10px 0 14px -13px #4c5a6155,3px 3px 0 #f2f4f4,6px 6px 0 #d9e0e3,10px 14px 24px #3f4b5227}
+.about-book:not(.is-closed) .book-cover{transform:rotateY(-164deg);opacity:0;pointer-events:none}
+.about-book-page .book-tabs{z-index:2;gap:6px;transform:translateX(-18px);align-items:flex-start}
+.about-book-page .book-tabs>*{width:100%;box-sizing:border-box;border:1px solid #c8cbcd!important;border-left:0!important;border-radius:0 3px 4px 0!important;box-shadow:inset 0 1px 0 #fff8,1px 2px 0 #a8acae70,3px 5px 6px #3333!important;min-height:46px!important;padding:11px 8px 9px 19px!important;clip-path:polygon(0 0,97% 0,100% 5%,100% 95%,96% 100%,0 100%);transition:translate .25s cubic-bezier(.22,1,.36,1),box-shadow .25s ease!important}
+.about-book-page .book-tabs>*:nth-child(1){width:96%;transform:translateY(-2px)}
+.about-book-page .book-tabs>*:nth-child(2){width:100%;transform:translateY(1px)}
+.about-book-page .book-tabs>*:nth-child(3){width:93%;transform:translateY(3px)}
+.about-book-page .book-tabs>*:nth-child(4){width:98%;transform:translateY(0)}
+.about-book-page .book-tabs>*:nth-child(5){width:95%;transform:translateY(-1px)}
+.about-book-page .book-tabs>*:nth-child(6){width:99%;transform:translateY(2px)}
+.about-book-page .book-tabs>*:hover,.about-book-page .book-tabs>*.active{translate:4px 0;box-shadow:inset 0 1px 0 #fff8,2px 3px 0 #a8acae70,4px 6px 8px #3333!important}
+.about-book .turn-leaf{transform-origin:0 center;will-change:transform,filter}
+.about-book.is-turning .turn-leaf{animation:binder-flip-natural 1.02s cubic-bezier(.22,1,.36,1) both}
+.about-book.is-turning .turn-face{animation:binder-face-light 1.02s cubic-bezier(.22,1,.36,1) both}
+.turn-face::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(100deg,transparent 0 57%,#59616818 77%,#fff9 89%,transparent 99%)}
+.about-book.is-turning .turn-face::after{animation:binder-crease 1.02s cubic-bezier(.22,1,.36,1) both}
+@keyframes binder-flip-natural{0%{transform:rotateY(0) rotateX(0) skewY(0);filter:drop-shadow(1px 3px 2px #26303910)}12%{transform:rotateY(-9deg) rotateX(1.4deg) skewY(-.8deg);filter:drop-shadow(6px 9px 7px #26303924)}36%{transform:rotateY(-55deg) rotateX(2deg) skewY(-1.4deg);filter:drop-shadow(16px 19px 17px #26303938)}52%{transform:rotateY(-96deg) rotateX(1.1deg) skewY(-.7deg);filter:drop-shadow(12px 21px 15px #2630393b)}74%{transform:rotateY(-154deg) rotateX(-.8deg) skewY(.7deg);filter:drop-shadow(-7px 12px 12px #26303925)}91%{transform:rotateY(-184deg) rotateX(-.4deg) skewY(.2deg);filter:drop-shadow(-2px 7px 6px #2630391b)}100%{transform:rotateY(-180deg) rotateX(0) skewY(0);filter:drop-shadow(0 3px 2px #26303912)}}
+@keyframes binder-face-light{0%,100%{box-shadow:2px 4px 7px #34404715}45%{box-shadow:17px 20px 26px #26323c39}78%{box-shadow:-9px 14px 18px #26323c2c}}
+@keyframes binder-crease{0%{opacity:0;transform:translateX(23%)}12%{opacity:.2;transform:translateX(12%)}45%{opacity:.75;transform:translateX(-12%)}75%{opacity:.55;transform:translateX(-30%)}100%{opacity:0;transform:translateX(-46%)}}
+.about-book .page-corner:hover{width:38px;height:38px;filter:drop-shadow(-4px -4px 4px #424b5126)}
+.binder-palette-fields{width:260px;grid-template-columns:repeat(2,minmax(0,1fr));max-height:min(70vh,510px);overflow:auto}
+.binder-tab-colors{grid-column:1/-1;display:grid;gap:7px;border-top:1px solid #d8dbdc;padding-top:9px}
+.binder-tab-color-row{display:grid;grid-template-columns:70px 1fr 1fr;gap:7px;align-items:center;font:10px 'DM Mono',monospace}
+.binder-tab-color-row label{min-width:0}.binder-tab-color-row input{height:25px}
+@media(max-width:760px){body.about-book-page .book-main,body.about-book-page.embedded-book .book-main{padding:24px 14px}body.about-book-page .book-wrap,body.about-book-page.embedded-book .book-wrap{width:min(100%,470px);grid-template-columns:minmax(0,1fr) 62px}.about-book-page .book-tabs{transform:translateX(-12px)}.about-book-page .book-tabs>*{padding-left:14px!important;min-height:45px!important}.binder-ring{width:68%;height:3.4%}}
+@media(prefers-reduced-motion:reduce){.about-book.is-turning .turn-leaf,.about-book.is-turning .turn-face,.about-book.is-turning .turn-face::after{animation:none!important}}
