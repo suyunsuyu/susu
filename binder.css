@@ -110,14 +110,6 @@ body.about-book-page .about-book{z-index:3;filter:drop-shadow(14px 23px 20px #30
 .about-book-page .book-tabs>*:nth-child(5){width:95%;transform:translateY(-1px)}
 .about-book-page .book-tabs>*:nth-child(6){width:99%;transform:translateY(2px)}
 .about-book-page .book-tabs>*:hover,.about-book-page .book-tabs>*.active{translate:4px 0;box-shadow:inset 0 1px 0 #fff8,2px 3px 0 #a8acae70,4px 6px 8px #3333!important}
-.about-book .turn-leaf{transform-origin:0 center;will-change:transform,filter}
-.about-book.is-turning .turn-leaf{animation:binder-flip-natural 1.02s cubic-bezier(.22,1,.36,1) both}
-.about-book.is-turning .turn-face{animation:binder-face-light 1.02s cubic-bezier(.22,1,.36,1) both}
-.turn-face::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(100deg,transparent 0 57%,#59616818 77%,#fff9 89%,transparent 99%)}
-.about-book.is-turning .turn-face::after{animation:binder-crease 1.02s cubic-bezier(.22,1,.36,1) both}
-@keyframes binder-flip-natural{0%{transform:rotateY(0) rotateX(0) skewY(0);filter:drop-shadow(1px 3px 2px #26303910)}12%{transform:rotateY(-9deg) rotateX(1.4deg) skewY(-.8deg);filter:drop-shadow(6px 9px 7px #26303924)}36%{transform:rotateY(-55deg) rotateX(2deg) skewY(-1.4deg);filter:drop-shadow(16px 19px 17px #26303938)}52%{transform:rotateY(-96deg) rotateX(1.1deg) skewY(-.7deg);filter:drop-shadow(12px 21px 15px #2630393b)}74%{transform:rotateY(-154deg) rotateX(-.8deg) skewY(.7deg);filter:drop-shadow(-7px 12px 12px #26303925)}91%{transform:rotateY(-184deg) rotateX(-.4deg) skewY(.2deg);filter:drop-shadow(-2px 7px 6px #2630391b)}100%{transform:rotateY(-180deg) rotateX(0) skewY(0);filter:drop-shadow(0 3px 2px #26303912)}}
-@keyframes binder-face-light{0%,100%{box-shadow:2px 4px 7px #34404715}45%{box-shadow:17px 20px 26px #26323c39}78%{box-shadow:-9px 14px 18px #26323c2c}}
-@keyframes binder-crease{0%{opacity:0;transform:translateX(23%)}12%{opacity:.2;transform:translateX(12%)}45%{opacity:.75;transform:translateX(-12%)}75%{opacity:.55;transform:translateX(-30%)}100%{opacity:0;transform:translateX(-46%)}}
 .about-book .page-corner:hover{width:38px;height:38px;filter:drop-shadow(-4px -4px 4px #424b5126)}
 .binder-palette-fields{width:260px;grid-template-columns:repeat(2,minmax(0,1fr));max-height:min(70vh,510px);overflow:auto}
 .binder-tab-colors{grid-column:1/-1;display:grid;gap:7px;border-top:1px solid #d8dbdc;padding-top:9px}
@@ -125,3 +117,30 @@ body.about-book-page .about-book{z-index:3;filter:drop-shadow(14px 23px 20px #30
 .binder-tab-color-row label{min-width:0}.binder-tab-color-row input{height:25px}
 @media(max-width:760px){body.about-book-page .book-main,body.about-book-page.embedded-book .book-main{padding:24px 14px}body.about-book-page .book-wrap,body.about-book-page.embedded-book .book-wrap{width:min(100%,470px);grid-template-columns:minmax(0,1fr) 82px}.about-book-page .book-tabs{transform:translateX(-12px)}.about-book-page .book-tabs>*{padding-left:25px!important;min-height:45px!important}.binder-ring{width:68%;height:3.4%}}
 @media(prefers-reduced-motion:reduce){.about-book.is-turning .turn-leaf,.about-book.is-turning .turn-face,.about-book.is-turning .turn-face::after{animation:none!important}}
+
+/* Flexible paper: independent tangents form one continuous curved surface. */
+.about-book .turn-leaf{left:53%;width:44.6%;transform:none!important;filter:none!important;animation:none!important;overflow:visible;transform-style:preserve-3d}
+.about-book.is-turning .turn-leaf{opacity:1;animation:none!important}
+.curl-strip{position:absolute;left:0;top:0;height:100%;transform-origin:left center;transform-style:preserve-3d;will-change:transform}
+.curl-face{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;background:var(--binder-paper);border-top:1px solid #e3e4df;border-bottom:1px solid #d9dbd5;box-sizing:border-box}
+.curl-back{transform:rotateY(180deg)}
+.about-book .curl-copy.book-page{position:absolute!important;margin:0!important;max-width:none!important;transform:none!important;visibility:visible!important;pointer-events:none!important;overflow:hidden!important;border-radius:0!important;box-shadow:none!important;border:0!important;grid-column:auto}
+.curl-face::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(31,35,36,var(--curl-shade)),transparent 80%);opacity:.7}
+.curl-strip:last-child .curl-front{border-right:1px solid #d5d8d2;border-radius:0 5px 7px 0}
+.curl-strip:first-child .curl-back{border-right:1px solid #d5d8d2}
+.about-book .turn-shadow{position:absolute;z-index:5;left:52%;top:5%;width:44%;height:90%;pointer-events:none;opacity:0;background:linear-gradient(90deg,#23292744,#23292755 48%,transparent);transform-origin:left center;border-radius:45%;will-change:transform,opacity,filter}
+.about-book.is-turning .book-page{pointer-events:none}
+.about-book .page-corner{touch-action:none}
+.about-book .binder-close{position:absolute;right:0;bottom:-34px;z-index:10;border:0;background:transparent;padding:7px 0 7px 12px;color:#686c6b;font:10px/1.2 'DM Mono',monospace;letter-spacing:.08em;cursor:pointer;transition:color .25s cubic-bezier(.22,1,.36,1)}
+.about-book .binder-close:hover{color:#222}.about-book .binder-close[hidden]{display:none}
+.about-book .binder-close:focus-visible{outline:1px solid #777;outline-offset:4px}
+.about-book.is-closing .book-cover{pointer-events:none;animation:binder-cover-close 1.05s cubic-bezier(.22,1,.36,1) both}
+.about-book.is-closing .book-left{animation:binder-left-close 1.05s cubic-bezier(.22,1,.36,1) both;transform-origin:right center;pointer-events:none}
+.about-book.is-closing .book-right{animation:binder-right-close 1.05s cubic-bezier(.22,1,.36,1) both;transform-origin:left center;pointer-events:none}
+.about-book.is-closing .binder-close,.about-book.is-closing .page-corner{visibility:hidden}
+@keyframes binder-cover-close{0%{transform:rotateY(-164deg);opacity:0}12%{opacity:1}100%{transform:rotateY(0);opacity:1}}
+@keyframes binder-left-close{0%{transform:rotateY(-1.7deg) rotateX(.5deg)}55%{transform:rotateY(12deg) rotateX(1deg)}100%{transform:rotateY(0) rotateX(0)}}
+@keyframes binder-right-close{0%{transform:rotateY(1.7deg) rotateX(.5deg)}55%{transform:rotateY(-9deg) rotateX(1deg)}100%{transform:rotateY(0) rotateX(0)}}
+.binder-tab-color-row{grid-template-columns:85px 1fr}
+@media(max-width:760px){.about-book .turn-leaf{left:5%;width:91%}.about-book .turn-shadow{left:5%;width:91%}.about-book .binder-close{bottom:-30px;font-size:9px}.about-book.is-closing .book-left,.about-book.is-closing .book-right{transform-origin:left center}}
+@media(prefers-reduced-motion:reduce){.about-book.is-closing .book-cover,.about-book.is-closing .book-left,.about-book.is-closing .book-right{animation:none!important}}
