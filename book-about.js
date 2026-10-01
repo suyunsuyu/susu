@@ -3,7 +3,8 @@
   const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const safeUrl = value => { if(!String(value||'').trim())return ''; try { const u = new URL(value,location.href); return ['https:','http:','mailto:'].includes(u.protocol) ? u.href : ''; } catch { return ''; } };
   const defaults = {catText:'',catPhotos:[],catDetails:{name:'',birthday:'',personality:'',likes:''},instagram:'',email:'',thoughts:'',coverColor:'#dce6eb',paperColor:'#f7f7f3',tabColors:[],textOverrides:{},profile:{name:'',birthDate:'',mbti:'',favoriteFlower:'',hobbies:'',dream:'',message:'',image:'',nameSize:52,nameX:0,nameY:0,detailSize:19,detailX:0,detailY:0},style:{},pages:{}};
-  const fonts = {hand:"'Caveat','Nanum Pen Script',cursive",serif:"'Cormorant Garamond','Noto Sans SC',serif",sans:"'Noto Sans SC',sans-serif",mono:"'DM Mono','Noto Sans SC',monospace"};
+  const languageFonts="'Agdasima','Nanum Barunpen','ChillHuoFangSong',sans-serif";
+  const fonts = {auto:languageFonts,korean:"'Nanum Barunpen','ChillHuoFangSong','Agdasima',sans-serif",chinese:"'ChillHuoFangSong','Nanum Barunpen','Agdasima',serif",english:languageFonts,hand:"'Caveat','Nanum Pen Script',cursive",serif:"'Cormorant Garamond','Noto Sans SC',serif",sans:"'Noto Sans SC',sans-serif",mono:"'DM Mono','Noto Sans SC',monospace"};
   let data = structuredClone(defaults), legacy = null, tab = 'profile', turning = false, editMode = 'content', activeEditable = null, mobileSide='left', diaryItems=[];
   const book = $('#about-book'), cover = $('#book-cover'), spread = $('#book-spread');
   const validColor = (color,fallback=defaults.coverColor) => /^#[\da-f]{6}$/i.test(color) ? color : fallback;
@@ -13,7 +14,7 @@
   const textTargets=()=>[...document.querySelectorAll('.book-tabs > *, .cover-open-hint, .book-page .book-folio, .book-page h2, .book-page dt, .book-page dd, .book-page p, .book-page a')].filter(el=>!el.closest('.book-cat-grid'));
   function textKey(el){if(el.closest('.book-tabs'))return `tab-label:${[...el.parentElement.children].indexOf(el)}`;if(el.classList.contains('cover-open-hint'))return 'cover-hint';const side=el.closest('.book-left')?'left':'right';const page=el.closest('.book-page');return `${tab}:${side}:${[...page.querySelectorAll('.book-folio,h2,dt,dd,p,a')].indexOf(el)}`;}
   function applyTextOverrides(){textTargets().forEach(el=>{const override=data.textOverrides?.[textKey(el)];if(!override)return;if(typeof override.text==='string')el.textContent=override.text;el.style.fontSize=`${Math.max(10,Math.min(80,Number(override.size)||18))}px`;el.style.color=validColor(override.color,'#333333');el.style.translate=`${Math.max(-180,Math.min(180,Number(override.x)||0))}px ${Math.max(-180,Math.min(180,Number(override.y)||0))}px`;if(override.font&&override.font!=='inherit')el.style.fontFamily=fonts[override.font]||'';el.style.textAlign=['left','center','right'].includes(override.align)?override.align:'left';});}
-  function photoKey(el){const page=el.closest('.book-left,.book-right');return `${tab}:${page?.classList.contains('book-left')?'left':'right'}:${[...page.querySelectorAll('img')].indexOf(el)}`;}
+  function photoKey(el){if(tab==='profile'&&el.classList.contains('book-portrait'))return 'profile:right:0';const page=el.closest('.book-left,.book-right');return `${tab}:${page?.classList.contains('book-left')?'left':'right'}:${[...page.querySelectorAll('img')].indexOf(el)}`;}
   function applyPhotoOverrides(){document.querySelectorAll('.book-page img').forEach(el=>{const override=data.photoOverrides?.[photoKey(el)];if(!override)return;if(override.src)el.src=safeUrl(override.src)||el.src;el.hidden=!!override.removed;el.style.translate=`${Math.max(-120,Math.min(120,Number(override.x)||0))}px ${Math.max(-120,Math.min(120,Number(override.y)||0))}px`;el.style.scale=String(Math.max(.5,Math.min(1.8,(Number(override.scale)||100)/100)));el.style.rotate=`${Math.max(-15,Math.min(15,Number(override.angle)||0))}deg`;});}
   function sanitize(html) {
     const permitted=new Set(['P','DIV','SPAN','BR','B','STRONG','I','EM','U','H2','H3','UL','OL','LI','A','IMG','FIGURE','SMALL','DL','DT','DD','BUTTON','FONT']);
@@ -38,20 +39,20 @@
       if(child.classList.contains('book-portrait-empty'))el.className='book-portrait-empty';
       if(child.classList.contains('book-ins'))el.className='book-ins';
       const align=child.style.textAlign;if(['left','right','center','justify'].includes(align))el.style.textAlign=align;
-      const family=child.style.fontFamily||child.getAttribute('face');if(family&&['Caveat','Cormorant Garamond','Noto Sans SC','DM Mono'].some(f=>family.includes(f)))el.style.fontFamily=family;
+      const family=child.style.fontFamily||child.getAttribute('face');if(family&&['Caveat','Cormorant Garamond','Noto Sans SC','DM Mono','Agdasima','Nanum Barunpen','ChillHuoFangSong'].some(f=>family.includes(f)))el.style.fontFamily=family;
       const oldSize=Number(child.getAttribute('size'));const size=oldSize>=1&&oldSize<=7?({1:12,2:15,3:18,4:21,5:26,6:32,7:40})[oldSize]:parseInt(child.style.fontSize,10);if(size>=12&&size<=48)el.style.fontSize=size+'px';
       normalize(child,el);target.append(el);
     })};
     const output=document.createElement('div');normalize(input.content,output);return output.innerHTML;
   }
-  function style() { const value = data.style?.[tab] || {}; spread.style.setProperty('--book-font',fonts[value.font] || fonts.hand); spread.style.setProperty('--book-size',`${Math.max(14,Math.min(36,Number(value.size)||19))}px`); }
+  function style() { const value = data.style?.[tab] || {}; spread.style.setProperty('--book-font',fonts[value.font] || fonts.auto); spread.style.setProperty('--book-size',`${Math.max(14,Math.min(36,Number(value.size)||19))}px`); }
   function content() {
     const left = $('#book-left'), right = $('#book-right'); style();
     right.classList.toggle('notes-paper',tab==='thoughts');
     if (tab === 'profile') {
       const p = data.profile || {};
-      left.innerHTML = `<span class="book-folio">01 / ABOUT</span><h2 class="book-profile-name">ABOUT ME</h2><dl class="book-profile">${[['NAME',p.name],['BIRTHDAY',p.birthDate],['MBTI',p.mbti],['FAVORITE FLOWER',p.favoriteFlower],['HOBBY',p.hobbies],['DREAM',p.dream]].map(([k,v])=>`<dt>${k}</dt><dd>${esc(v||' ')}</dd>`).join('')}</dl>`;
-      right.innerHTML = `<span class="book-folio">PERSONAL NOTE</span>${p.image ? `<img class="book-portrait" src="${esc(p.image)}" alt="Profile portrait">` : '<div class="binder-photo-placeholder" aria-label="Photo space">PHOTO</div>'}<div class="book-profile-details"><p class="book-copy">${esc(p.message)}</p></div><a class="book-link" href="works.html" target="_top">VIEW MY WORKS →</a>`;
+      left.innerHTML = `<span class="book-folio">01 / ABOUT</span><div class="binder-profile-heading"><h2 class="book-profile-name">ABOUT ME</h2>${p.image ? `<img class="book-portrait" src="${esc(p.image)}" alt="Profile portrait">` : '<div class="binder-photo-placeholder" aria-label="Profile ID photo space">PHOTO</div>'}</div><dl class="book-profile">${[['NAME',p.name],['BIRTHDAY',p.birthDate],['MBTI',p.mbti],['FAVORITE FLOWER',p.favoriteFlower],['HOBBY',p.hobbies],['DREAM',p.dream]].map(([k,v])=>`<dt>${k}</dt><dd>${esc(v||' ')}</dd>`).join('')}</dl>`;
+      right.innerHTML = `<span class="book-folio">PERSONAL NOTE</span><div class="book-profile-details"><p class="book-copy">${esc(p.message)}</p></div><a class="book-link" href="works.html" target="_top">VIEW MY WORKS →</a>`;
       left.style.setProperty('--profile-name-size',`${Math.max(18,Math.min(80,Number(p.nameSize)||52))}px`);
       left.style.setProperty('--profile-name-x',`${Math.max(-100,Math.min(100,Number(p.nameX)||0))}px`);
       left.style.setProperty('--profile-name-y',`${Math.max(-100,Math.min(100,Number(p.nameY)||0))}px`);
@@ -158,7 +159,7 @@
   }
   function open(next='profile') {
     if (turning) return;
-    if (book.classList.contains('is-closed')) {tab=next;content();book.classList.remove('is-closed');cover.setAttribute('aria-expanded','true');setMobileSide('left');setThickness();sync();return;}
+    if (book.classList.contains('is-closed')) {tab=next;content();turning=true;book.classList.add('is-opening');book.classList.remove('is-closed');cover.setAttribute('aria-expanded','true');setMobileSide('left');setThickness();sync();setTimeout(()=>{book.classList.remove('is-opening');turning=false;sync();},reducedMotion()?0:1120);return;}
     if(tab===next)return;
     prepareSheet(next);animateSheet(0,1,next);
   }
@@ -217,7 +218,7 @@
     if(tab==='contact') return `<label>INSTAGRAM URL<input name="instagram" type="url" value="${esc(data.instagram)}" placeholder="https://instagram.com/..."></label><label>EMAIL<input name="email" type="email" value="${esc(data.email)}"></label>`;
     return `<label>WORDS<textarea name="thoughts">${esc(data.thoughts)}</textarea></label>`;
   }
-  $('#book-edit').onclick=async()=>{if(!await window.SUY_ADMIN?.isAdmin())return;$('#book-editor-heading').textContent='EDIT · '+document.querySelector(`[data-book-tab="${tab}"]`).textContent;$('#book-editor-fields').innerHTML=fields();seedLayout();setMode(data.pages?.[tab]?'layout':'content');const st=data.style?.[tab]||{};$('#book-font').value=fonts[st.font]?st.font:'hand';$('#book-size').value=st.size||19;$('#book-size-output').textContent=$('#book-size').value+' px';$('#book-status').textContent='';editor.showModal();};
+  $('#book-edit').onclick=async()=>{if(!await window.SUY_ADMIN?.isAdmin())return;$('#book-editor-heading').textContent='EDIT · '+document.querySelector(`[data-book-tab="${tab}"]`).textContent;$('#book-editor-fields').innerHTML=fields();seedLayout();setMode(data.pages?.[tab]?'layout':'content');const st=data.style?.[tab]||{};$('#book-font').value=fonts[st.font]?st.font:'auto';$('#book-size').value=st.size||19;$('#book-size-output').textContent=$('#book-size').value+' px';$('#book-status').textContent='';editor.showModal();};
   $('#book-form').onsubmit=async e=>{
     e.preventDefault();const status=$('#book-status');status.textContent='SAVING…';
     try {if(!await window.SUY_ADMIN.isAdmin())throw Error('Admin login required');const form=new FormData(e.target);const next=structuredClone(data);next.style={...(next.style||{}),[tab]:{font:$('#book-font').value,size:Number($('#book-size').value)}};
