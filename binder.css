@@ -1,5 +1,5 @@
 /* The binder is one physical scene: cover, paper stacks, leaves, spine, and hardware. */
-:root{--binder-cover:#dce6eb;--binder-paper:#f7f7f3;--binder-tab-a:#dce7eb;--binder-tab-b:#e8dfe3}
+:root{--binder-cover:#dce6eb;--binder-paper:#f7f7f3;--binder-tab-a:#191919;--binder-tab-b:#fafaf8}
 html,body.about-book-page{min-height:100%;background:#efefed}
 body.about-book-page{background:radial-gradient(ellipse at 29% 12%,#fafaf8 0%,#f0f0ee 52%,#e9eae8 100%);color:#333}
 body.about-book-page .book-main,body.about-book-page.embedded-book .book-main{max-width:1450px;min-height:calc(100svh - 55px);display:flex;flex-direction:column;justify-content:center;padding:clamp(30px,5vh,68px) clamp(22px,5vw,78px)}
