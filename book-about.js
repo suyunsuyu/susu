@@ -94,9 +94,16 @@
   const reducedMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
   let sheet=null;
   const smooth=t=>t*t*(3-2*t);
+  function paperEase(t){
+    // cubic-bezier(0.22, 1, 0.36, 1), sampled on the animation clock.
+    if(t<=0||t>=1)return t;
+    const axis=(u,a,b)=>3*(1-u)*(1-u)*u*a+3*(1-u)*u*u*b+u*u*u;
+    let lo=0,hi=1;for(let i=0;i<12;i++){const mid=(lo+hi)/2;if(axis(mid,.22,.36)<t)lo=mid;else hi=mid;}
+    return axis((lo+hi)/2,1,1);
+  }
   function pageCopy(source,width,height,offset){
     const copy=source.cloneNode(true);copy.removeAttribute('id');copy.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
-    copy.classList.add('curl-copy');copy.style.cssText=`width:${width}px;height:${height}px;left:${-offset}px;top:${-source.scrollTop}px;`;
+    copy.classList.add('curl-copy');Object.assign(copy.style,{width:`${width}px`,height:`${height}px`,left:`${-offset}px`,top:`${-source.scrollTop}px`});
     return copy;
   }
   function prepareSheet(next){
@@ -104,6 +111,7 @@
     const source=mobile&&mobileSide==='left'?$('#book-left'):$('#book-right');
     const front=source.cloneNode(true);front.scrollTop=source.scrollTop;
     const current=tab;tab=next;content();const back=$('#book-left').cloneNode(true);tab=current;content();
+    for(const key of ['--book-font','--book-size'])leaf.style.setProperty(key,spread.style.getPropertyValue(key));
     const {width,height}=leaf.getBoundingClientRect();const count=20,step=width/count;
     const fragments=document.createDocumentFragment(),strips=[];
     for(let i=0;i<count;i++){
@@ -117,14 +125,15 @@
   }
   function drawSheet(t){
     if(!sheet)return;const {width,height,step,strips,mobile}=sheet;
-    const travel=smooth(Math.max(0,Math.min(1,(t-.10)/.84)));
+    const phase=Math.max(0,Math.min(1,(t-.10)/.84));
+    const travel=.75*smooth(phase)+.25*paperEase(phase);
     const rotation=Math.PI*travel;
     const bend=Math.sin(Math.PI*t)*.88;
     const lift=Math.sin(Math.PI*Math.min(1,t/.28))*.12*(1-travel);
     let x=mobile?0:-book.clientWidth*.06*travel,z=0;
     strips.forEach((strip,i)=>{
       const s=(i+.5)/strips.length;
-      const angle=rotation+bend*(s-.30)+lift*s*s;
+      const angle=Math.max(0,rotation+bend*(s-.30)+lift*s*s);
       const cornerLift=height*.032*Math.sin(Math.PI*t)*s*s;
       strip.style.transform=`translate3d(${x}px,${-cornerLift}px,${z}px) rotateY(${-angle*180/Math.PI}deg) skewY(${-2.4*Math.sin(Math.PI*t)*s}deg)`;
       const light=Math.cos(angle);
