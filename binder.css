@@ -125,7 +125,7 @@ body.about-book-page .about-book{z-index:3;filter:drop-shadow(14px 23px 20px #30
 .curl-face{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;background:var(--binder-paper);border-top:1px solid #e3e4df;border-bottom:1px solid #d9dbd5;box-sizing:border-box}
 .curl-back{transform:rotateY(180deg)}
 .about-book .curl-copy.book-page{position:absolute!important;margin:0!important;max-width:none!important;transform:none!important;visibility:visible!important;pointer-events:none!important;overflow:hidden!important;border-radius:0!important;box-shadow:none!important;border:0!important;grid-column:auto}
-.curl-face::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(31,35,36,var(--curl-shade)),transparent 80%);opacity:.7}
+.curl-face::after{content:'';position:absolute;inset:0;pointer-events:none;background:rgba(31,35,36,var(--curl-shade));opacity:.24}
 .curl-strip:last-child .curl-front{border-right:1px solid #d5d8d2;border-radius:0 5px 7px 0}
 .curl-strip:first-child .curl-back{border-right:1px solid #d5d8d2}
 .about-book .turn-shadow{position:absolute;z-index:5;left:52%;top:5%;width:44%;height:90%;pointer-events:none;opacity:0;background:linear-gradient(90deg,#23292744,#23292755 48%,transparent);transform-origin:left center;border-radius:45%;will-change:transform,opacity,filter}
