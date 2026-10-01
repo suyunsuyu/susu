@@ -4,7 +4,7 @@
   const safeUrl = value => { if(!String(value||'').trim())return ''; try { const u = new URL(value,location.href); return ['https:','http:','mailto:'].includes(u.protocol) ? u.href : ''; } catch { return ''; } };
   const defaults = {catText:'',catPhotos:[],catDetails:{name:'',birthday:'',personality:'',likes:''},instagram:'',email:'',thoughts:'',coverColor:'#dce6eb',paperColor:'#f7f7f3',tabColors:[],textOverrides:{},profile:{name:'',birthDate:'',mbti:'',favoriteFlower:'',hobbies:'',dream:'',message:'',image:'',nameSize:52,nameX:0,nameY:0,detailSize:19,detailX:0,detailY:0},style:{},pages:{}};
   const languageFonts="'Agdasima','Nanum Barunpen','ChillHuoFangSong',sans-serif";
-  const fonts = {auto:languageFonts,korean:"'Nanum Barunpen','ChillHuoFangSong','Agdasima',sans-serif",chinese:"'ChillHuoFangSong','Nanum Barunpen','Agdasima',serif",english:languageFonts,hand:"'Caveat','Nanum Pen Script',cursive",serif:"'Cormorant Garamond','Noto Sans SC',serif",sans:"'Noto Sans SC',sans-serif",mono:"'DM Mono','Noto Sans SC',monospace"};
+  const fonts = {auto:languageFonts,korean:"'Nanum Barunpen','ChillHuoFangSong','Agdasima',sans-serif",chinese:"'ChillHuoFangSong','Nanum Barunpen','Agdasima',serif",english:languageFonts,hand:languageFonts,serif:"'Cormorant Garamond','Noto Sans SC',serif",sans:"'Noto Sans SC',sans-serif",mono:"'DM Mono','Noto Sans SC',monospace"};
   let data = structuredClone(defaults), legacy = null, tab = 'profile', turning = false, editMode = 'content', activeEditable = null, mobileSide='left', diaryItems=[];
   const book = $('#about-book'), cover = $('#book-cover'), spread = $('#book-spread');
   const validColor = (color,fallback=defaults.coverColor) => /^#[\da-f]{6}$/i.test(color) ? color : fallback;
