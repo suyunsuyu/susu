@@ -271,3 +271,9 @@ body.about-book-page .about-book{aspect-ratio:1.6}
 #paper-background-list img{aspect-ratio:3/2;object-fit:contain;background:#eee}
 #paper-background-list>p{grid-column:1/-1;font-size:16px;color:#777}
 @media(max-width:600px){.paper-dialog .printer-output{width:82%;height:auto;aspect-ratio:3/2}.paper-dialog .printer-slot{width:89%}.printer-toolbar{flex-wrap:wrap}.printer-toolbar .paper-controls{max-width:none;flex-basis:100%}.paper-dialog #paper-generate{margin-left:auto}#paper-photo-name{max-width:120px}}
+/* Portrait paper, with identical proportions on screen and in the JPEG. */
+.paper-dialog .printer-output{width:min(45%,225px);height:auto;aspect-ratio:3/4}
+.paper-dialog #paper-canvas{width:100%;height:auto;aspect-ratio:3/4}
+.paper-dialog .printer-slot{width:54%}
+.paper-dialog #paper-words{font-size:16px!important;line-height:1.65;min-height:96px;letter-spacing:0}
+@media(max-width:600px){.paper-dialog .printer-output{width:min(56%,195px);height:auto;aspect-ratio:3/4}.paper-dialog .printer-slot{width:66%}.paper-dialog #paper-words{font-size:14px!important;min-height:95px}}
