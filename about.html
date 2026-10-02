@@ -16,13 +16,13 @@
 <body class="about-book-page"><script>if(new URLSearchParams(location.search).has("embedded"))document.body.classList.add("embedded-book")</script>
   <header class="book-header"><a href="index.html" class="brand">LEE SU-YOON</a><a href="index.html">← HOME</a></header>
   <main class="book-main">
-    <div class="notebook-layout"><aside class="notebook-margin" aria-label="Personal words"><span class="margin-caption">A LITTLE NOTE</span><p id="notebook-margin-text" tabindex="0"></p><button id="notebook-note-edit" data-admin-only hidden type="button">EDIT WORDS ↗</button><button class="paper-open" type="button">PRINT A MOMENT ↗</button></aside><div class="book-wrap">
+    <div class="notebook-layout"><aside class="notebook-margin" aria-label="Personal words"><span class="margin-caption">짧은 글</span><p id="notebook-margin-text" tabindex="0"></p><button id="notebook-note-edit" data-admin-only hidden type="button">EDIT WORDS ↗</button><button class="paper-open" type="button">오늘의 마음 인쇄 ↗</button></aside><div class="book-wrap">
       <div id="about-book" class="about-book book-scene is-closed" data-page-index="0" aria-live="polite">
         <div class="cover-back" aria-hidden="true"></div>
         <div class="page-stack page-stack-left" aria-hidden="true"></div><div class="page-stack page-stack-right" aria-hidden="true"></div>
         <div class="binder-spine" aria-hidden="true"></div>
         <button id="book-cover" class="book-cover" type="button" aria-label="Open About book">
-          <img src="assets/about-cover-cutout.png" alt="Hand-drawn About cover"><span class="cover-open-hint">OPEN THE BOOK →</span>
+          <img src="assets/about-cover-cutout.png" alt="Hand-drawn About cover"><span class="cover-open-hint">책 열기 →</span>
         </button>
         <div class="book-spread" id="book-spread">
           <div class="book-page book-left" id="book-left"></div>
@@ -33,12 +33,12 @@
         <div class="turn-leaf" id="book-turn-leaf" aria-hidden="true" inert></div>
         <button class="page-corner" id="book-page-corner" type="button" aria-label="Turn to next section"></button>
         <div class="mobile-leaf-nav"><button id="book-mobile-prev" type="button" aria-label="Previous page">←</button><span id="book-mobile-count">1 / 2</span><button id="book-mobile-next" type="button" aria-label="Next page">→</button></div>
-        <button id="book-close" class="binder-close" type="button" hidden aria-label="Close book">CLOSE BOOK ↘</button>
+        <button id="book-close" class="binder-close" type="button" hidden aria-label="Close book">책 덮기 ↘</button>
       </div>
       <nav class="book-tabs" aria-label="About book tabs">
-        <button type="button" data-book-tab="cat">MY CAT</button>
-        <a href="guestbook.html" target="_top">MESSAGE</a>
-        <a href="works.html" target="_top">MY WORKS</a>
+        <button type="button" data-book-tab="cat">내 고양이</button>
+        <a href="guestbook.html" target="_top">방명록</a>
+        <a href="works.html" target="_top">나의 작품</a>
       </nav>
     </div>
     </div><div class="book-actions"><div class="book-admin-actions"><div id="book-color-control" class="binder-palette" hidden><button id="binder-palette-toggle" type="button" aria-label="Book colors" title="Book colors">◒</button><div class="binder-palette-fields" hidden><label>COVER<input id="book-cover-color" type="color" value="#dce6eb"></label><label>PAPER<input id="book-paper-color" type="color" value="#f7f7f3"></label><label>TABS<input id="book-tab-background" type="color" value="#191919"></label><div id="binder-tab-colors" class="binder-tab-colors"></div></div></div><button id="book-edit" type="button" data-admin-only hidden>EDIT PAGE ↗</button></div></div>
@@ -51,6 +51,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js?v=20260818-imgfix2"></script>
   <script src="supabase-site.js?v=20261002-font3"></script>
-  <script src="book-about.js?v=15"></script><script src="notebook-ui.js?v=7"></script>
+  <script src="book-about.js?v=15"></script><script src="notebook-ui.js?v=8"></script>
   <script src="boot-ready.js?v=20260818-imgfix2"></script>
 <script src="site-fonts.js?v=1"></script><script src="cat-scene.js?v=1"></script></body></html>
