@@ -43,7 +43,7 @@
     const x=img?654:85,width=img?460:1030,family=fonts[language(text)];await Promise.all(textRuns(text).map(run=>document.fonts.load('40px '+fonts[run.key],run.text)));await document.fonts.load('28px Agdasima');
     ctx.fillStyle='#777';ctx.font='28px Agdasima';ctx.fillText($('#paper-date').value.replace(/-/g,'.'),x,112);
     ctx.strokeStyle='#bdbdb8';ctx.beginPath();ctx.moveTo(x,142);ctx.lineTo(x+width,142);ctx.stroke();
-    let size=40,lines=[];do{ctx.font=size+'px '+family;lines=wrap({measureText:t=>({width:measureWords(ctx,t,size)})},text,width);if(lines.length*size*1.5<=480)break;size-=1}while(size>17);
+    let size=40,lines=[];do{ctx.font=size+'px '+family;lines=wrap({measureText:t=>({width:measureWords(ctx,t,size)})},text,width);if(lines.length*size*1.5<=480)break;size-=1}while(size>12);
     ctx.fillStyle='#333';lines.forEach((line,i)=>drawWords(ctx,line,x,207+i*size*1.5,size));
     ctx.font='22px Agdasima';ctx.fillStyle='#858581';ctx.fillText('A MOMENT, ON PAPER',x,713);ctx.strokeStyle='#888';ctx.strokeRect(1054.5,66.5,59,69);ctx.font='17px Agdasima';ctx.fillText('POST',1069,107);
     generated={url:canvas.toDataURL('image/jpeg',.95),name:'postcard-'+$('#paper-date').value+'.jpg'};$('#paper-download').href=generated.url;$('#paper-download').download=generated.name;
