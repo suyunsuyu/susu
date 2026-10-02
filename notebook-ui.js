@@ -44,7 +44,7 @@
     const x=95,width=1010,textTop=userPhoto?920:260,available=userPhoto?480:1130;await Promise.all(textRuns(text).map(run=>document.fonts.load('32px '+fonts[run.key],run.text)));await document.fonts.load('25px Agdasima');
     ctx.fillStyle='#777';ctx.font='25px Agdasima';ctx.fillText($('#paper-date').value.replace(/-/g,'.'),x,120);
     ctx.strokeStyle='#bdbdb8';ctx.beginPath();ctx.moveTo(x,150);ctx.lineTo(1105,150);ctx.stroke();
-    let size=32,lines=[];do{lines=wrap({measureText:t=>({width:measureWords(ctx,t,size)})},text,width);if(lines.length*size*1.65<=available)break;size-=1}while(size>12);
+    let size=46,lines=[];do{lines=wrap({measureText:t=>({width:measureWords(ctx,t,size)})},text,width);if(lines.length*size*1.65<=available)break;size-=1}while(size>12);
     ctx.fillStyle='#454545';lines.forEach((line,i)=>drawWords(ctx,line,x,textTop+i*size*1.65,size));
     ctx.font='20px Agdasima';ctx.fillStyle='#858581';ctx.fillText('A MOMENT, ON PAPER',x,1495);ctx.strokeStyle='#999';ctx.strokeRect(1044.5,75.5,59,59);ctx.font='16px Agdasima';ctx.fillText('POST',1059,110);
     generated={url:canvas.toDataURL('image/jpeg',.95),name:'postcard-'+$('#paper-date').value+'.jpg'};$('#paper-download').href=generated.url;$('#paper-download').download=generated.name;

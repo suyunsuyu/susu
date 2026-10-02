@@ -277,3 +277,7 @@ body.about-book-page .about-book{aspect-ratio:1.6}
 .paper-dialog .printer-slot{width:54%}
 .paper-dialog #paper-words{font-size:16px!important;line-height:1.65;min-height:96px;letter-spacing:0}
 @media(max-width:600px){.paper-dialog .printer-output{width:min(56%,195px);height:auto;aspect-ratio:3/4}.paper-dialog .printer-slot{width:66%}.paper-dialog #paper-words{font-size:14px!important;min-height:95px}}
+
+.paper-dialog .printer-output{width:min(54%,270px)}
+.paper-dialog #paper-canvas{background:#fafaf8;box-shadow:2px 3px 8px #0002;border:1px solid #deded9;box-sizing:border-box}
+@media(max-width:600px){.paper-dialog .printer-output{width:min(62%,230px)}}
