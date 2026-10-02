@@ -229,3 +229,30 @@ body.about-book-page .about-book{aspect-ratio:1.6}
 
 #paper-download{display:inline-block;color:#333;font-size:14px;text-decoration:none;border-bottom:1px solid #9b9b95;padding:9px 0;cursor:pointer}
 #paper-download[hidden]{display:none}
+/* A small desktop printer: the paper emerges upward behind the casing. */
+.paper-dialog[open]{display:block;width:min(760px,94vw);padding:25px 42px 30px;max-height:94dvh;overflow:auto;background:#fafafa;border:0;box-shadow:0 24px 90px #0002}
+.printer-title{font-size:13px!important;text-align:center;letter-spacing:.13em;margin:0 0 18px!important;color:#777}
+.paper-dialog .paper-printer{display:block;width:100%;padding:0;position:relative;margin:auto}
+.paper-dialog .printer-output{position:relative;width:54%;margin:0 auto;height:clamp(180px,31vh,300px);overflow:hidden;padding:0;perspective:1200px;z-index:2}
+.paper-dialog #paper-canvas{position:absolute;bottom:0;left:0;width:100%;height:100%;object-fit:fill;transform-origin:bottom center;box-shadow:3px 0 7px #0001}
+.printer-empty{height:100%;border:1px solid #d8d8d8;display:flex;align-items:center;justify-content:center;text-align:center;color:#aaa;font-size:14px;letter-spacing:.1em;background:#fff}
+.has-paper .printer-empty{visibility:hidden}
+.paper-dialog .printer-slot{position:relative;width:62%;height:11px;margin:-1px auto -6px;background:#171717;clip-path:polygon(2% 0,98% 0,100% 100%,0 100%);border-radius:0;z-index:4;box-shadow:none}
+.printer-machine{position:relative;padding-top:27px;filter:drop-shadow(4px 12px 12px #00000010)}
+.printer-top{position:absolute;top:0;left:0;width:100%;height:33px;background:linear-gradient(135deg,#fff,#f3f3f3);border:2px solid #292929;clip-path:polygon(8% 0,92% 0,100% 100%,0 100%);box-sizing:border-box}
+.printer-face{position:relative;background:linear-gradient(135deg,#fff,#f8f8f8);border:2px solid #292929;border-radius:11px;padding:23px 25px 6px;z-index:5}
+.paper-dialog #paper-words{width:100%;margin:0 0 16px;padding:12px 15px;min-height:115px;resize:vertical;background:#fff;border:1px solid #333;border-radius:4px;font-size:21px;line-height:1.55;letter-spacing:.025em}
+.printer-toolbar{display:flex;gap:20px;align-items:center;justify-content:space-between}
+.printer-toolbar .paper-controls{gap:15px;flex:1;max-width:350px}
+.printer-toolbar .paper-controls label{font-size:10px}
+.printer-toolbar select,.printer-toolbar input{font-size:14px;margin:2px 0 0;padding:5px 0;border-color:#ddd}
+.paper-dialog #paper-generate{background:#191919;color:white;border:1px solid #111;border-radius:4px;padding:10px 27px;min-width:103px;letter-spacing:.07em;box-shadow:0 2px 4px #0002}
+.paper-dialog .paper-status{font-size:12px;min-height:18px;margin:11px 0 4px}
+.printer-foot{position:absolute;width:43px;height:13px;bottom:-11px;background:#242424;clip-path:polygon(0 0,100% 0,88% 100%,12% 100%)}
+.foot-left{left:24px}.foot-right{right:24px}
+.printer-actions{display:flex;justify-content:center;gap:24px;min-height:28px;margin-top:29px;font-size:13px}
+.visually-hidden{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.paper-dialog .is-printing #paper-canvas{animation:printer-roll-feed 4s linear both}
+@keyframes printer-roll-feed{0%{transform:translateY(101%) rotateX(-6deg)}8%{transform:translateY(93%) rotateX(-5deg)}10%{transform:translateY(93%) rotateX(-5deg)}22%{transform:translateY(76%) rotateX(-4deg)}24%{transform:translateY(76%) rotateX(-4deg)}38%{transform:translateY(55%) rotateX(-3deg)}40%{transform:translateY(55%) rotateX(-3deg)}56%{transform:translateY(32%) rotateX(-2deg)}58%{transform:translateY(32%) rotateX(-2deg)}75%{transform:translateY(12%) rotateX(-1deg)}78%{transform:translateY(12%) rotateX(-1deg)}92%{transform:translateY(1%) rotateX(-.5deg)}100%{transform:translateY(0) rotateX(0)}}
+@media(max-width:600px){.paper-dialog[open]{padding:24px 18px 22px}.paper-dialog .printer-output{width:62%;height:clamp(180px,29vh,270px)}.paper-dialog .printer-slot{width:70%}.printer-face{padding:16px 14px 5px}.printer-toolbar{gap:12px}.printer-toolbar .paper-controls{gap:8px}.paper-dialog #paper-generate{min-width:75px;padding:10px 15px}.paper-dialog #paper-words{font-size:18px;min-height:115px}.printer-actions{gap:16px}}
+@media(prefers-reduced-motion:reduce){.paper-dialog .is-printing #paper-canvas{animation:none}}
