@@ -256,3 +256,18 @@ body.about-book-page .about-book{aspect-ratio:1.6}
 @keyframes printer-roll-feed{0%{transform:translateY(101%) rotateX(-6deg)}8%{transform:translateY(93%) rotateX(-5deg)}10%{transform:translateY(93%) rotateX(-5deg)}22%{transform:translateY(76%) rotateX(-4deg)}24%{transform:translateY(76%) rotateX(-4deg)}38%{transform:translateY(55%) rotateX(-3deg)}40%{transform:translateY(55%) rotateX(-3deg)}56%{transform:translateY(32%) rotateX(-2deg)}58%{transform:translateY(32%) rotateX(-2deg)}75%{transform:translateY(12%) rotateX(-1deg)}78%{transform:translateY(12%) rotateX(-1deg)}92%{transform:translateY(1%) rotateX(-.5deg)}100%{transform:translateY(0) rotateX(0)}}
 @media(max-width:600px){.paper-dialog[open]{padding:24px 18px 22px}.paper-dialog .printer-output{width:62%;height:clamp(180px,29vh,270px)}.paper-dialog .printer-slot{width:70%}.printer-face{padding:16px 14px 5px}.printer-toolbar{gap:12px}.printer-toolbar .paper-controls{gap:8px}.paper-dialog #paper-generate{min-width:75px;padding:10px 15px}.paper-dialog #paper-words{font-size:18px;min-height:115px}.printer-actions{gap:16px}}
 @media(prefers-reduced-motion:reduce){.paper-dialog .is-printing #paper-canvas{animation:none}}
+/* The postcard keeps its original 3:2 ratio in preview and export. */
+.paper-dialog .printer-output{width:72%;height:auto;aspect-ratio:3/2;max-height:none}
+.paper-dialog #paper-canvas{width:100%;height:auto;aspect-ratio:3/2;object-fit:contain}
+.paper-dialog .printer-slot{width:80%}
+.printer-toolbar .paper-controls{max-width:430px;grid-template-columns:1.3fr 1fr}
+.paper-dialog #paper-photo{font-size:12px;border:0;padding:3px 0;max-width:220px}
+#paper-photo::file-selector-button{border:1px solid #ccc;background:#fff;color:#333;font:inherit;padding:5px 8px;cursor:pointer;margin-right:7px}
+#paper-photo-preview:not([hidden]){display:flex;align-items:center;gap:10px;margin-top:13px;color:#777;font-size:12px}
+#paper-photo-preview img{width:46px;height:34px;object-fit:contain;background:#eee}
+#paper-photo-name{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#paper-photo-remove{font-size:11px!important;margin-left:auto;white-space:nowrap}
+#paper-background-list>div{padding:9px;background:#fafafa;border:1px solid #e7e7e4}
+#paper-background-list img{aspect-ratio:3/2;object-fit:contain;background:#eee}
+#paper-background-list>p{grid-column:1/-1;font-size:16px;color:#777}
+@media(max-width:600px){.paper-dialog .printer-output{width:82%;height:auto;aspect-ratio:3/2}.paper-dialog .printer-slot{width:89%}.printer-toolbar{flex-wrap:wrap}.printer-toolbar .paper-controls{max-width:none;flex-basis:100%}.paper-dialog #paper-generate{margin-left:auto}#paper-photo-name{max-width:120px}}
