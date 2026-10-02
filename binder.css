@@ -166,9 +166,9 @@ body.about-book-page .about-book{z-index:3;filter:drop-shadow(14px 23px 20px #30
 @media(prefers-reduced-motion:reduce){.about-book.is-opening .book-cover,.about-book.is-opening .book-left,.about-book.is-opening .book-right{animation:none!important}}
 /* A wider book, with handwritten words kept in the surrounding margin. */
 body.about-book-page .book-main,body.about-book-page.embedded-book .book-main{padding:40px 28px;max-width:1800px;box-sizing:border-box}
-.notebook-layout{display:grid;grid-template-columns:clamp(150px,19vw,290px) minmax(0,1fr);gap:clamp(28px,3vw,58px);align-items:center;width:100%}
+.notebook-layout{display:grid;grid-template-columns:clamp(150px,14vw,250px) minmax(0,1fr);gap:clamp(25px,2.2vw,42px);align-items:center;width:100%}
 body.about-book-page .book-wrap,body.about-book-page.embedded-book .book-wrap{width:100%;max-width:1340px;grid-template-columns:minmax(0,1fr) 98px}
-body.about-book-page .about-book{aspect-ratio:1.65}
+body.about-book-page .about-book{aspect-ratio:1.6}
 .notebook-margin{align-self:center;min-width:0;padding:28px 8px 28px 0}
 .margin-caption{font-size:12px;letter-spacing:.12em;color:#92928d}
 #notebook-margin-text{min-height:280px;white-space:pre-wrap;line-height:1.8;margin:25px 0 35px;border-bottom:1px solid #d7d7d2;overflow-wrap:anywhere}
