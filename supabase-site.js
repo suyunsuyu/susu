@@ -258,7 +258,7 @@
     const hash=s=>{let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0};
     const rnd=(seed,n)=>{let x=(seed+n*2654435761)>>>0;x^=x<<13;x^=x>>>17;x^=x<<5;return(x>>>0)/4294967295};
     const dialog=$('#message-dialog');
-    const fontMap={sans:"'Noto Sans SC',sans-serif",serif:'var(--serif)',hand:"'Caveat',cursive",cute:"'Gaegu','Nanum Pen Script',cursive",mono:'var(--mono)'};
+    const languageFont="'Agdasima','Nanum Barunpen','ChillHuoFangSong'";const fontMap={english:languageFont,korean:"'Nanum Barunpen','ChillHuoFangSong','Agdasima'",chinese:"'ChillHuoFangSong','Nanum Barunpen','Agdasima'",sans:languageFont,serif:languageFont,hand:languageFont,cute:languageFont,mono:languageFont};
     const cleanStyle=s=>{s=s||{};const size=Math.max(10,Math.min(48,Number(s.size)||16));return{font:fontMap[s.font]?s.font:'sans',size,color:/^#[0-9a-f]{6}$/i.test(s.color||'')?s.color:'#111111'}};
     async function uploadGuestFile(file,folder='images'){
       if(!file)return'';if(file.size>5*1024*1024)throw new Error('Image must be under 5MB.');

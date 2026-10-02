@@ -164,3 +164,65 @@ body.about-book-page .about-book{z-index:3;filter:drop-shadow(14px 23px 20px #30
 .about-book-page .book-cat-photo img{width:100%;height:100%;object-fit:cover;display:block}
 @media(max-width:760px){.about-book-page .binder-profile-heading{grid-template-columns:minmax(0,1fr) 64px;gap:12px}.about-book-page .binder-profile-heading h2{font-size:32px}.about-book-page .book-cat-grid{width:min(100%,180px);grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:12px}.about-book-page .book-cat-grid>*{aspect-ratio:3/4}}
 @media(prefers-reduced-motion:reduce){.about-book.is-opening .book-cover,.about-book.is-opening .book-left,.about-book.is-opening .book-right{animation:none!important}}
+/* A wider book, with handwritten words kept in the surrounding margin. */
+body.about-book-page .book-main,body.about-book-page.embedded-book .book-main{padding:40px 28px;max-width:1800px;box-sizing:border-box}
+.notebook-layout{display:grid;grid-template-columns:clamp(150px,19vw,290px) minmax(0,1fr);gap:clamp(28px,3vw,58px);align-items:center;width:100%}
+body.about-book-page .book-wrap,body.about-book-page.embedded-book .book-wrap{width:100%;max-width:1340px;grid-template-columns:minmax(0,1fr) 98px}
+body.about-book-page .about-book{aspect-ratio:1.65}
+.notebook-margin{align-self:center;min-width:0;padding:28px 8px 28px 0}
+.margin-caption{font-size:12px;letter-spacing:.12em;color:#92928d}
+#notebook-margin-text{min-height:280px;white-space:pre-wrap;line-height:1.8;margin:25px 0 35px;border-bottom:1px solid #d7d7d2;overflow-wrap:anywhere}
+#notebook-margin-text:empty::after{content:' ';display:block;min-height:250px}
+.notebook-margin button{display:block;font-size:13px;border:0;border-bottom:1px solid #aaa;background:none;color:#60605b;padding:8px 0;cursor:pointer}
+.notebook-margin button[hidden]{display:none}
+.notebook-contact{position:fixed;right:30px;bottom:22px;display:flex;gap:20px;z-index:30}
+.notebook-contact a{display:block;width:21px;height:21px;color:#292929}
+.notebook-contact svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.3}
+.about-book-page .book-tabs>*{width:100%!important;height:48px!important;min-height:48px!important;padding:13px 10px 13px 27px!important;transform:none!important;font-size:13px!important}
+.about-book-page .book-cat-grid{width:100%;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:16px 13px;margin:24px 0 0}
+.about-book-page .book-cat-grid>*{aspect-ratio:1.6;border-width:5px;transform:rotate(-.3deg)}
+.about-book-page .book-cat-grid>*:nth-child(2n){transform:rotate(.3deg)}
+.about-book-page .book-page{padding:clamp(25px,2.7vw,48px)}
+.about-book-page .book-left{padding-right:clamp(30px,3vw,50px)}
+.about-book-page .book-right{padding-left:clamp(30px,3vw,50px)}
+.about-book-page .book-right:has(.cat-calendar-link){display:flex;flex-direction:column}
+.cat-words-reveal{animation:cat-ink-arrive .85s cubic-bezier(.22,1,.36,1) both}
+.about-book.is-opening .cat-words-reveal,.about-book.is-turning .cat-words-reveal{animation:none;opacity:0}
+@keyframes cat-ink-arrive{from{opacity:0;transform:translateY(10px);filter:blur(2px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
+.cat-words-reveal h2{margin:22px 0 16px}
+.cat-words-reveal .book-profile:empty,.cat-words-reveal .book-copy:empty{display:none}
+.cat-words-reveal .book-profile{margin:10px 0}
+.cat-words-reveal .book-profile dt{margin-top:9px}
+.cat-words-reveal .book-copy{font-size:18px;line-height:1.6}
+.cat-calendar-link{display:block;margin-top:auto;padding-top:22px;color:#686861;text-decoration:none}
+.calendar-caption{display:flex;justify-content:space-between;font-size:14px;letter-spacing:.07em;margin-bottom:10px}
+.cat-mini-calendar{display:grid;grid-template-columns:repeat(7,1fr);border-left:1px solid #d4d4cf;border-top:1px solid #d4d4cf}
+.cat-mini-calendar>span{display:flex;align-items:center;justify-content:center;aspect-ratio:1.15;font-size:12px;border-bottom:1px solid #d4d4cf;border-right:1px solid #d4d4cf}
+.cat-calendar-link:hover .cat-mini-calendar{background:#ffffff55}
+.book-spread *{font-family:var(--book-font,var(--binder-language-font))!important}
+.stationery-dialog{width:min(620px,92vw);max-height:90svh;overflow:auto;border:1px solid #c9c9c4;background:#f9f9f6;color:#333;padding:32px;box-sizing:border-box;box-shadow:9px 20px 50px #0002}
+.stationery-dialog::backdrop{background:#25272955;backdrop-filter:blur(3px)}
+.stationery-dialog .close{position:absolute;right:15px;top:12px;background:none;border:0;font-size:28px;cursor:pointer}
+.stationery-dialog h2{font-size:34px;font-weight:400;margin:12px 0 26px}
+.stationery-dialog form{border:0;padding:0}
+.stationery-dialog label{display:block;font-size:13px;letter-spacing:.06em;color:#777}
+.stationery-dialog input,.stationery-dialog select,.stationery-dialog textarea{box-sizing:border-box;width:100%;background:transparent;border:0;border-bottom:1px solid #c9cac4;padding:10px 0;color:#333;font-size:19px;line-height:1.5;margin:8px 0 18px;border-radius:0}
+.stationery-dialog textarea{resize:vertical;background:repeating-linear-gradient(transparent 0 29px,#d8d8d133 29px 30px);line-height:30px}
+.stationery-dialog button:not(.close){border:0;border-bottom:1px solid #9b9b95;background:none;color:#333;font-size:14px;padding:9px 0;cursor:pointer}
+.stationery-dialog button:disabled{opacity:.5;cursor:wait}
+.paper-controls{display:grid;grid-template-columns:1.2fr 1fr;gap:18px}
+.paper-status{font-size:13px;line-height:1.5;color:#777;min-height:20px}
+.paper-dialog{width:min(960px,95vw);display:none;grid-template-columns:1fr .9fr;gap:45px;padding:42px}
+.paper-dialog[open]{display:grid}
+.paper-printer{display:flex;flex-direction:column;align-items:center;padding-top:35px}
+.printer-slot{width:105%;height:9px;background:linear-gradient(#babbb7,#343632 48%,#6b6d68 60%,#d1d1cb);box-shadow:0 3px 6px #0002;z-index:2;border-radius:2px}
+.printer-output{width:100%;overflow:hidden;padding:0 4px 15px;box-sizing:border-box;perspective:1000px}
+#paper-canvas{display:block;width:100%;height:auto;opacity:0;box-shadow:2px 5px 8px #0002;transform-origin:top center}
+.has-paper #paper-canvas{opacity:1}
+.is-printing #paper-canvas{animation:paper-feed 1.8s cubic-bezier(.22,1,.36,1) both}
+@keyframes paper-feed{0%{transform:translateY(-102%) rotateX(5deg)}30%{transform:translateY(-70%) rotateX(3deg)}75%{transform:translateY(-12%) rotateX(1deg)}100%{transform:translateY(0) rotateX(0)}}
+#paper-background-list{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+#paper-background-list img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover}
+@media(max-width:1100px) and (min-width:761px){.notebook-layout{grid-template-columns:150px minmax(0,1fr);gap:24px}.about-book-page .book-page{padding:24px}.about-book-page .book-cat-grid{gap:10px}.cat-words-reveal h2{font-size:32px}.cat-mini-calendar>span{font-size:10px}}
+@media(max-width:760px){body.about-book-page .book-main,body.about-book-page.embedded-book .book-main{padding:30px 14px 75px}.notebook-layout{display:flex;flex-direction:column;gap:25px}.notebook-margin{width:100%;padding:0 10px}.margin-caption{font-size:11px}#notebook-margin-text{min-height:80px;margin:12px 0 20px;font-size:18px!important}#notebook-margin-text:empty::after{min-height:70px}body.about-book-page .book-wrap,body.about-book-page.embedded-book .book-wrap{width:min(100%,510px);grid-template-columns:minmax(0,1fr) 67px}.about-book-page .book-tabs>*{height:46px!important;min-height:46px!important;font-size:11px!important;padding-left:20px!important}.about-book-page .book-left,.about-book-page .book-right{padding:32px 22px 70px 37px}.about-book-page .book-cat-grid{width:100%;gap:12px;margin-top:22px}.about-book-page .book-cat-grid>*{aspect-ratio:1.6}.cat-calendar-link{margin-top:25px}.notebook-contact{right:18px;bottom:20px}.paper-dialog[open]{grid-template-columns:1fr;gap:15px;padding:28px}.paper-printer{width:min(300px,100%);margin:auto;padding-top:10px}.stationery-dialog{padding:26px}.paper-controls{gap:12px}}
+@media(prefers-reduced-motion:reduce){.cat-words-reveal,.is-printing #paper-canvas{animation:none}}
