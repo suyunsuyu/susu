@@ -2,7 +2,7 @@
   const $ = s => document.querySelector(s);
   const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const safeUrl = value => { if(!String(value||'').trim())return ''; try { const u = new URL(value,location.href); return ['https:','http:','mailto:'].includes(u.protocol) ? u.href : ''; } catch { return ''; } };
-  const defaults = {catText:'',catPhotos:[],catDetails:{name:'',birthday:'',personality:'',likes:''},instagram:'',email:'',thoughts:'',coverColor:'#dce6eb',paperColor:'#f7f7f3',tabColors:[],textOverrides:{},profile:{name:'',birthDate:'',mbti:'',favoriteFlower:'',hobbies:'',dream:'',message:'',image:'',nameSize:52,nameX:0,nameY:0,detailSize:19,detailX:0,detailY:0},style:{},pages:{}};
+  const defaults = {catText:'',catFeaturePhoto:'assets/cat-birthday-feature.png',catPhotos:[],catDetails:{name:'',birthday:'',personality:'',likes:''},instagram:'',email:'',thoughts:'',coverColor:'#dce6eb',paperColor:'#f7f7f3',tabColors:[],textOverrides:{},profile:{name:'',birthDate:'',mbti:'',favoriteFlower:'',hobbies:'',dream:'',message:'',image:'',nameSize:52,nameX:0,nameY:0,detailSize:19,detailX:0,detailY:0},style:{},pages:{}};
   const languageFonts="'Agdasima','Nanum Barunpen','ChillHuoFangSong',sans-serif";
   const fonts = {korean:"'Nanum Barunpen','ChillHuoFangSong','Agdasima'",chinese:"'ChillHuoFangSong','Nanum Barunpen','Agdasima'",english:languageFonts};
   const fontKey=value=>['korean','chinese','english'].includes(value)?value:'english';
@@ -15,7 +15,7 @@
   const textTargets=()=>[...document.querySelectorAll('.book-tabs > *, .cover-open-hint, .book-page .book-folio, .book-page h2, .book-page dt, .book-page dd, .book-page p, .book-page a')].filter(el=>!el.closest('.book-cat-grid')&&!el.classList.contains('cat-calendar-link'));
   function textKey(el){if(el.closest('.book-tabs'))return `tab-label:${[...el.parentElement.children].indexOf(el)}`;if(el.classList.contains('cover-open-hint'))return 'cover-hint';const side=el.closest('.book-left')?'left':'right';const page=el.closest('.book-page');return `${tab}:${side}:${[...page.querySelectorAll('.book-folio,h2,dt,dd,p,a')].indexOf(el)}`;}
   function applyTextOverrides(){textTargets().forEach(el=>{const override=data.textOverrides?.[textKey(el)];if(!override)return;if(typeof override.text==='string'&&!el.closest('.book-tabs'))el.textContent=override.text;el.style.fontSize=`${Math.max(10,Math.min(80,Number(override.size)||18))}px`;el.style.color=validColor(override.color,'#333333');el.style.translate=`${Math.max(-180,Math.min(180,Number(override.x)||0))}px ${Math.max(-180,Math.min(180,Number(override.y)||0))}px`;if(override.font&&override.font!=='inherit')el.style.fontFamily=fonts[fontKey(override.font)];el.style.textAlign=['left','center','right'].includes(override.align)?override.align:'left';});}
-  function photoKey(el){if(tab==='profile'&&el.classList.contains('book-portrait'))return 'profile:right:0';const page=el.closest('.book-left,.book-right');return `${tab}:${page?.classList.contains('book-left')?'left':'right'}:${[...page.querySelectorAll('img')].indexOf(el)}`;}
+  function photoKey(el){if(el.classList.contains('cat-feature-image'))return 'cat:feature';if(tab==='profile'&&el.classList.contains('book-portrait'))return 'profile:right:0';const page=el.closest('.book-left,.book-right');return `${tab}:${page?.classList.contains('book-left')?'left':'right'}:${[...page.querySelectorAll('img')].indexOf(el)}`;}
   function applyPhotoOverrides(){document.querySelectorAll('.book-page img').forEach(el=>{const override=data.photoOverrides?.[photoKey(el)];if(!override)return;if(override.src)el.src=safeUrl(override.src)||el.src;el.hidden=!!override.removed;el.style.translate=`${Math.max(-120,Math.min(120,Number(override.x)||0))}px ${Math.max(-120,Math.min(120,Number(override.y)||0))}px`;el.style.scale=String(Math.max(.5,Math.min(1.8,(Number(override.scale)||100)/100)));el.style.rotate=`${Math.max(-15,Math.min(15,Number(override.angle)||0))}deg`;});}
   function sanitize(html) {
     const permitted=new Set(['P','DIV','SPAN','BR','B','STRONG','I','EM','U','H2','H3','UL','OL','LI','A','IMG','FIGURE','SMALL','DL','DT','DD','BUTTON','FONT']);
@@ -51,7 +51,7 @@
     const left = $('#book-left'), right = $('#book-right'); style();
     right.classList.toggle('notes-paper',tab==='thoughts');
     if (tab === 'cat') {
-      left.innerHTML = `<span class="book-folio">02 / MY CAT</span><div class="book-cat-grid">${Array.from({length:6},(_,i)=>data.catPhotos?.[i] ? `<button type="button" class="book-cat-photo" data-photo="${i}" aria-label="Enlarge cat photo ${i+1}"><img src="${esc(data.catPhotos[i])}" alt="Cat photo ${i+1}"></button>` : `<div class="book-cat-empty">${String(i+1).padStart(2,'0')}</div>`).join('')}</div>`;
+      left.innerHTML = `<span class="book-folio">02 / MY CAT</span><button type="button" class="book-cat-feature" data-photo="feature" aria-label="사진 크게 보기"><img class="cat-feature-image" src="${esc(safeUrl(data.catFeaturePhoto)||defaults.catFeaturePhoto)}" alt="생일 모자를 쓴 고양이"></button>`;
       const now=new Date(),year=now.getFullYear(),month=now.getMonth(),first=new Date(year,month,1).getDay(),days=new Date(year,month+1,0).getDate();
       right.innerHTML = `<span class="book-folio">DAYS WITH MY CAT</span><div class="cat-words-reveal"><h2>MY CAT</h2><dl class="book-profile">${[['NAME',data.catDetails?.name],['생일','5월 5일'],['PERSONALITY',data.catDetails?.personality],['LIKES',data.catDetails?.likes]].filter(([,v])=>v).map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl><p class="book-copy">${esc(data.catText)}</p></div><a class="cat-calendar-link" href="diary.html" target="_top" aria-label="Open full calendar"><span class="calendar-caption">${year}.${String(month+1).padStart(2,'0')} <span>CALENDAR ↗</span></span><span class="cat-mini-calendar">${Array.from({length:first},()=>'<span></span>').join('')}${Array.from({length:days},(_,i)=>`<span>${String(i+1).padStart(2,'0')}</span>`).join('')}</span></a>`;
     } else {
@@ -66,7 +66,7 @@
   }
   const sections=['cat','thoughts'];
   $('#book-binding')?.remove();
-  $('#about-book .binder-rings').innerHTML=Array.from({length:7},(_,i)=>`<div class="binder-ring" style="--ring-top:${11+i*13}%"><i class="ring-hole left"></i><i class="ring-hole right"></i><i class="ring-back"></i><i class="ring-front"></i></div>`).join('');
+
   function setMobileSide(side){mobileSide=side;book.dataset.mobileSide=side;$('#book-mobile-count').textContent=side==='left'?'1 / 2':'2 / 2';}
   function setThickness(){const index=sections.indexOf(tab);book.dataset.pageIndex=String(index);book.style.setProperty('--left-stack',`${2+index*2}px`);book.style.setProperty('--right-stack',`${11-index*2}px`);}
   // A continuous sheet is approximated with narrow connected surfaces. Each
@@ -141,8 +141,8 @@
     let started=null;const duration=reducedMotion()?0:1120;
     function frame(now){
       if(started===null)started=now;const p=duration?Math.min(1,(now-started)/duration):1;
-      const travel=.75*smooth(p)+.25*paperEase(p),lift=Math.sin(Math.PI*p);
-      cover.style.transform=`rotateY(${-164*travel}deg) rotateX(${1.4*lift}deg) rotateZ(${- .45*lift}deg)`;
+      const travel=paperEase(p),lift=Math.sin(Math.PI*travel);
+      cover.style.transform=`translateZ(${12*lift}px) rotateY(${-180*travel}deg) rotateX(${1.2*lift}deg) rotateZ(${- .3*lift}deg)`;
       cover.style.opacity=String(p<.76?1:(1-p)/.24);
       cover.style.filter=`brightness(${1-.065*lift})`;
       cover.style.boxShadow=`${(6-14*travel)*lift}px ${5+15*lift}px ${8+19*lift}px rgba(43,48,50,${.07+.1*lift})`;
@@ -206,7 +206,7 @@
   function fields() {
     const p=data.profile||{};
     if(tab==='profile') return `<label>NAME<input name="name" value="${esc(p.name)}"></label><div class="profile-adjust"><label>NAME SIZE <input name="nameSize" type="range" min="18" max="80" value="${Number(p.nameSize)||52}"></label><label>NAME LEFT / RIGHT <input name="nameX" type="range" min="-100" max="100" value="${Number(p.nameX)||0}"></label><label>NAME UP / DOWN <input name="nameY" type="range" min="-100" max="100" value="${Number(p.nameY)||0}"></label></div><label>BIRTHDAY<input name="birthDate" type="date" value="${esc(p.birthDate)}"></label><label>MBTI<input name="mbti" value="${esc(p.mbti)}"></label><label>FAVORITE FLOWER<input name="favoriteFlower" value="${esc(p.favoriteFlower)}"></label><label>HOBBIES<input name="hobbies" value="${esc(p.hobbies)}"></label><label>DREAM<input name="dream" value="${esc(p.dream)}"></label><label>PHOTO<input name="portrait" type="file" accept="image/*"></label><label>PERSONAL WORDS<textarea name="message">${esc(p.message)}</textarea></label><div class="profile-adjust"><label>DETAIL SIZE <input name="detailSize" type="range" min="12" max="36" value="${Number(p.detailSize)||19}"></label><label>DETAIL LEFT / RIGHT <input name="detailX" type="range" min="-100" max="100" value="${Number(p.detailX)||0}"></label><label>DETAIL UP / DOWN <input name="detailY" type="range" min="-100" max="100" value="${Number(p.detailY)||0}"></label></div>`;
-    if(tab==='cat') return `${[['name','NAME'],['birthday','BIRTHDAY'],['personality','PERSONALITY'],['likes','LIKES']].map(([k,v])=>`<label>${v}<input name="catDetail-${k}" value="${esc(data.catDetails?.[k])}"></label>`).join('')}<label>ABOUT MY CAT<textarea name="catText">${esc(data.catText)}</textarea></label><p>Six landscape photos · replace each separately</p>${Array.from({length:6},(_,i)=>`<label>PHOTO ${i+1}${data.catPhotos?.[i]?` <img class="book-editor-thumb" src="${esc(data.catPhotos[i])}" alt="Current photo">`:''}<input name="cat${i}" type="file" accept="image/*"><input type="checkbox" name="remove${i}"> Remove this photo</label>`).join('')}`;
+    if(tab==='cat') return `${[['name','NAME'],['birthday','BIRTHDAY'],['personality','PERSONALITY'],['likes','LIKES']].map(([k,v])=>`<label>${v}<input name="catDetail-${k}" value="${esc(data.catDetails?.[k])}"></label>`).join('')}<label>ABOUT MY CAT<textarea name="catText">${esc(data.catText)}</textarea></label><label>CAT PHOTO<img class="book-editor-thumb" src="${esc(data.catFeaturePhoto||defaults.catFeaturePhoto)}" alt="Current photo"><input name="catFeature" type="file" accept="image/*"></label>`;
     if(tab==='contact') return `<label>INSTAGRAM URL<input name="instagram" type="url" value="${esc(data.instagram)}" placeholder="https://instagram.com/..."></label><label>EMAIL<input name="email" type="email" value="${esc(data.email)}"></label>`;
     return `<label>WORDS<textarea name="thoughts">${esc(data.thoughts)}</textarea></label>`;
   }
@@ -215,7 +215,7 @@
     e.preventDefault();const status=$('#book-status');status.textContent='SAVING…';
     try {if(!await window.SUY_ADMIN.isAdmin())throw Error('Admin login required');const form=new FormData(e.target);const next=structuredClone(data);next.style={...(next.style||{}),[tab]:{font:$('#book-font').value,size:Number($('#book-size').value)}};
       if(tab==='profile'){next.profile={...next.profile};for(const key of ['name','birthDate','mbti','favoriteFlower','hobbies','dream','message'])next.profile[key]=String(form.get(key)||'');for(const [key,min,max] of [['nameSize',18,80],['nameX',-100,100],['nameY',-100,100],['detailSize',12,36],['detailX',-100,100],['detailY',-100,100]])next.profile[key]=Math.max(min,Math.min(max,Number(form.get(key))||0));const file=form.get('portrait');if(file?.size)next.profile.image=await window.SUY_ADMIN.uploadPublic(file,'about');legacy={...(legacy||{}),personal:next.profile};await window.SUY_ADMIN.saveContent('about-interactive',legacy);}
-      if(tab==='cat'){next.catText=String(form.get('catText')||'');next.catDetails=Object.fromEntries(['name','birthday','personality','likes'].map(k=>[k,String(form.get('catDetail-'+k)||'')]));next.catPhotos=[...(next.catPhotos||[])];for(let i=0;i<6;i++){if(form.get(`remove${i}`))next.catPhotos[i]='';const file=form.get(`cat${i}`);if(file?.size)next.catPhotos[i]=await window.SUY_ADMIN.uploadPublic(file,'about-cat');}}
+      if(tab==='cat'){next.catText=String(form.get('catText')||'');next.catDetails=Object.fromEntries(['name','birthday','personality','likes'].map(k=>[k,String(form.get('catDetail-'+k)||'')]));const file=form.get('catFeature');if(file?.size){next.catFeaturePhoto=await window.SUY_ADMIN.uploadPublic(file,'about-cat');if(next.photoOverrides)delete next.photoOverrides['cat:feature'];}}
       if(tab==='contact'){next.instagram=safeUrl(form.get('instagram'));next.email=String(form.get('email')||'').trim();}
       if(tab==='thoughts')next.thoughts=String(form.get('thoughts')||'');
       if(editMode==='layout'){next.pages={...(next.pages||{})};const left=sanitize($('#layout-left').innerHTML),right=sanitize($('#layout-right').innerHTML);if(left.trim()||right.trim())next.pages[tab]={left,right};else delete next.pages[tab];}

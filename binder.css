@@ -281,3 +281,25 @@ body.about-book-page .about-book{aspect-ratio:1.6}
 .paper-dialog .printer-output{width:min(54%,270px)}
 .paper-dialog #paper-canvas{background:#fafaf8;box-shadow:2px 3px 8px #0002;border:1px solid #deded9;box-sizing:border-box}
 @media(max-width:600px){.paper-dialog .printer-output{width:min(62%,230px)}}
+
+/* Bound book: continuous sewn gutter, no punched leaves or metal hardware. */
+.bound-book .bound-spine{position:absolute;z-index:2;left:48.8%;width:2.4%;top:3%;bottom:3%;background:linear-gradient(90deg,var(--binder-paper),#aeb1ad 48%,#c6c9c4 55%,var(--binder-paper));box-shadow:0 1px 3px #343a3820;border-radius:45%}
+.bound-book.is-closed .bound-spine{visibility:hidden}
+.about-book.bound-book .book-spread{grid-template-columns:minmax(0,1fr) .6% minmax(0,1fr)}
+.about-book.bound-book .book-page::after{display:none}
+.about-book.bound-book .page-stack{width:47.1%}
+.about-book.bound-book .book-left{border-right:0;border-top-right-radius:1px;border-bottom-right-radius:1px}
+.about-book.bound-book .book-right{border-left:0;border-top-left-radius:1px;border-bottom-left-radius:1px}
+.about-book.bound-book .turn-leaf,.about-book.bound-book .turn-shadow{left:50.3%;width:47.3%}
+.about-book-page .book-cat-feature{display:flex;align-items:center;justify-content:center;width:100%;height:calc(100% - 45px);min-height:180px;margin:22px 0 0;padding:8px;border:0;background:transparent;cursor:zoom-in}
+.about-book-page .book-cat-feature img{display:block;width:100%;height:100%;max-height:100%;object-fit:contain;filter:none;box-shadow:1px 3px 7px #343a3812}
+body.about-book-page .book-actions,body.about-book-page.embedded-book .book-actions{position:relative;inset:auto;width:100%;margin:40px 0 0;padding:0 0 64px;box-sizing:border-box;flex-shrink:0;z-index:12}
+.book-admin-actions{flex-wrap:wrap;justify-content:flex-end;gap:20px}
+.notebook-contact{gap:14px;bottom:max(18px,env(safe-area-inset-bottom));padding:8px;background:#efefedeb}
+.notebook-contact a{display:grid;place-items:center;width:28px;height:28px}.notebook-contact svg{width:21px;height:21px}
+.bound-book.is-opening .book-left{animation:bound-unfold-left 1.12s cubic-bezier(.22,1,.36,1) both}
+.bound-book.is-opening .book-right{animation:bound-unfold-right 1.12s cubic-bezier(.22,1,.36,1) both}
+@keyframes bound-unfold-left{0%{transform:rotateY(28deg) rotateX(2deg);filter:brightness(.88)}60%{transform:rotateY(-3deg) rotateX(.7deg);filter:brightness(.98)}100%{transform:rotateY(-1.7deg) rotateX(.5deg);filter:brightness(1)}}
+@keyframes bound-unfold-right{0%{transform:rotateY(-12deg) rotateX(1deg);filter:brightness(.91)}65%{transform:rotateY(2.3deg) rotateX(.6deg);filter:brightness(1)}100%{transform:rotateY(1.7deg) rotateX(.5deg);filter:brightness(1)}}
+@media(max-width:760px){.bound-book .bound-spine{left:3%;width:3%;top:4%;bottom:3%;border-radius:3px}.about-book.bound-book .page-stack{width:87%}.about-book.bound-book .turn-leaf,.about-book.bound-book .turn-shadow{left:5%;width:91%}.about-book-page .book-cat-feature{height:calc(100% - 40px);padding:0;margin-top:18px}.binder-palette-fields{right:0;max-width:calc(100vw - 40px)}body.about-book-page .book-actions,body.about-book-page.embedded-book .book-actions{margin-top:36px;padding-bottom:65px}}
+@media(prefers-reduced-motion:reduce){.bound-book.is-opening .book-left,.bound-book.is-opening .book-right{animation:none!important}}
