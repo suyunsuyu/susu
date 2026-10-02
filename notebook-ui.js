@@ -32,7 +32,7 @@
     ctx.strokeStyle='#c9cac6';ctx.lineWidth=1;ctx.strokeRect(80.5,80.5,1039,1439);ctx.fillStyle='#757571';ctx.font='32px Agdasima';ctx.fillText($('#paper-date').value.replace(/-/g,'.'),135,180);
     let size=55,lines=[];do{ctx.font=size+'px '+family;lines=wrap(ctx,text,920);if(lines.length*size*1.6<=1110)break;size-=2}while(size>=25);
     ctx.fillStyle='#333333';lines.forEach((line,i)=>ctx.fillText(line,140,310+i*size*1.6));ctx.font='25px Agdasima';ctx.fillStyle='#8a8a85';ctx.fillText('A MOMENT, ON PAPER',140,1440);
-    const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('Could not export JPG')),'image/jpeg',.95));if(generated)URL.revokeObjectURL(generated.url);generated={url:URL.createObjectURL(blob),name:'a-moment-'+$('#paper-date').value+'.jpg'};$('#paper-download').href=generated.url;$('#paper-download').download=generated.name;
+    const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('Could not export JPG')),'image/jpeg',.95));generated={url:canvas.toDataURL('image/jpeg',.95),name:'a-moment-'+$('#paper-date').value+'.jpg'};$('#paper-download').href=generated.url;$('#paper-download').download=generated.name;
     const printer=$('.paper-printer');printer.classList.remove('is-printing');void printer.offsetWidth;printer.classList.add('has-paper','is-printing');$('#paper-status').textContent='PRINTING…';
     if(matchMedia('(prefers-reduced-motion:reduce)').matches)printFinish();else setTimeout(printFinish,1900);
   }catch(error){printing=false;$('#paper-generate').disabled=false;$('#paper-status').textContent=error.message}};
