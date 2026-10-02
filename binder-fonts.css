@@ -1,5 +1,18 @@
 /* Requested typefaces; load only the scripts needed by each page. */
 @import url('https://fonts.googleapis.com/css2?family=Agdasima:wght@400;700&display=swap');
 @font-face{font-family:'Nanum Barunpen';src:url('https://cdn.jsdelivr.net/gh/wefonts/nanumBarunPen@main/nanumBarunPen-Regular.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap;unicode-range:U+1100-11FF,U+3130-318F,U+A960-A97F,U+AC00-D7FF}
-@font-face{font-family:'ChillHuoFangSong';src:local('ChillHuoFangSong'),url('https://raw.githubusercontent.com/LightlyFloat/ChillHuoFangSong_Regular-windows-Repaire/main/ChillHuoFangSong_Regular_repaired%20by%20L-float.otf') format('opentype'),url('https://cdn.jsdelivr.net/gh/LightlyFloat/ChillHuoFangSong_Regular-windows-Repaire@main/ChillHuoFangSong_Regular_repaired%20by%20L-float.otf') format('opentype');font-style:normal;font-weight:400;font-display:swap;unicode-range:U+2E80-9FFF,U+F900-FAFF,U+FE30-FE4F,U+FF00-FFEF,U+20000-2FA1F}
+@font-face{font-family:'ChillHuoFangSong';src:url('assets/fonts/chill-00.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+D-30ED}
+@font-face{font-family:'ChillHuoFangSong';src:url('assets/fonts/chill-01.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+30EE-52AC}
+@font-face{font-family:'ChillHuoFangSong';src:url('assets/fonts/chill-02.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+52AD-5761}
+@font-face{font-family:'ChillHuoFangSong';src:url('assets/fonts/chill-03.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+5764-5DF3}
+@font-face{font-family:'ChillHuoFangSong';src:url('assets/fonts/chill-04.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+5DF4-6324}
+@font-face{font-family:'ChillHuoFangSong';src:url('assets/fonts/chill-05.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+6325-68CB}
+@font-face{font-family:'ChillHuoFangSong';src:url('assets/fonts/chill-06.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+68CD-6F2D}
+@font-face{font-family:'ChillHuoFangSong';src:url('assets/fonts/chill-07.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+6F2F-761F}
+@font-face{font-family:'ChillHuoFangSong';src:url('assets/fonts/chill-08.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+7620-7CEF}
+@font-face{font-family:'ChillHuoFangSong';src:url('assets/fonts/chill-09.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+7CFB-82EB}
+@font-face{font-family:'ChillHuoFangSong';src:url('assets/fonts/chill-10.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+82EF-89EF}
+@font-face{font-family:'ChillHuoFangSong';src:url('assets/fonts/chill-11.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+89F3-9093}
+@font-face{font-family:'ChillHuoFangSong';src:url('assets/fonts/chill-12.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+9095-987A}
+@font-face{font-family:'ChillHuoFangSong';src:url('assets/fonts/chill-13.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap;unicode-range:U+987B-2C27C}
 :root{--binder-language-font:'Agdasima','Nanum Barunpen','ChillHuoFangSong',sans-serif}
