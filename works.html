@@ -7,16 +7,16 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <script>document.documentElement.classList.add("site-booting");setTimeout(()=>document.documentElement.classList.remove("site-booting"),3500)</script>
-  <title>Works — Lee Su-yoon</title>
+  <title>Personal Projects — Lee Su-yoon</title>
   <link rel="stylesheet" href="style.css?v=20260903-catarchive1">
   <link rel="stylesheet" href="cursor.css?v=20260921-pointer1">
   <link rel="stylesheet" href="fonts.css?v=20261002-three2">
-</head>
-<body>
+<link rel="stylesheet" href="personal-projects.css?v=1"></head>
+<body class="personal-projects">
   <header><a href="index.html" class="brand">LEE SU-YOON</a><a href="index.html">← HOME</a></header>
-  <main class="page works-portal">
+  <main class="page works-portal" id="project-portal">
     <div class="works-topline">
-      <p class="kicker">MY WORKS</p>
+      <p class="kicker">개인 작업 / PERSONAL PROJECTS</p>
       <button id="edit-covers" class="works-cover-edit" type="button" data-admin-only hidden>EDIT COVERS</button>
     </div>
     <div class="works-cover">
@@ -24,9 +24,9 @@
       <figure class="cover-slot"><img id="cover-drawing" src="" alt="Drawing cover" hidden><span id="cover-drawing-empty" class="cover-empty" data-admin-only hidden>ADD DRAWING COVER</span></figure>
     </div>
     <nav class="works-category-nav works-category-nav-small works-category-nav-three">
-      <a href="photos.html">PHOTOGRAPHY</a>
-      <a href="drawings.html">DRAWING</a>
-      <a href="products.html">PRODUCTS</a>
+      <a href="#photography" data-project-category="photo">PHOTOGRAPHY</a>
+      <a href="#drawing" data-project-category="drawing">DRAWING</a>
+      <a href="#products" data-project-category="products">PRODUCTS</a>
     </nav>
     <section id="cover-editor" class="cover-editor" hidden>
       <div class="panel-head"><p class="kicker">COVER SETTINGS</p><button id="close-cover-editor" type="button">×</button></div>
@@ -39,12 +39,20 @@
       <p id="cover-status" class="save-status"></p>
     </section>
   </main>
+  <section id="project-gallery" hidden aria-label="입체 작품집">
+    <div class="project-gallery-heading"><button id="project-back" type="button">← 개인 Project</button><h1 id="project-category-title"></h1><button id="project-add" type="button" data-admin-only hidden>작품 추가 ＋</button></div>
+    <div class="project-orbit-scene"><div id="project-orbit" class="project-orbit"></div></div>
+    <div class="project-orbit-controls"><button id="project-prev" type="button" aria-label="이전 작품">←</button><p id="project-position" aria-live="polite"></p><button id="project-next" type="button" aria-label="다음 작품">→</button></div>
+    <p id="project-empty" hidden>작품을 준비하고 있어요.</p><p class="project-orbit-hint">드래그하여 돌리고, 작품을 눌러 자세히 보세요.</p>
+  </section>
+  <dialog id="project-detail" class="project-detail"><button class="project-dialog-close" type="button" aria-label="작품 닫기">×</button><article id="project-detail-body"></article></dialog>
+  <dialog id="project-editor" class="project-editor"><form id="project-form"><button class="project-dialog-close" type="button" aria-label="편집 닫기">×</button><h2>개인 Project</h2><label>작품 이름<input id="project-title" required maxlength="120"></label><label>설명<textarea id="project-description" rows="5" maxlength="6000"></textarea></label><label>표지 사진<input id="project-cover-file" type="file" accept="image/jpeg,image/png,image/webp"></label><label>PDF 업로드<input id="project-pdf-file" type="file" accept="application/pdf,.pdf"></label><label>작품 웹페이지<input id="project-web-url" type="url" placeholder="https://"></label><p id="project-existing-files"></p><button type="submit">저장 ↗</button><p id="project-status" role="status"></p></form></dialog>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js?v=20260818-imgfix2"></script>
-  <script src="covers.js?v=20260818-imgfix2"></script>
+
   <script src="supabase-site.js?v=20260902-auth4"></script>
-  <script src="saved-layouts.js?v=20260818-imgfix2"></script>
-  <script src="page-editor.js?v=20260902-homeedit4"></script>
+
+
   <script src="boot-ready.js?v=20260818-imgfix2"></script>
-<script src="site-fonts.js?v=1"></script></body>
+<script src="site-fonts.js?v=1"></script><script src="personal-projects.js?v=1"></script></body>
 </html>
