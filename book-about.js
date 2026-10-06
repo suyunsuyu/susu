@@ -47,28 +47,54 @@
     const output=document.createElement('div');normalize(input.content,output);return output.innerHTML;
   }
   function style() { const value = data.style?.[tab] || {}; spread.style.setProperty('--book-font',fonts[fontKey(value.font)]); spread.style.setProperty('--book-size',`${Math.max(14,Math.min(36,Number(value.size)||19))}px`); }
+  const seasons={spring:{label:'봄',months:[3,4,5]},summer:{label:'여름',months:[6,7,8]},autumn:{label:'가을',months:[9,10,11]},winter:{label:'겨울',months:[12,1,2]}};
+  let calendarCursor=new Date(2026,new Date().getMonth(),1);
+  const pad=n=>String(n).padStart(2,'0');
+  const entryPhotos=e=>(Array.isArray(e?.images)?e.images:e?.image?[e.image]:[]).map(safeUrl).filter(Boolean);
+  function seasonEntries(key){return diaryItems.filter(e=>String(e.date).startsWith('2026-')&&seasons[key].months.includes(Number(e.date.slice(5,7)))).sort((a,b)=>a.date.localeCompare(b.date)||String(a.id).localeCompare(String(b.id)));}
+  function rebuildSections(){sections.splice(0,sections.length,'cat');for(const key of Object.keys(seasons)){sections.push(key,...seasonEntries(key).map(e=>'record:'+e.id));}}
+  function calendarMarkup(){const y=calendarCursor.getFullYear(),m=calendarCursor.getMonth(),offset=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();return `<section class="book-date-calendar" aria-label="기록 달력"><div class="calendar-caption"><button type="button" data-month-step="-1" aria-label="이전 달">←</button><span>${y}.${pad(m+1)}</span><button type="button" data-month-step="1" aria-label="다음 달">→</button></div><div class="cat-mini-calendar">${Array.from({length:offset},()=>'<span></span>').join('')}${Array.from({length:days},(_,i)=>{const date=`${y}-${pad(m+1)}-${pad(i+1)}`,has=diaryItems.some(e=>e.date===date);return `<button type="button" data-record-date="${date}" class="${has?'has-record':''}" aria-label="${date}${has?' 기록 보기':''}">${pad(i+1)}</button>`}).join('')}</div><div class="calendar-paper-actions"><a href="diary.html" target="_top">전체 달력 ↗</a><button type="button" data-print-month>이번 달 달력 복사 ↓</button></div></section>`;}
+  function renderSeason(left,right){
+    if(seasons[tab]){const s=seasons[tab],entries=seasonEntries(tab);left.innerHTML=`<span class="book-folio">2026 / ${s.label}</span><h2>${s.label}의 기록</h2><p class="season-range">${s.months.map(n=>pad(n)+'월').join(' · ')}</p><div class="season-date-list">${entries.length?entries.map(e=>`<button type="button" data-record-id="${esc(e.id)}"><time>${esc(e.date.slice(5).replace('-','.'))}</time><span>${esc(e.title||e.text?.split('\n')[0]||'기록')}</span></button>`).join(''):'<p class="season-empty">아직 기록이 없어요.</p>'}</div>`;const photo=safeUrl(data.seasonCovers?.[tab]);right.innerHTML=`<span class="book-folio">${s.label}</span><div class="season-cover">${photo?`<img src="${esc(photo)}" alt="${s.label} 표지">`:`<h2>${s.label}</h2><span>2026</span>`}</div><button type="button" class="season-cover-upload" data-admin-only data-season-upload="${tab}" ${window.SUY_IS_ADMIN?'':'hidden'}>표지 사진 올리기 ↗</button>${calendarMarkup()}`;return true;}
+    if(tab.startsWith('record:')){const entry=diaryItems.find(e=>'record:'+e.id===tab);if(!entry)return false;left.innerHTML=`<span class="book-folio">${esc(entry.date)}</span><div class="record-photos">${entryPhotos(entry).map(src=>`<button type="button" data-photo="record"><img src="${esc(src)}" alt="기록 사진"></button>`).join('')||'<p class="season-empty">오늘의 기록</p>'}</div>`;right.innerHTML=`<span class="book-folio">${esc(entry.date)}</span><div class="record-words"><h2>${esc(entry.title||'오늘의 기록')}</h2><p>${esc(entry.text||'')}</p></div>${calendarMarkup()}<a class="record-edit" data-admin-only href="diary.html#${esc(entry.date)}" ${window.SUY_IS_ADMIN?'':'hidden'}>기록 편집 ↗</a>`;const p=right.querySelector('.record-words p');p.style.fontFamily=fonts[fontKey(entry.style?.font)];p.style.color=validColor(entry.style?.color,'#454545');p.style.fontSize=Math.max(14,Math.min(36,Number(entry.style?.size)||19))+'px';return true;}
+    return false;
+  }
+  function bindSeasonControls(){
+    spread.querySelectorAll('[data-record-id]').forEach(b=>b.onclick=()=>open('record:'+b.dataset.recordId));
+    spread.querySelectorAll('[data-record-date]').forEach(b=>b.onclick=()=>{const entry=diaryItems.find(e=>e.date===b.dataset.recordDate);if(entry){calendarCursor=new Date(Number(entry.date.slice(0,4)),Number(entry.date.slice(5,7))-1,1);open('record:'+entry.id);}else location.href='diary.html#'+b.dataset.recordDate;});
+    spread.querySelectorAll('[data-month-step]').forEach(b=>b.onclick=()=>{calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+Number(b.dataset.monthStep),1);content();});
+    spread.querySelectorAll('[data-print-month]').forEach(b=>b.onclick=()=>window.SUY_MONTHLY.download(calendarCursor.getFullYear(),calendarCursor.getMonth(),diaryItems,b));
+    spread.querySelectorAll('[data-season-upload]').forEach(b=>b.onclick=async()=>{if(!await window.SUY_ADMIN?.isAdmin())return;uploadSeason=b.dataset.seasonUpload;$('#season-cover-file').value='';$('#season-cover-status').textContent='';$('#season-cover-dialog').showModal();});
+    const current=sections.indexOf(tab),pager=$('#record-page-number');pager.textContent=`${current+1} / ${sections.length}`;$('#record-page-prev').disabled=current<=0;$('#record-page-next').disabled=current>=sections.length-1;
+  }
+  document.body.insertAdjacentHTML('beforeend','<dialog id="season-cover-dialog" class="book-editor"><form id="season-cover-form"><button type="button" class="close">×</button><h2>계절 표지</h2><label>사진 올리기<input id="season-cover-file" type="file" accept="image/jpeg,image/png,image/webp" required></label><button type="submit">저장</button><p id="season-cover-status" role="status"></p></form></dialog>');
+  let uploadSeason='spring';$('#season-cover-dialog .close').onclick=()=>$('#season-cover-dialog').close();
+  $('#season-cover-form').onsubmit=async e=>{e.preventDefault();const status=$('#season-cover-status');try{if(!await window.SUY_ADMIN?.isAdmin())return;const file=$('#season-cover-file').files[0];if(!file)return;status.textContent='저장 중…';const url=await window.SUY_ADMIN.uploadPublic(file,'season-covers'),next=structuredClone(data);next.seasonCovers={...next.seasonCovers,[uploadSeason]:url};await window.SUY_ADMIN.saveContent('about-book',next);data=next;content();$('#season-cover-dialog').close();}catch(e){status.textContent=e.message;}};
+
   function content() {
     const left = $('#book-left'), right = $('#book-right'); style();
     right.classList.toggle('notes-paper',tab==='thoughts');
-    if (tab === 'cat') {
-      left.innerHTML = `<span class="book-folio">02 / MY CAT</span><button type="button" class="book-cat-feature" data-photo="feature" aria-label="사진 크게 보기"><img class="cat-feature-image" src="${esc(safeUrl(data.catFeaturePhoto)||defaults.catFeaturePhoto)}" alt="생일 모자를 쓴 고양이"></button>`;
+    if (renderSeason(left,right)) {
+    } else if (tab === 'cat') {
+      left.innerHTML = `<span class="book-folio">2026 / 내 고양이</span><button type="button" class="book-cat-feature" data-photo="feature" aria-label="사진 크게 보기"><img class="cat-feature-image" src="${esc(safeUrl(data.catFeaturePhoto)||defaults.catFeaturePhoto)}" alt="생일 모자를 쓴 고양이"></button>`;
       const now=new Date(),year=now.getFullYear(),month=now.getMonth(),first=new Date(year,month,1).getDay(),days=new Date(year,month+1,0).getDate();
-      right.innerHTML = `<span class="book-folio">DAYS WITH MY CAT</span><div class="cat-words-reveal"><h2>MY CAT</h2><dl class="book-profile">${[['NAME',data.catDetails?.name],['생일','5월 5일'],['PERSONALITY',data.catDetails?.personality],['LIKES',data.catDetails?.likes]].filter(([,v])=>v).map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl><p class="book-copy">${esc(data.catText)}</p></div><a class="cat-calendar-link" href="diary.html" target="_top" aria-label="Open full calendar"><span class="calendar-caption">${year}.${String(month+1).padStart(2,'0')} <span>CALENDAR ↗</span></span><span class="cat-mini-calendar">${Array.from({length:first},()=>'<span></span>').join('')}${Array.from({length:days},(_,i)=>`<span>${String(i+1).padStart(2,'0')}</span>`).join('')}</span></a>`;
+      right.innerHTML = `<span class="book-folio">고양이와 함께한 날들</span><div class="cat-words-reveal"><h2>내 고양이</h2><dl class="book-profile">${[['이름',data.catDetails?.name],['생일','5월 5일'],['성격',data.catDetails?.personality],['좋아하는 것',data.catDetails?.likes]].filter(([,v])=>v).map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl><p class="book-copy">${esc(data.catText)}</p></div>${calendarMarkup()}`;
     } else {
       left.innerHTML = '<span class="book-folio">04 / WORDS</span><h2>MY WORDS</h2>';
       right.innerHTML = `<span class="book-folio">NOTES</span><p class="book-copy">${esc(data.thoughts)}</p>`;
     }
     if (data.pages?.[tab]) {if(tab==='cat'){const custom=document.createElement('div');custom.className='cat-saved-layout';custom.innerHTML=sanitize(data.pages[tab].right);custom.querySelectorAll('a[href*="tools.html"]').forEach(el=>el.remove());right.querySelector('.cat-words-reveal').append(custom);}else{left.innerHTML=sanitize(data.pages[tab].left);right.innerHTML=sanitize(data.pages[tab].right);}}
     left.querySelectorAll('[data-photo]').forEach(button => button.onclick = () => {const d=$('#book-photo-dialog');d.querySelector('img').src=button.querySelector('img')?.src||data.catPhotos[Number(button.dataset.photo)];d.showModal();});
-    applyTextOverrides();applyTabStyles();
-    applyPhotoOverrides();
+    bindSeasonControls();
+    if(tab==='cat')applyTextOverrides();applyTabStyles();
+    if(tab==='cat')applyPhotoOverrides();
     document.dispatchEvent(new CustomEvent('notebook-section',{detail:{tab,closed:book.classList.contains('is-closed')}}));
   }
-  const sections=['cat','thoughts'];
+  const sections=['cat','spring','summer','autumn','winter'];
   $('#book-binding')?.remove();
 
   function setMobileSide(side){mobileSide=side;book.dataset.mobileSide=side;$('#book-mobile-count').textContent=side==='left'?'1 / 2':'2 / 2';}
-  function setThickness(){const index=sections.indexOf(tab);book.dataset.pageIndex=String(index);book.style.setProperty('--left-stack',`${2+index*2}px`);book.style.setProperty('--right-stack',`${11-index*2}px`);}
+  function setThickness(){const index=sections.indexOf(tab)/Math.max(1,sections.length-1)*4;book.dataset.pageIndex=String(index);book.style.setProperty('--left-stack',`${2+index*2}px`);book.style.setProperty('--right-stack',`${11-index*2}px`);}
   // A continuous sheet is approximated with narrow connected surfaces. Each
   // surface follows its own tangent, rather than rotating one rigid rectangle.
   const leaf=$('#book-turn-leaf'), leafShadow=$('#book-turn-shadow');
@@ -144,18 +170,20 @@
       const travel=paperEase(p),lift=Math.sin(Math.PI*travel);
       cover.style.transform=`translateZ(${12*lift}px) rotateY(${-180*travel}deg) rotateX(${1.2*lift}deg) rotateZ(${- .3*lift}deg)`;
       cover.style.opacity=String(p<.76?1:(1-p)/.24);
+      if(!matchMedia('(max-width:760px)').matches){cover.style.left=`${50*travel}%`;cover.style.width=`${100-50*travel}%`;}
       cover.style.filter=`brightness(${1-.065*lift})`;
       cover.style.boxShadow=`${(6-14*travel)*lift}px ${5+15*lift}px ${8+19*lift}px rgba(43,48,50,${.07+.1*lift})`;
-      if(p<1)requestAnimationFrame(frame);else{book.classList.remove('is-opening');for(const property of ['transform','opacity','filter','box-shadow'])cover.style.removeProperty(property);turning=false;sync();}
+      if(p<1)requestAnimationFrame(frame);else{book.classList.remove('is-opening');for(const property of ['transform','opacity','filter','box-shadow','left','width'])cover.style.removeProperty(property);turning=false;sync();}
     }requestAnimationFrame(frame);
   }
   function open(next='cat') {
     if (turning) return;
+    if(seasons[next])calendarCursor=new Date(2026,seasons[next].months[0]-1,1);
     if (book.classList.contains('is-closed')) {tab=next;content();turning=true;cover.style.transform='rotateY(0)';cover.style.opacity='1';book.classList.add('is-opening');book.classList.remove('is-closed');cover.setAttribute('aria-expanded','true');setMobileSide('left');setThickness();sync();animateOpening();return;}
     if(tab===next)return;
     prepareSheet(next);animateSheet(0,1,next);
   }
-  function sync() {book.dataset.section=tab;document.dispatchEvent(new CustomEvent('notebook-section',{detail:{tab,closed:book.classList.contains('is-closed')}}));document.querySelectorAll('[data-book-tab]').forEach(b=>b.classList.toggle('active',b.dataset.bookTab===tab&&!book.classList.contains('is-closed')));$('#book-close').hidden=book.classList.contains('is-closed');$('#book-edit').hidden=book.classList.contains('is-closed')||tab==='calendar'||!window.SUY_IS_ADMIN;$('#book-color-control').hidden=!window.SUY_IS_ADMIN;}
+  function sync() {book.dataset.section=tab;document.dispatchEvent(new CustomEvent('notebook-section',{detail:{tab,closed:book.classList.contains('is-closed')}}));document.querySelectorAll('[data-book-tab]').forEach(b=>b.classList.toggle('active',(b.dataset.bookTab===tab||(tab.startsWith('record:')&&seasonEntries(b.dataset.bookTab).some(e=>'record:'+e.id===tab)))&&!book.classList.contains('is-closed')));$('#book-close').hidden=book.classList.contains('is-closed');$('#book-edit').hidden=book.classList.contains('is-closed')||tab!=='cat'||!window.SUY_IS_ADMIN;$('#book-color-control').hidden=!window.SUY_IS_ADMIN;}
   $('#binder-palette-toggle').onclick=()=>{$('.binder-palette-fields').hidden=!$('.binder-palette-fields').hidden};
   $('#binder-tab-colors').innerHTML=[...document.querySelectorAll('.book-tabs > *')].map((el,i)=>`<div class="binder-tab-color-row"><span>${esc(el.textContent.trim())}</span><label aria-label="${esc(el.textContent.trim())} text color">TEXT<input id="binder-tab-text-${i}" type="color" value="${tabDefaults[i][1]}"></label></div>`).join('');
   for(const [id,key] of [['book-cover-color','coverColor'],['book-paper-color','paperColor'],['book-tab-background','tabBackground']])$('#'+id).onchange=async e=>{if(!await window.SUY_ADMIN?.isAdmin())return;const previous=data[key];data[key]=validColor(e.target.value,defaults[key]||'#191919');if(key==='tabBackground')data.uniformTabs=true;applyCoverColor();try{await window.SUY_ADMIN.saveContent('about-book',data)}catch(error){data[key]=previous;applyCoverColor();alert('Could not save book color: '+error.message)}};
@@ -172,6 +200,7 @@
   $('#book-image-form').onsubmit=async e=>{e.preventDefault();if(!selectedPhoto)return;const status=$('#book-image-status');status.textContent='SAVING…';try{if(!await window.SUY_ADMIN.isAdmin())throw Error('Admin login required');const next=structuredClone(data),saved=next.photoOverrides?.[selectedPhoto]||{};const file=$('#book-image-file').files[0];const src=file?await window.SUY_ADMIN.uploadPublic(file,'about-book'):saved.src;next.photoOverrides={...(next.photoOverrides||{}),[selectedPhoto]:{src,scale:Number($('#book-image-scale').value),angle:Number($('#book-image-angle').value),x:Number($('#book-image-x').value),y:Number($('#book-image-y').value),removed:$('#book-image-remove').checked}};await window.SUY_ADMIN.saveContent('about-book',next);data=next;applyPhotoOverrides();$('#book-image-editor').close()}catch(error){status.textContent='SAVE FAILED: '+error.message}};
   cover.onclick=()=>open('cat');
   document.querySelectorAll('[data-book-tab]').forEach(b=>b.onclick=()=>open(b.dataset.bookTab));
+  document.addEventListener('suyoon-admin-state',()=>{sync();spread.querySelectorAll('[data-season-upload],.record-edit').forEach(el=>el.hidden=!window.SUY_IS_ADMIN);});
   $('#book-close').onclick=()=>{if(turning)return;turning=true;book.classList.add('is-closing');$('#book-close').disabled=true;setTimeout(()=>{book.classList.add('is-closed');book.classList.remove('is-closing');cover.setAttribute('aria-expanded','false');$('#book-close').disabled=false;turning=false;sync();cover.focus({preventScroll:true});},reducedMotion()?0:1050);};
   $('#book-page-corner').onclick=()=>{if(!turning)open(sections[(sections.indexOf(tab)+1)%sections.length])};
   $('#book-mobile-prev').onclick=()=>{if(mobileSide==='right')setMobileSide('left');else open(sections[(sections.indexOf(tab)+sections.length-1)%sections.length])};
@@ -210,7 +239,7 @@
     if(tab==='contact') return `<label>INSTAGRAM URL<input name="instagram" type="url" value="${esc(data.instagram)}" placeholder="https://instagram.com/..."></label><label>EMAIL<input name="email" type="email" value="${esc(data.email)}"></label>`;
     return `<label>WORDS<textarea name="thoughts">${esc(data.thoughts)}</textarea></label>`;
   }
-  $('#book-edit').onclick=async()=>{if(!await window.SUY_ADMIN?.isAdmin())return;$('#book-editor-heading').textContent='EDIT · '+document.querySelector(`[data-book-tab="${tab}"]`).textContent;$('#book-editor-fields').innerHTML=fields();seedLayout();setMode(data.pages?.[tab]?'layout':'content');const st=data.style?.[tab]||{};$('#book-font').value=fontKey(st.font);$('#book-size').value=st.size||19;$('#book-size-output').textContent=$('#book-size').value+' px';$('#book-status').textContent='';editor.showModal();};
+  $('#book-edit').onclick=async()=>{if(!await window.SUY_ADMIN?.isAdmin())return;$('#book-editor-heading').textContent='EDIT · '+(tab==='cat'?'내 고양이':tab);$('#book-editor-fields').innerHTML=fields();seedLayout();setMode(data.pages?.[tab]?'layout':'content');const st=data.style?.[tab]||{};$('#book-font').value=fontKey(st.font);$('#book-size').value=st.size||19;$('#book-size-output').textContent=$('#book-size').value+' px';$('#book-status').textContent='';editor.showModal();};
   $('#book-form').onsubmit=async e=>{
     e.preventDefault();const status=$('#book-status');status.textContent='SAVING…';
     try {if(!await window.SUY_ADMIN.isAdmin())throw Error('Admin login required');const form=new FormData(e.target);const next=structuredClone(data);next.style={...(next.style||{}),[tab]:{font:$('#book-font').value,size:Number($('#book-size').value)}};
@@ -222,6 +251,8 @@
       await window.SUY_ADMIN.saveContent('about-book',next);data=next;content();editor.close();
     }catch(error){status.textContent='SAVE FAILED: '+error.message;}
   };
+  $('#record-page-prev').onclick=()=>{if(!turning&&sections.indexOf(tab)>0)open(sections[sections.indexOf(tab)-1]);};
+  $('#record-page-next').onclick=()=>{if(!turning&&sections.indexOf(tab)<sections.length-1)open(sections[sections.indexOf(tab)+1]);};
   setMobileSide('left');content();setThickness();sync();
-  (async()=>{try{if(window.SUY_SITE_READY)await window.SUY_SITE_READY;const api=window.SUY_ADMIN;const [old,saved,diary]=await Promise.all([api.loadContent('about-interactive').catch(()=>null),api.loadContent('about-book'),api.loadContent('diary').catch(()=>null)]);legacy=old||{};diaryItems=Array.isArray(diary?.items)?diary.items:[];data={...structuredClone(defaults),...saved,profile:{...defaults.profile,...legacy.personal,...saved?.profile}};applyCoverColor();content();sync();}catch(error){console.warn('About content unavailable',error);}})();
+  (async()=>{try{if(window.SUY_SITE_READY)await window.SUY_SITE_READY;const api=window.SUY_ADMIN;const [old,saved,diary]=await Promise.all([api.loadContent('about-interactive').catch(()=>null),api.loadContent('about-book'),api.loadContent('diary').catch(()=>null)]);legacy=old||{};diaryItems=Array.isArray(diary?.items)?diary.items:[];rebuildSections();data={...structuredClone(defaults),...saved,profile:{...defaults.profile,...legacy.personal,...saved?.profile}};applyCoverColor();content();sync();}catch(error){console.warn('About content unavailable',error);}})();
 })();

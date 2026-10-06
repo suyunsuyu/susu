@@ -303,3 +303,31 @@ body.about-book-page .book-actions,body.about-book-page.embedded-book .book-acti
 @keyframes bound-unfold-right{0%{transform:rotateY(-12deg) rotateX(1deg);filter:brightness(.91)}65%{transform:rotateY(2.3deg) rotateX(.6deg);filter:brightness(1)}100%{transform:rotateY(1.7deg) rotateX(.5deg);filter:brightness(1)}}
 @media(max-width:760px){.bound-book .bound-spine{left:3%;width:3%;top:4%;bottom:3%;border-radius:3px}.about-book.bound-book .page-stack{width:87%}.about-book.bound-book .turn-leaf,.about-book.bound-book .turn-shadow{left:5%;width:91%}.about-book-page .book-cat-feature{height:calc(100% - 40px);padding:0;margin-top:18px}.binder-palette-fields{right:0;max-width:calc(100vw - 40px)}body.about-book-page .book-actions,body.about-book-page.embedded-book .book-actions{margin-top:36px;padding-bottom:65px}}
 @media(prefers-reduced-motion:reduce){.bound-book.is-opening .book-left,.bound-book.is-opening .book-right{animation:none!important}}
+/* Portrait closed volume and seasonal memory pages. */
+body.about-book-page .book-wrap{transition:width 1.12s cubic-bezier(.22,1,.36,1)}
+body.about-book-page .book-wrap:has(.is-closed){width:min(560px,75vw)}
+body.about-book-page .about-book{transition:aspect-ratio 1.12s cubic-bezier(.22,1,.36,1)}
+body.about-book-page .about-book.is-closed{aspect-ratio:.72}
+.about-book.is-closed .book-cover{background:#fafaf7;inset:0;width:100%;height:100%}
+.about-book .book-cover img{width:90%;height:86%;max-width:none;max-height:none;object-fit:contain;display:block;margin:auto}
+.about-book .book-cover .cover-year{position:absolute;left:0;right:0;bottom:9%;font-size:14px;letter-spacing:.15em;color:#6d6d69;text-align:center}
+.about-book .cover-open-hint{font-size:11px;bottom:4%}
+.about-book:not(.is-closed) .book-cover{left:50%;width:50%;transform-origin:left center}
+.season-tabs>*{font-size:18px!important;min-height:47px!important;padding-left:22px!important;width:100%!important}
+.about-book-page .notebook-margin{visibility:hidden;pointer-events:none}
+.record-page-nav{position:absolute;z-index:8;left:39%;right:39%;bottom:-28px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#777}
+.record-page-nav button,.book-date-calendar button,.season-date-list button,.season-cover-upload{background:none;border:0;color:inherit;cursor:pointer}
+.record-page-nav button{padding:5px 10px}.record-page-nav button:disabled{opacity:.25;cursor:default}.is-closed .record-page-nav,.is-opening .record-page-nav,.is-closing .record-page-nav{visibility:hidden}
+.season-range{font-size:13px;color:#93948e;letter-spacing:.1em}.season-empty{font-size:16px;color:#aaa}
+.season-date-list{margin-top:26px;max-height:72%;overflow:auto}.season-date-list button{display:flex;gap:20px;width:100%;padding:12px 0;text-align:left;border-bottom:1px solid #ddd;font-size:15px}.season-date-list time{color:#777;flex-shrink:0}.season-date-list span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.season-cover{height:44%;display:flex;flex-direction:column;align-items:center;justify-content:center}.season-cover img{max-width:100%;max-height:100%;object-fit:contain}.season-cover h2{font-size:50px!important;font-weight:400}.season-cover span{font-size:13px;color:#999}.season-cover-upload{font-size:12px}
+.book-date-calendar{margin-top:22px}.book-date-calendar .calendar-caption{display:flex;justify-content:space-between;align-items:center}.book-date-calendar .calendar-caption button{padding:3px 10px;font-size:15px}.book-date-calendar .cat-mini-calendar{margin-top:10px;display:grid;grid-template-columns:repeat(7,1fr)}
+.book-date-calendar .cat-mini-calendar button,.book-date-calendar .cat-mini-calendar span{box-sizing:border-box;min-width:0;height:32px;min-height:0;border:1px solid #d9dcd7;border-right:0;border-bottom:0;text-align:center;font-size:11px;padding:2px}.book-date-calendar .cat-mini-calendar button.has-record{font-weight:600;color:#222;text-decoration:underline;text-underline-offset:4px;background:#e9ede55c}
+.calendar-paper-actions{display:flex;justify-content:space-between;gap:15px;margin-top:10px}.calendar-paper-actions a,.calendar-paper-actions button{font-size:11px;color:#72766f;text-decoration:none}.calendar-paper-actions button{padding:0}
+.record-photos{display:flex;flex-direction:column;align-items:center;gap:15px;height:90%;overflow:auto;margin-top:20px}.record-photos button{display:block;max-width:100%;padding:5px;background:#fff;border:0;box-shadow:1px 3px 8px #0001;cursor:zoom-in}.record-photos img{display:block;max-width:100%;max-height:320px;object-fit:contain}
+.record-words{max-height:46%;overflow:auto}.record-words h2{font-size:27px!important;margin-top:24px}.record-words p{white-space:pre-wrap;font-size:19px;line-height:1.6}.record-edit{font-size:12px;margin-top:10px;display:block}
+.season-cover-upload[hidden],.record-edit[hidden]{display:none}
+@media(max-width:760px){body.about-book-page .book-wrap:has(.is-closed){width:min(420px,92vw)}body.about-book-page .about-book.is-closed{height:auto;min-height:0;aspect-ratio:.7}.about-book .book-cover img{height:86%}.about-book:not(.is-closed) .book-cover{left:2%;width:98%}.record-page-nav{left:25%;right:25%;bottom:-29px}.book-date-calendar .cat-mini-calendar button,.book-date-calendar .cat-mini-calendar span{height:27px}.season-cover{height:40%}}
+@media(prefers-reduced-motion:reduce){body.about-book-page .book-wrap,body.about-book-page .about-book{transition:none}}
+
+.about-book-page .notebook-layout{display:block}.about-book-page .notebook-margin{display:none}
