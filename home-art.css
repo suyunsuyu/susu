@@ -21,3 +21,21 @@ body.home.illustrated-home{overflow-x:hidden}
 .home-art-nav a:nth-child(3){background:#edf0fa;border-color:#dbe0ef;color:#69748c}
 .home-art-nav{gap:17px}
 @media(max-width:760px){.illustrated-home-main{width:88vw;grid-template-columns:minmax(0,1fr);padding:35px 0 100px;gap:25px}.home-artwork{grid-row:1}.home-art-nav{grid-row:2;gap:10px}.illustrated-home .notebook-margin{grid-row:3}.illustrated-home #notebook-margin-text{min-height:90px;max-height:none}.illustrated-home .paper-open{margin-top:8px;padding-top:18px}.home-art-nav a{min-width:90px}}
+/* A quiet margin and small drawn flowers, without enclosing the navigation. */
+.illustrated-home .notebook-margin{align-self:center;justify-content:flex-start;padding:0}
+.illustrated-home .margin-heading{display:flex;align-items:baseline;justify-content:space-between;gap:14px}
+.illustrated-home .margin-caption{font-size:12px;letter-spacing:.08em;color:#90938d;margin:0}
+.illustrated-home #notebook-note-edit{width:auto;min-height:0;margin:0;padding:0;border:0;background:none;box-shadow:none;font-size:11px;color:#979a95;text-decoration:none}
+.illustrated-home #notebook-note-edit[hidden]{display:none}
+.illustrated-home #notebook-margin-text{min-height:140px;margin:22px 0 24px;padding:0;border:0;box-shadow:none;line-height:1.9}
+.illustrated-home #notebook-margin-text:empty::after{content:none;display:none}
+.illustrated-home .paper-open{display:inline-block;align-self:flex-start;width:auto;min-height:0;margin:0;padding:0;border:0;background:none;box-shadow:none;font-size:12px;line-height:1.6;color:#858981;text-decoration:underline;text-decoration-color:#d8dcd3;text-underline-offset:6px}
+.illustrated-home .paper-open:hover,.illustrated-home #notebook-note-edit:hover{color:#555c51}
+.illustrated-home .home-art-nav{gap:21px;align-items:flex-start}
+.illustrated-home .home-art-nav a,.illustrated-home .home-art-nav a:nth-child(n){display:flex;align-items:center;justify-content:flex-start;gap:9px;min-width:0;min-height:34px;padding:4px 0;border:0;border-radius:0;background:none;box-shadow:none;color:#71766e;letter-spacing:.03em;font-size:17px;transform:none;transition:color .3s ease}
+.illustrated-home .home-art-nav a:hover{color:#30382c}
+.nav-flower{width:21px;height:23px;flex-shrink:0;overflow:visible;fill:#e3ebd8;stroke:#cad5bf;stroke-width:.65;transform:rotate(-9deg);transition:transform .3s cubic-bezier(.22,1,.36,1)}
+.nav-flower circle{fill:#fff;stroke:none}.home-art-nav a:nth-child(2) .nav-flower{fill:#f3dfe6;stroke:#e8cfd9;transform:rotate(12deg)}.home-art-nav a:nth-child(3) .nav-flower{fill:#dde5fb;stroke:#cbd6ef;transform:rotate(-3deg)}
+.illustrated-home .home-art-nav a:hover .nav-flower{transform:rotate(0deg)}
+@media(max-width:760px){.illustrated-home .notebook-margin{padding:15px 0 0}.illustrated-home #notebook-margin-text{min-height:75px;margin:16px 0 20px}.illustrated-home .home-art-nav{align-items:center;gap:20px}.illustrated-home .home-art-nav a{font-size:16px;gap:6px}.nav-flower{width:17px;height:20px}}
+@media(prefers-reduced-motion:reduce){.nav-flower{transition:none}}
