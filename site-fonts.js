@@ -9,3 +9,15 @@ const observer=new MutationObserver(records=>{observer.disconnect();for(const r 
 function init(){normalize(document);observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['style']});}
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();
 })();
+;(()=>{
+ document.addEventListener('click',e=>{
+  const link=e.target.closest('.notebook-contact a[href^="mailto:"]');if(!link)return;
+  e.preventDefault();let panel=document.getElementById('contact-email-address');
+  if(!panel){panel=document.createElement('div');panel.id='contact-email-address';panel.setAttribute('role','status');panel.style.cssText='position:fixed;right:24px;bottom:74px;z-index:1000;padding:12px 16px;background:#fff;color:#555;font-size:14px;box-shadow:0 3px 18px #0000000c;border:1px solid #eeeeee';document.body.append(panel);}
+  panel.hidden=!panel.hidden&&panel.childNodes.length>0;
+  panel.textContent=decodeURIComponent(link.getAttribute('href').slice(7).split('?')[0]);
+  link.setAttribute('aria-expanded',String(!panel.hidden));
+ });
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){const p=document.getElementById('contact-email-address');if(p)p.hidden=true;}});
+ document.addEventListener('click',e=>{if(!e.target.closest('.notebook-contact,#contact-email-address')){const p=document.getElementById('contact-email-address');if(p)p.hidden=true;}});
+})();
