@@ -58,8 +58,9 @@
   function renderSection(left,right){
     if(tab==='likes'||tab.startsWith('like:')){
       const page=tab==='likes'?(data.likesIntro||{}):(data.likesPages||[]).find(e=>'like:'+e.id===tab)||{};
-      const images=Array.isArray(page.images)?page.images:entryPhotos(page),leftSrc=safeUrl(images[0])||'assets/home-flower.svg',rightSrc=safeUrl(images[1]);
-      left.innerHTML=`<span class="book-folio">FAVORITES</span><div class="likes-left-photo"><button type="button" data-photo="likes"><img src="${esc(leftSrc)}" alt="Favorite photo"></button></div>`;
+      const images=Array.isArray(page.images)?page.images:entryPhotos(page),leftSrc=safeUrl(images[0])||(tab==='likes'?'assets/home-flower.svg':''),rightSrc=safeUrl(images[1]);
+      const leftPhoto=leftSrc?`<button type="button" data-photo="likes"><img src="${esc(leftSrc)}" alt="Favorite photo"></button>`:'<div class="book-photo-space"><span>사진을 놓는 자리</span></div>';
+      left.innerHTML=`<span class="book-folio">FAVORITES</span>${tab==='likes'?`<div class="likes-left-photo">${leftPhoto}</div>`:`<div class="likes-right-content"><h2 aria-hidden="true" style="visibility:hidden">${esc(page.title||'좋아하는 것')}</h2><div class="likes-right-photo">${leftPhoto}</div><p aria-hidden="true" style="visibility:hidden">${esc(page.text||'')}</p></div>`}`;
       right.innerHTML=`<span class="book-folio">FAVORITES</span><div class="likes-right-content"><h2>${esc(page.title||'좋아하는 것')}</h2><div class="likes-right-photo">${rightSrc?`<button type="button" data-photo="likes"><img src="${esc(rightSrc)}" alt="Favorite detail photo"></button>`:'<div class="book-photo-space"><span>사진을 놓는 자리</span></div>'}</div><p>${esc(page.text||'')}</p></div><div class="book-inline-actions"><button type="button" data-likes-edit="${esc(tab==='likes'?'intro':page.id)}" data-admin-only ${window.SUY_IS_ADMIN?'':'hidden'}>페이지 편집 ↗</button><button type="button" data-likes-edit="new" data-admin-only ${window.SUY_IS_ADMIN?'':'hidden'}>페이지 추가 ＋</button></div>`;applyRecordStyle(right,page);return true;}
     if(tab==='memories'){left.innerHTML=`<span class="book-folio">추억</span><h2>${esc(data.memoryTitle||'추억')}</h2><p class="memory-caption">${esc(data.memoryText??'함께한 날들을 한 장씩')}</p><div class="season-date-list">${diaryItems.length?[...diaryItems].sort((a,b)=>a.date.localeCompare(b.date)).map(e=>`<button type="button" data-record-id="${esc(e.id)}"><time>${esc(e.date.replaceAll('-','.'))}</time><span>${esc(e.title||e.text?.split('\n')[0]||'오늘의 기록')}</span></button>`).join(''):'<p class="season-empty">아직 기록이 없어요.</p>'}</div>`;right.innerHTML=`<span class="book-folio">추억 달력</span>${calendarMarkup()}`;return true;}
     if(tab.startsWith('record:')||tab.startsWith('day:')){const info=tab.startsWith('record:')?recordInfo(tab):{entry:null,photoPage:0},entry=info.entry,date=entry?.date||tab.slice(4),images=entryPhotos(entry).slice(info.photoPage*2,info.photoPage*2+2);left.innerHTML=`<span class="book-folio">${esc(date.replaceAll('-','.'))}</span>${photoPair(images)}`;right.innerHTML=`<span class="book-folio">${esc(date.replaceAll('-','.'))}</span><div class="record-words"><h2>${esc(entry?.title||'오늘의 기록')}</h2><p>${esc(entry?.text||'')}</p></div><div class="book-inline-actions"><button type="button" data-record-edit="${esc(entry?.id||'')}" data-edit-date="${esc(date)}" data-admin-only ${window.SUY_IS_ADMIN?'':'hidden'}>${entry?'기록 편집 ↗':'사진과 기록 남기기 ＋'}</button><button type="button" data-memory-back>달력으로 ↗</button></div>`;applyRecordStyle(right,entry);return true;}
@@ -218,7 +219,60 @@
   cover.onclick=()=>open('cat');
   document.querySelectorAll('[data-book-tab]').forEach(b=>b.onclick=()=>open(b.dataset.bookTab));
   document.addEventListener('suyoon-admin-state',()=>{sync();spread.querySelectorAll('.book-inline-actions [data-admin-only]').forEach(el=>el.hidden=!window.SUY_IS_ADMIN);});
-  $('#book-close').onclick=()=>{if(turning)return;turning=true;book.classList.add('is-closing');$('#book-close').disabled=true;setTimeout(()=>{book.classList.add('is-closed');book.classList.remove('is-closing');cover.setAttribute('aria-expanded','false');$('#book-close').disabled=false;turning=false;sync();cover.focus({preventScroll:true});},reducedMotion()?0:1050);};
+
+  function animateClosing(){
+    if(turning)return;turning=true;clearSheet();
+    const wrap=book.closest('.book-wrap'),left=$('#book-left'),right=$('#book-right'),back=book.querySelector('.cover-back'),spine=book.querySelector('.bound-spine'),stacks=[...book.querySelectorAll('.page-stack')];
+    const mobile=matchMedia('(max-width:760px)').matches;
+    const initial={width:wrap.getBoundingClientRect().width,height:book.getBoundingClientRect().height};
+    const priorWrapTransition=wrap.style.transition,priorBookTransition=book.style.transition;
+    // Measure the existing portrait state without painting or starting a second transition.
+    wrap.style.transition='none';book.style.transition='none';
+    book.classList.add('is-closed');
+    const target={width:wrap.getBoundingClientRect().width,height:book.getBoundingClientRect().height};
+    book.classList.remove('is-closed');
+    wrap.style.width=initial.width+'px';book.style.setProperty('height',initial.height+'px','important');
+    book.classList.add('is-closing');$('#book-close').disabled=true;
+    cover.style.top='0';cover.style.height='100%';cover.style.opacity='1';
+    let started=null;const duration=reducedMotion()?0:1220;
+    const mix=(a,b,t)=>a+(b-a)*t;
+    function frame(now){
+      if(started===null)started=now;
+      const p=duration?Math.min(1,(now-started)/duration):1;
+      // A slower lift, continuous fold, then a soft landing and centering.
+      const fold=smooth(Math.min(1,p/.82)),settle=paperEase(Math.max(0,Math.min(1,(p-.43)/.57)));
+      const lift=Math.sin(Math.PI*fold);
+      wrap.style.width=mix(initial.width,target.width,settle)+'px';
+      book.style.setProperty('height',mix(initial.height,target.height,settle)+'px','important');
+      cover.style.left=(mobile?2*(1-settle):50*(1-settle))+'%';
+      cover.style.width=(mobile?98+2*settle:50+50*settle)+'%';
+      cover.style.transform=`translateZ(${9*lift}px) rotateY(${-180*(1-fold)}deg) rotateX(${.8*lift}deg)`;
+      cover.style.filter=`brightness(${1-.055*lift})`;
+      cover.style.boxShadow=`${-8*lift}px ${5+12*lift}px ${9+18*lift}px rgba(43,48,50,${.07+.09*lift})`;
+      left.style.transform=`rotateY(${-1.7+181.7*fold}deg) rotateX(${.5+1.2*lift}deg)`;
+      left.style.filter=`brightness(${1-.15*lift})`;
+      right.style.transform=`rotateY(${1.7*(1-fold)}deg) rotateX(${.5*(1-fold)}deg)`;
+      right.style.filter=`brightness(${1-.06*lift})`;
+      // The left board and paper edges disappear beneath the folded cover.
+      back.style.clipPath=`inset(0 0 0 ${mobile?0:50*fold*(1-settle)}%)`;
+      stacks.forEach(el=>{el.style.opacity=String(1-smooth(Math.max(0,(fold-.5)*2)));});
+      if(spine)spine.style.opacity=String(1-fold);
+      if(p<1)requestAnimationFrame(frame);
+      else{
+        book.classList.add('is-closed');book.classList.remove('is-closing');
+        cover.setAttribute('aria-expanded','false');
+        for(const el of [cover,left,right,back,spine,...stacks].filter(Boolean)){
+          for(const prop of ['transform','filter','box-shadow','left','width','top','height','opacity','clip-path'])el.style.removeProperty(prop);
+        }
+        wrap.style.removeProperty('width');book.style.removeProperty('height');
+        // Commit the final geometry before restoring ordinary transitions.
+        void book.offsetWidth;wrap.style.transition=priorWrapTransition;book.style.transition=priorBookTransition;
+        $('#book-close').disabled=false;turning=false;sync();cover.focus({preventScroll:true});
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  $('#book-close').onclick=animateClosing;
   $('#book-page-corner').onclick=()=>{if(!turning)open(sections[(sectionIndex()+1)%sections.length])};
   $('#book-mobile-prev').onclick=()=>{if(mobileSide==='right')setMobileSide('left');else open(sections[(sectionIndex()+sections.length-1)%sections.length])};
   $('#book-mobile-next').onclick=()=>{if(mobileSide==='left')setMobileSide('right');else open(sections[(sectionIndex()+1)%sections.length])};
