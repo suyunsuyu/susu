@@ -331,3 +331,5 @@ body.about-book-page .about-book.is-closed{aspect-ratio:.72}
 @media(prefers-reduced-motion:reduce){body.about-book-page .book-wrap,body.about-book-page .about-book{transition:none}}
 
 .about-book-page .notebook-layout{display:block}.about-book-page .notebook-margin{display:none}
+
+.about-book .book-cover img{mix-blend-mode:multiply}.calendar-jpg-download{font-size:11px;color:#555;text-decoration:underline;text-underline-offset:3px;margin-left:8px}.calendar-paper-actions{flex-wrap:wrap}

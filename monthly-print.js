@@ -20,7 +20,7 @@
   }
   async function download(year,month,items,button){
     const original=button?.textContent;if(button){button.disabled=true;button.textContent='인쇄 중…';}
-    try{const blob=await create(year,month,items),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`calendar-${year}-${pad(month+1)}.jpg`;a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);}catch(e){alert(e.message);}finally{if(button){button.disabled=false;button.textContent=original;}}
+    try{const blob=await create(year,month,items),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`calendar-${year}-${pad(month+1)}.jpg`;a.textContent='JPG 다운로드 ↓';a.className='calendar-jpg-download';const previous=button?.parentElement.querySelector('.calendar-jpg-download');if(previous){URL.revokeObjectURL(previous.href);previous.remove();}if(button)button.insertAdjacentElement('afterend',a);else document.body.append(a);a.click();}catch(e){alert(e.message);}finally{if(button){button.disabled=false;button.textContent=original;}}
   }
   window.SUY_MONTHLY={create,download};
 })();
