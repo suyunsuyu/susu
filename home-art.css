@@ -39,3 +39,5 @@ body.home.illustrated-home{overflow-x:hidden}
 .illustrated-home .home-art-nav a:hover .nav-flower{transform:rotate(0deg)}
 @media(max-width:760px){.illustrated-home .notebook-margin{padding:15px 0 0}.illustrated-home #notebook-margin-text{min-height:75px;margin:16px 0 20px}.illustrated-home .home-art-nav{align-items:center;gap:20px}.illustrated-home .home-art-nav a{font-size:16px;gap:6px}.nav-flower{width:17px;height:20px}}
 @media(prefers-reduced-motion:reduce){.nav-flower{transition:none}}
+@media(min-width:761px){.illustrated-home-main{width:96vw;max-width:none;grid-template-columns:minmax(140px,210px) minmax(0,1fr) 110px;gap:clamp(24px,3vw,60px)}.illustrated-home .margin-heading{justify-content:flex-start;gap:16px}}
+.illustrated-home .home-art-nav a,.illustrated-home .home-art-nav a:nth-child(n){gap:0}

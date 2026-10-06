@@ -9,13 +9,13 @@
     const library=(Array.isArray(settings?.backgrounds)?settings.backgrounds:[]).filter(src=>/^https?:\/\//i.test(String(src)));
     if(!library.length)return;
     let im;try{im=await loadImage(library[Math.floor(Math.random()*library.length)])}catch{return;}
-    const scale=Math.max(1800/im.width,1600/im.height);
+    const scale=Math.min(1080/im.width,960/im.height);
     c.save();c.globalAlpha=.13;c.filter='grayscale(1) contrast(.65)';c.drawImage(im,(1800-im.width*scale)/2,(1600-im.height*scale)/2,im.width*scale,im.height*scale);c.restore();
   }
   async function create(year,month,items){
     await document.fonts.ready;
     const canvas=document.createElement('canvas');canvas.width=1800;canvas.height=1600;const c=canvas.getContext('2d');
-    await drawBackground(c);c.fillStyle='#444';c.font="26px 'Nanum Barunpen', 'ChillHuoFangSong', 'Agdasima'";c.fillText(`${year}.${pad(month+1)}`,100,100);
+    await drawBackground(c);c.fillStyle='#444';c.font="26px 'Agdasima', 'Nanum Barunpen', 'ChillHuoFangSong'";c.fillText(`${year}.${pad(month+1)}`,100,100);
     const offset=new Date(year,month,1).getDay(),days=new Date(year,month+1,0).getDate(),rows=Math.ceil((offset+days)/7),w=1600/7,h=1300/rows;
     c.font="18px 'Nanum Barunpen'";['일','월','화','수','목','금','토'].forEach((s,i)=>c.fillText(s,110+i*w,165));
     for(let n=0;n<rows*7;n++){
