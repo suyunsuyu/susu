@@ -1,7 +1,7 @@
-@import url('binder-fonts.css?v=4');
+@import url('binder-fonts.css?v=5-chisuga');
 :root{--serif:var(--binder-language-font);--mono:var(--binder-language-font);--sans:var(--binder-language-font)}
 body,body *,body *::before,body *::after{font-family:var(--binder-language-font)!important}
 
-body .font-english{font-family:'Agdasima','Nanum Barunpen','ChillHuoFangSong'!important}
-body .font-korean{font-family:'Nanum Barunpen','ChillHuoFangSong','Agdasima'!important}
-body .font-chinese{font-family:'ChillHuoFangSong','Nanum Barunpen','Agdasima'!important}
+body .font-english{font-family:'Agdasima','Nanum Barunpen','ChisugaShotai'!important}
+body .font-korean{font-family:'Nanum Barunpen','ChisugaShotai','Agdasima'!important}
+body .font-chinese{font-family:'ChisugaShotai','Nanum Barunpen','Agdasima'!important}
