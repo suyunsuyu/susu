@@ -15,3 +15,25 @@
 .project-list{margin:35px auto;max-width:1100px}.project-list-item{display:grid;grid-template-columns:35px 170px minmax(0,1fr) 25px;gap:30px;align-items:center;width:100%;border:0;border-bottom:1px solid #eee;background:transparent;text-align:left;padding:30px 0;cursor:pointer}.project-list-item img{width:170px;height:130px;object-fit:cover}.project-index{font-size:12px;color:#aaa}.project-list-copy strong{display:block;font-size:20px;font-weight:400;margin-bottom:12px}.project-list-copy>span{display:block;font-size:14px;color:#999;line-height:1.8;max-height:4.8em;overflow:hidden}.project-open-mark{font-size:17px;color:#999}.project-list-item:hover img{opacity:.85}.project-detail{width:min(1180px,94vw);max-height:94svh;overflow:auto}.project-detail .project-pdf{height:78svh;border:0}.project-detail img{max-height:none;height:auto;width:100%;object-fit:contain}.project-detail .project-dialog-close{position:sticky;top:0;float:right;background:#fff;z-index:3}.project-detail-actions{position:sticky;top:0;background:#fff;padding:10px 0;z-index:2}@media(max-width:760px){.personal-projects .works-portal{grid-template-columns:105px minmax(0,1fr);column-gap:20px;row-gap:25px;padding-top:40px}.personal-projects .works-topline{min-height:0;flex-wrap:wrap;gap:15px}.personal-projects .works-category-nav{gap:20px;padding-top:4px}.personal-projects .works-category-nav a{font-size:11px}.personal-projects .cover-slot{aspect-ratio:auto}.project-list-item{grid-template-columns:18px 95px minmax(0,1fr) 15px;gap:12px;padding:22px 0}.project-list-item img{width:95px;height:95px}.project-list-copy strong{font-size:17px}.project-list-copy>span{font-size:12px}}
 
 .personal-projects .cover-editor-grid{grid-template-columns:1fr}
+
+/* Composition of the supplied second presentation. */
+body.personal-projects{background:#0b0c11!important;color:#e5e5ea}
+.personal-projects>header{position:absolute;left:0;right:0;top:0;z-index:4;border-bottom:0;background:transparent}
+.personal-projects .works-portal{position:relative;width:min(93.5vw,1700px);max-width:none;min-height:100svh;box-sizing:border-box;margin:0 auto;padding:20.6svh 0 11svh;grid-template-columns:26.5% 61.1%;grid-template-rows:auto;column-gap:3%;row-gap:30px;align-content:start}
+.personal-projects .works-portal::before{content:"";position:absolute;top:11svh;left:0;right:0;height:1px;background:#a4a5af55}
+.personal-projects .works-topline{position:absolute;top:14svh;left:1.3vw;grid-column:auto;grid-row:auto}
+.personal-projects .works-topline .kicker{display:none}
+.personal-projects .works-category-nav{grid-column:1;grid-row:1;padding:2px 0 0 1.3vw;gap:20px}
+.personal-projects .works-category-nav a{color:#ededf2;font-family:'Bradley Hand ITC','Segoe Print','Nanum Barunpen',cursive!important;font-size:14px;letter-spacing:0;line-height:1.3;padding:0}
+.personal-projects .works-category-nav a:hover{color:#fff;opacity:.7}
+.personal-projects .works-cover{grid-column:2;grid-row:1}
+.personal-projects .cover-slot,.personal-projects .cover-slot img{background:transparent}
+.personal-projects .cover-slot img{width:100%;height:auto;max-height:none;object-fit:contain;filter:none}
+.personal-projects .works-cover-edit{color:#aaa}
+.personal-projects .cover-editor{grid-row:2;color:#333}
+.personal-projects #project-gallery{padding-top:110px;color:#e5e5ea}
+.personal-projects .project-list-item{color:#e5e5ea;border-color:#ffffff26}
+.personal-projects .project-gallery-heading button,.personal-projects .project-list-copy>span{color:#a8a8b2}
+.personal-projects .project-list-copy strong,.personal-projects .project-gallery-heading h1{font-family:'Microsoft Uighur','Times New Roman',Georgia,serif!important}
+.personal-projects .project-detail,.personal-projects .project-editor{color:#333}
+@media(max-width:760px){.personal-projects .works-portal{width:88vw;padding:92px 0 90px;grid-template-columns:1fr;gap:30px}.personal-projects .works-portal::before{top:63px}.personal-projects .works-category-nav{grid-row:1;grid-column:1;flex-direction:row;flex-wrap:wrap;gap:18px 24px;padding:0}.personal-projects .works-cover{grid-row:2;grid-column:1}.personal-projects .works-topline{top:70px;left:auto;right:0}.personal-projects .cover-editor{grid-row:3}.personal-projects .works-category-nav a{font-size:13px}.personal-projects #project-gallery{padding-top:90px}}

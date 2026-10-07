@@ -1,0 +1,33 @@
+
+html:has(.guestbook-dark),body.guestbook-dark{background:#0b0c11!important;color:#e7e7ed;--ink:#e7e7ed;--line:#ffffff30}
+.guestbook-dark .guestbook-page,.guestbook-dark .guest-experience,.guestbook-dark .cat-feeding-scene,.guestbook-dark .guest-form-card{background:transparent}
+.guestbook-dark .guest-scene-image{background:transparent!important;filter:grayscale(1) invert(1);mix-blend-mode:screen}
+.guestbook-dark .sketch-kibble{filter:invert(1)}
+.guestbook-dark .guestbook-intro p,.guestbook-dark .bowl-count,.guestbook-dark .bowl-hint,.guestbook-dark .empty-bowl-note{color:#a6a6b0}
+.guestbook-dark .guestbook-intro p{font-size:11px;line-height:1.6}
+.guestbook-dark #message-form{border-top:1px solid #ffffff20;padding-top:22px}
+.guestbook-dark #message-form label{color:#dedee5;font-size:12px}
+.guestbook-dark #message-name,.guestbook-dark #message-body{color:#eeeef4;caret-color:#eeeef4;background:transparent;border:0;border-bottom:1px solid #ffffff50;border-radius:0;font-size:16px;line-height:1.65;padding:10px 0;width:100%;box-sizing:border-box}
+.guestbook-dark #message-body{min-height:140px}
+.guestbook-dark #message-form small{color:#91919c}
+.guestbook-dark .message-options{border-bottom:1px solid #ffffff26;margin:20px 0 24px}
+.guestbook-dark .message-options summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:12px 0;color:#aaaab5;font-size:12px;letter-spacing:.06em}
+.guestbook-dark .message-options summary::-webkit-details-marker{display:none}
+.guestbook-dark .message-options summary span{font-size:17px;transition:transform .2s}
+.guestbook-dark .message-options[open] summary span{transform:rotate(45deg)}
+.guestbook-dark .message-options-body{padding:14px 0 20px}
+.guestbook-dark .guest-style-controls{margin-bottom:22px}
+.guestbook-dark .guest-style-controls select,.guestbook-dark #message-color{background:#15161d;color:#dddde5;border:1px solid #ffffff25;border-radius:0}
+.guestbook-dark #message-image{color:#aaaab4;background:transparent;border:0;font-size:12px;max-width:100%}
+.guestbook-dark #message-image::file-selector-button{background:#15161d;color:#d8d8df;border:1px solid #ffffff30;padding:7px 10px;margin-right:10px}
+.guestbook-dark .message-manage,.guestbook-dark #toggle-message-drawing{color:#bdbdc6;border-color:#ffffff30}
+.guestbook-dark #message-form .private{display:flex;align-items:center;gap:7px;margin-bottom:0;color:#a5a5af;font-size:11px}
+.guestbook-dark #message-form .private input{accent-color:#777;width:auto;margin:0}
+.guestbook-dark #message-form>button.black{background:transparent;color:#eeeef2;border:1px solid #ffffff45;padding:11px 18px;font-size:12px}
+.guestbook-dark .guest-form-note,.guestbook-dark #form-status{font-size:11px;line-height:1.6;color:#9a9aa6}
+.guestbook-dark .message-drawing-panel canvas{background:#fff;border:1px solid #ffffff30}
+.guestbook-dark .drawing-toolbar button{color:#333;background:#eee;border-color:#aaa}
+.guestbook-dark .message-dialog,.guestbook-dark .message-manager-dialog{--ink:#333;--line:#ddd;color:#333;background:#fff}
+.guestbook-dark .message-options:focus-within summary{color:#eeeeF3}
+.guestbook-dark #message-form input:focus-visible,.guestbook-dark #message-form textarea:focus-visible,.guestbook-dark summary:focus-visible{outline:1px solid #888;outline-offset:5px}
+@media(max-width:760px){.guestbook-dark .guest-experience{gap:30px}.guestbook-dark .guestbook-intro p{font-size:11px}.guestbook-dark #message-body{min-height:120px}.guestbook-dark .guest-style-controls{grid-template-columns:1fr 90px 50px}}

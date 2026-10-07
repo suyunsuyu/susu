@@ -7,8 +7,9 @@
   <link rel="stylesheet" href="style.css?v=20260903-catarchive1">
   <link rel="stylesheet" href="cursor.css?v=20260921-pointer1">
   <link rel="stylesheet" href="fonts.css?v=20261006-chisuga">
+  <link rel="stylesheet" href="guestbook-dark.css?v=1-clean">
 </head>
-<body>
+<body class="guestbook-dark">
   <header>
     <a href="index.html" class="brand">LEE SU-YOON</a>
     <a href="index.html">← HOME</a>
@@ -33,6 +34,7 @@
         <form id="message-form">
           <label><span class="pe-editable-label">NAME</span> <small class="pe-editable-label">(optional)</small><input id="message-name" maxlength="40" placeholder=""></label>
           <label><span class="pe-editable-label">MESSAGE</span><textarea id="message-body" maxlength="800" required placeholder=""></textarea></label>
+          <details class="message-options"><summary>OPTIONS <span aria-hidden="true">＋</span></summary><div class="message-options-body">
           <div class="guest-style-controls">
             <label>FONT<select id="message-font"><option value="sans">Sans</option><option value="serif">Serif</option><option value="hand">Handwritten</option><option value="cute">Cute Hand</option><option value="mono">Mono</option></select></label>
             <label>SIZE<select id="message-size"><option value="14">14 px</option><option value="16" selected>16 px</option><option value="20">20 px</option><option value="24">24 px</option><option value="28">28 px</option><option value="36">36 px</option></select></label>
@@ -45,7 +47,8 @@
             <div class="drawing-toolbar"><input id="message-draw-color" type="color" value="#111111"><input id="message-draw-width" type="range" min="1" max="18" value="4"><button id="message-draw-clear" type="button">CLEAR</button></div>
           </div>
           <label class="private"><input id="message-private" type="checkbox"><span class="pe-editable-label">PRIVATE — CREATOR ONLY</span></label>
-          <p id="form-status"></p>
+          </div></details>
+          <p id="form-status" role="status"></p>
           <button class="black"><span class="pe-editable-label">FEED CAT FOOD ↗</span></button>
           <p class="guest-form-note" data-pe-multiline="true">Public messages appear as hand-drawn cat food in the bowl. Private messages stay hidden from the public bowl.</p>
           <button id="message-manage" class="message-manage" type="button" data-admin-only hidden><span class="pe-editable-label">MANAGE MESSAGES →</span></button>

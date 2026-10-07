@@ -1,7 +1,7 @@
 (async()=>{
  const $=s=>document.querySelector(s),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const url=v=>{if(typeof v!=='string'||!v.trim())return '';try{const u=new URL(String(v),location.href);return ['https:','http:'].includes(u.protocol)?u.href:''}catch{return ''}};
- const categories={photo:'PHOTOGRAPHY',drawing:'DRAWING',products:'PRODUCTS'},hashes={photography:'photo',drawing:'drawing',products:'products'},fallback='assets/project-flower.svg';let payload={items:[]},legacy=[],current='photo',items=[],editing=null,admin=false;
+ const categories={photo:'PHOTOGRAPHY',drawing:'DRAWING',products:'PRODUCTS'},hashes={photography:'photo',drawing:'drawing',products:'products'},fallback='assets/project-ppt-flowers.jpg';let payload={items:[]},legacy=[],current='photo',items=[],editing=null,admin=false;
  if(window.SUY_SITE_READY)await window.SUY_SITE_READY;if(window.SUY_ADMIN_READY)await window.SUY_ADMIN_READY;const api=window.SUY_ADMIN;if(!api)return;
  const values=await Promise.allSettled([api.loadContent('personal-projects'),api.loadContent('albums:photo'),api.loadContent('albums:drawing'),api.sb.from('products').select('id,name,description,images,category,sort_order,pantone_colors').order('sort_order',{ascending:true}),api.loadContent('covers')]);
  payload=values[0].status==='fulfilled'&&values[0].value||{items:[]};if(!Array.isArray(payload.items))payload.items=[];
