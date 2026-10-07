@@ -85,6 +85,6 @@ html:has(body.home.ppt-home),body.home.illustrated-home.ppt-home{background:#0b0
 @media(min-width:761px){.ppt-home .illustrated-home-main{align-content:start}.ppt-home .home-art-nav{padding-left:5vw;box-sizing:border-box}.ppt-home .notebook-margin{transform:translateY(7svh)}}
 
 /* Presentation typography: native Office faces with serif/handwritten fallbacks. */
-body.ppt-home #notebook-margin-text,body.ppt-home #margin-words{font-family:'Microsoft Uighur','Palatino Linotype',Georgia,serif!important;font-size:clamp(18px,1.8vw,26px)!important;font-weight:400;line-height:1.22;letter-spacing:0}
+body.ppt-home #notebook-margin-text,body.ppt-home #margin-words{font-family:'Microsoft Uighur','Times New Roman',Georgia,serif!important;font-size:clamp(16px,1.5vw,22px)!important;font-weight:400;line-height:1.22;letter-spacing:0}
 body.ppt-home .home-art-nav a,body.ppt-home .home-art-nav a span,body.ppt-home .home-art-nav .home-mood{font-family:'Bradley Hand ITC','Segoe Print','Nanum Barunpen',cursive!important;font-weight:400;font-size:14px;letter-spacing:0}
-@media(max-width:760px){body.ppt-home #notebook-margin-text{font-size:21px!important;max-height:24em}}
+@media(max-width:760px){body.ppt-home #notebook-margin-text{font-size:18px!important;max-height:24em}}
