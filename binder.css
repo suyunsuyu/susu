@@ -372,3 +372,21 @@ body.about-book-page .book-wrap:has(.is-closed){width:min(640px,82vw)}
 .about-book.is-closing .cat-words-reveal{animation:none}
 .likes-left-photo .book-photo-space{width:100%;height:100%;box-sizing:border-box}
 @media(max-width:760px){.about-book.is-closing .book-left{transform-origin:right center}}
+
+/* White bound book on the same dark desktop as the homepage. */
+html:has(.about-book-page),body.about-book-page{background:#0b0c11!important;background-image:none!important;color:#e3e3e8}
+.about-book-page .book-header a,.about-book-page .notebook-contact a{color:#d7d7dd}
+.about-book-page .notebook-contact{background:transparent}
+body.about-book-page .book-wrap,body.about-book-page .about-book,.about-book .book-cover{transition:none!important}
+.about-book .book-cover,.about-book.is-closed .book-cover{background:var(--binder-cover,#fff)!important;border-color:#ddd;transform-origin:left center;backface-visibility:hidden}
+.about-book .book-cover img{mix-blend-mode:normal;object-fit:contain;width:92%;height:80%}
+.about-book .book-page{background:linear-gradient(90deg,#fff 0%,var(--binder-paper,#fff) 90%,#f2f2f2 100%)!important}
+.about-book .book-right{background:linear-gradient(90deg,#efefef 0%,var(--binder-paper,#fff) 12%,#fff 100%)!important}
+.bound-book.is-opening .book-left,.bound-book.is-opening .book-right,.cat-words-reveal{animation:none!important}
+.about-book.is-opening .book-cover,.about-book.is-closing .book-cover{pointer-events:none;will-change:transform,opacity}
+.about-book.is-switching .book-spread{will-change:opacity;pointer-events:none}
+.about-book.is-switching .book-page{pointer-events:none}
+.about-book .turn-leaf,.about-book .turn-shadow{display:none!important}
+.about-book .page-corner{cursor:pointer}
+.cover-upload-label,#book-cover-status{grid-column:1/-1}.cover-upload-label input{height:auto;width:170px;font-size:11px}#book-cover-status{font-size:11px;margin:0;color:#666}
+.about-book-page .book-actions button{color:#aaa}

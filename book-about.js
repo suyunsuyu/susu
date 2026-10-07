@@ -2,7 +2,7 @@
   const $ = s => document.querySelector(s);
   const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const safeUrl = value => { if(!String(value||'').trim())return ''; try { const u = new URL(value,location.href); return ['https:','http:','mailto:'].includes(u.protocol) ? u.href : ''; } catch { return ''; } };
-  const defaults = {catText:'',catFeaturePhoto:'assets/cat-birthday-feature.png',catPhotos:[],catDetails:{name:'',birthday:'',personality:'',likes:''},instagram:'',email:'',thoughts:'',coverColor:'#dce6eb',paperColor:'#f7f7f3',tabColors:[],textOverrides:{},profile:{name:'',birthDate:'',mbti:'',favoriteFlower:'',hobbies:'',dream:'',message:'',image:'',nameSize:52,nameX:0,nameY:0,detailSize:19,detailX:0,detailY:0},style:{},pages:{}};
+  const defaults = {catText:'',catFeaturePhoto:'assets/cat-birthday-feature.png',catPhotos:[],catDetails:{name:'',birthday:'',personality:'',likes:''},instagram:'',email:'',thoughts:'',coverPhoto:'assets/cat-rain-cover.png',coverColor:'#ffffff',paperColor:'#ffffff',tabColors:[],textOverrides:{},profile:{name:'',birthDate:'',mbti:'',favoriteFlower:'',hobbies:'',dream:'',message:'',image:'',nameSize:52,nameX:0,nameY:0,detailSize:19,detailX:0,detailY:0},style:{},pages:{}};
   const languageFonts="'Agdasima','Nanum Barunpen','ChillHuoFangSong',sans-serif";
   const fonts = {korean:"'Nanum Barunpen','ChillHuoFangSong','Agdasima'",chinese:"'ChillHuoFangSong','Nanum Barunpen','Agdasima'",english:languageFonts};
   const fontKey=value=>['korean','chinese','english'].includes(value)?value:'english';
@@ -11,7 +11,8 @@
   const validColor = (color,fallback=defaults.coverColor) => /^#[\da-f]{6}$/i.test(color) ? color : fallback;
   const tabDefaults=Array.from({length:6},()=>['#191919','#ffffff']);
   function applyTabStyles(){const bg=validColor(data.tabBackground,'#191919');document.querySelectorAll('.book-tabs > *').forEach((el,i)=>{const color=validColor(data.uniformTabs?data.tabColors?.[i]?.text:null,'#ffffff');el.style.setProperty('background',bg,'important');el.style.color=color;const input=$('#binder-tab-text-'+i);if(input)input.value=color;});const input=$('#book-tab-background');if(input)input.value=bg;}
-  function applyCoverColor(){const old=['#f6f2e7','#f7f8fa'].includes(data.coverColor);const colors={coverColor:old?defaults.coverColor:data.coverColor,paperColor:data.paperColor};for(const [key,css,id] of [['coverColor','--binder-cover','book-cover-color'],['paperColor','--binder-paper','book-paper-color']]){const color=validColor(colors[key],defaults[key]);book.style.setProperty(css,color);document.documentElement.style.setProperty(css,color);$('#'+id).value=color;}applyTabStyles();}
+  function applyCoverPhoto(){cover.querySelector('img').src=safeUrl(data.coverPhoto)||defaults.coverPhoto;}
+  function applyCoverColor(){applyCoverPhoto();const old=['#f6f2e7','#f7f8fa'].includes(data.coverColor);const colors={coverColor:old?defaults.coverColor:data.coverColor,paperColor:data.paperColor};for(const [key,css,id] of [['coverColor','--binder-cover','book-cover-color'],['paperColor','--binder-paper','book-paper-color']]){const color=validColor(colors[key],defaults[key]);book.style.setProperty(css,color);document.documentElement.style.setProperty(css,color);$('#'+id).value=color;}applyTabStyles();}
   const textTargets=()=>[...document.querySelectorAll('.book-tabs > *, .cover-open-hint, .book-page .book-folio, .book-page h2, .book-page dt, .book-page dd, .book-page p, .book-page a')].filter(el=>!el.closest('.book-cat-grid')&&!el.classList.contains('cat-calendar-link'));
   function textKey(el){if(el.closest('.book-tabs'))return `tab-label:${[...el.parentElement.children].indexOf(el)}`;if(el.classList.contains('cover-open-hint'))return 'cover-hint';const side=el.closest('.book-left')?'left':'right';const page=el.closest('.book-page');return `${tab}:${side}:${[...page.querySelectorAll('.book-folio,h2,dt,dd,p,a')].indexOf(el)}`;}
   function applyTextOverrides(){textTargets().forEach(el=>{const override=data.textOverrides?.[textKey(el)];if(!override)return;if(typeof override.text==='string'&&!el.closest('.book-tabs'))el.textContent=override.text;el.style.fontSize=`${Math.max(10,Math.min(80,Number(override.size)||18))}px`;el.style.color=validColor(override.color,'#333333');el.style.translate=`${Math.max(-180,Math.min(180,Number(override.x)||0))}px ${Math.max(-180,Math.min(180,Number(override.y)||0))}px`;if(override.font&&override.font!=='inherit')el.style.fontFamily=fonts[fontKey(override.font)];el.style.textAlign=['left','center','right'].includes(override.align)?override.align:'left';});}
@@ -29,6 +30,9 @@
       if(child.tagName==='IMG'){const url=safeUrl(src);if(!url)return;el.src=url;el.alt='Page photo';el.className='book-layout-photo';const width=parseInt(child.style.width,10);if(width>=20&&width<=100)el.style.width=width+'%';}
       if(child.tagName==='A'){const url=safeUrl(href);if(url){el.href=url;el.target='_top';el.rel='noopener noreferrer';}}
       if(child.classList.contains('book-folio'))el.className='book-folio';
+      if(child.classList.contains('book-cat-feature')){el.className='book-cat-feature';el.dataset.photo='feature';}
+      if(child.classList.contains('cat-feature-image'))el.className='cat-feature-image';
+      if(child.classList.contains('cat-words-reveal'))el.className='cat-words-reveal';
       if(child.classList.contains('book-cat-grid'))el.className='book-cat-grid';
       if(child.classList.contains('book-cat-empty'))el.className='book-cat-empty';
       if(child.classList.contains('book-cat-photo')){el.className='book-cat-photo';el.dataset.photo=String(Math.max(0,Math.min(5,Number(child.dataset.photo)||0)));}
@@ -100,7 +104,7 @@
       left.innerHTML = '<span class="book-folio">04 / WORDS</span><h2>MY WORDS</h2>';
       right.innerHTML = `<span class="book-folio">NOTES</span><p class="book-copy">${esc(data.thoughts)}</p>`;
     }
-    if (data.pages?.[tab]) {if(tab==='cat'){const custom=document.createElement('div');custom.className='cat-saved-layout';custom.innerHTML=sanitize(data.pages[tab].right);custom.querySelectorAll('a[href*="tools.html"]').forEach(el=>el.remove());right.querySelector('.cat-words-reveal').append(custom);}else{left.innerHTML=sanitize(data.pages[tab].left);right.innerHTML=sanitize(data.pages[tab].right);}}
+    if (data.pages?.[tab]) {if(tab==='cat'&&data.pages[tab].layoutVersion!==2){const custom=document.createElement('div');custom.className='cat-saved-layout';custom.innerHTML=sanitize(data.pages[tab].right);custom.querySelectorAll('a[href*="tools.html"]').forEach(el=>el.remove());right.querySelector('.cat-words-reveal').append(custom);}else{left.innerHTML=sanitize(data.pages[tab].left);right.innerHTML=sanitize(data.pages[tab].right);}}
     spread.querySelectorAll('[data-photo]').forEach(button => button.onclick = () => {const d=$('#book-photo-dialog');d.querySelector('img').src=button.querySelector('img')?.src||data.catPhotos[Number(button.dataset.photo)];d.showModal();});
     bindSectionControls();
     applyTextOverrides();applyTabStyles();
@@ -113,95 +117,45 @@
 
   function setMobileSide(side){mobileSide=side;book.dataset.mobileSide=side;$('#book-mobile-count').textContent=side==='left'?'1 / 2':'2 / 2';}
   function setThickness(){const index=sectionIndex()/Math.max(1,sections.length-1)*4;book.dataset.pageIndex=String(index);book.style.setProperty('--left-stack',`${2+index*2}px`);book.style.setProperty('--right-stack',`${11-index*2}px`);}
-  // A continuous sheet is approximated with narrow connected surfaces. Each
-  // surface follows its own tangent, rather than rotating one rigid rectangle.
-  const leaf=$('#book-turn-leaf'), leafShadow=$('#book-turn-shadow');
   const reducedMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let sheet=null;
-  const smooth=t=>t*t*(3-2*t);
-  function paperEase(t){
-    // cubic-bezier(0.22, 1, 0.36, 1), sampled on the animation clock.
-    if(t<=0||t>=1)return t;
-    const axis=(u,a,b)=>3*(1-u)*(1-u)*u*a+3*(1-u)*u*u*b+u*u*u;
-    let lo=0,hi=1;for(let i=0;i<12;i++){const mid=(lo+hi)/2;if(axis(mid,.22,.36)<t)lo=mid;else hi=mid;}
-    return axis((lo+hi)/2,1,1);
-  }
-  function pageCopy(source,width,height,offset){
-    const copy=source.cloneNode(true);copy.removeAttribute('id');copy.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
-    copy.classList.add('curl-copy');Object.assign(copy.style,{width:`${width}px`,height:`${height}px`,left:`${-offset}px`,top:`${-source.scrollTop}px`});
-    return copy;
-  }
-  function prepareSheet(next){
-    const mobile=matchMedia('(max-width:760px)').matches;
-    const source=mobile&&mobileSide==='left'?$('#book-left'):$('#book-right');
-    const front=source.cloneNode(true);front.scrollTop=source.scrollTop;
-    const current=tab;tab=next;content();const back=$('#book-left').cloneNode(true);tab=current;content();
-    for(const key of ['--book-font','--book-size'])leaf.style.setProperty(key,spread.style.getPropertyValue(key));
-    const {width,height}=leaf.getBoundingClientRect();const count=20,step=width/count;
-    const fragments=document.createDocumentFragment(),strips=[];
-    for(let i=0;i<count;i++){
-      const strip=document.createElement('div');strip.className='curl-strip';strip.style.width=`${step+.6}px`;
-      for(const [side,page,offset] of [['front',front,i*step],['back',back,width-(i+1)*step]]){
-        const face=document.createElement('div');face.className=`curl-face curl-${side}`;face.append(pageCopy(page,width,height,offset));strip.append(face);
-      }
-      fragments.append(strip);strips.push(strip);
-    }
-    leaf.replaceChildren(fragments);sheet={width,height,step,strips,mobile};book.classList.add('is-turning');drawSheet(0);
-  }
-  function drawSheet(t){
-    if(!sheet)return;const {width,height,step,strips,mobile}=sheet;
-    const phase=Math.max(0,Math.min(1,(t-.10)/.84));
-    const travel=.75*smooth(phase)+.25*paperEase(phase);
-    const rotation=Math.PI*travel;
-    const bend=Math.sin(Math.PI*t)*.88;
-    const lift=Math.sin(Math.PI*Math.min(1,t/.28))*.12*(1-travel);
-    let x=mobile?0:-book.clientWidth*.06*travel,z=0;
-    strips.forEach((strip,i)=>{
-      const s=(i+.5)/strips.length;
-      const angle=Math.max(0,rotation+bend*(s-.30)+lift*s*s);
-      const cornerLift=height*.032*Math.sin(Math.PI*t)*s*s;
-      strip.style.transform=`translate3d(${x}px,${-cornerLift}px,${z}px) rotateY(${-angle*180/Math.PI}deg) skewY(${-2.4*Math.sin(Math.PI*t)*s}deg)`;
-      const light=Math.cos(angle);
-      strip.children[0].style.filter=`brightness(${.96+.05*light})`;
-      strip.children[1].style.filter=`brightness(${.96-.05*light})`;
-      strip.style.setProperty('--curl-shade',String(.04+.12*Math.abs(Math.sin(angle))));
-      x+=step*Math.cos(angle);z+=step*Math.sin(angle);
-    });
-    const arc=Math.sin(Math.PI*t);
-    leafShadow.style.opacity=String(.04+.18*arc);
-    leafShadow.style.transform=`translateX(${-travel*95}%) scaleX(${.92-.64*arc}) skewY(${-3*arc}deg)`;
-    leafShadow.style.filter=`blur(${3+13*arc}px)`;
-  }
-  function clearSheet(){book.classList.remove('is-turning');leaf.replaceChildren();leafShadow.removeAttribute('style');sheet=null;}
+  const motionOptions=duration=>({duration:reducedMotion()?0:duration,easing:'cubic-bezier(.22,1,.36,1)',fill:'both'});
+  function clearSheet(){book.classList.remove('is-turning');$('#book-turn-leaf').replaceChildren();}
   function finishTurn(next){tab=next;content();setThickness();setMobileSide('left');sync();}
-  function animateSheet(from,to,next){
-    turning=true;const duration=reducedMotion()?0:1120*Math.abs(to-from);let started=null,changed=false;
-    function frame(now){if(started===null)started=now;const p=duration?Math.min(1,(now-started)/duration):1;const t=from+(to-from)*p;drawSheet(t);
-      if(next&&!changed&&t>=.54){finishTurn(next);changed=true;}
-      if(p<1)requestAnimationFrame(frame);else{if(next&&!changed)finishTurn(next);clearSheet();turning=false;}
-    }requestAnimationFrame(frame);
+  async function transitionPage(next){
+    turning=true;book.classList.add('is-switching');
+    try{
+      // PowerPoint's brightness effect: no duplicate pages or rotating strips.
+      const dim=spread.animate([{opacity:1},{opacity:.16}],motionOptions(140));
+      await dim.finished;finishTurn(next);
+      const reveal=spread.animate([{opacity:.16},{opacity:1}],motionOptions(260));
+      dim.cancel();await reveal.finished;reveal.cancel();
+    }finally{book.classList.remove('is-switching');turning=false;}
   }
-  function animateOpening(){
-    let started=null;const duration=reducedMotion()?0:1120;
-    function frame(now){
-      if(started===null)started=now;const p=duration?Math.min(1,(now-started)/duration):1;
-      const travel=paperEase(p),lift=Math.sin(Math.PI*travel);
-      cover.style.transform=`translateZ(${12*lift}px) rotateY(${-180*travel}deg) rotateX(${1.2*lift}deg) rotateZ(${- .3*lift}deg)`;
-      cover.style.opacity=String(p<.76?1:(1-p)/.24);
-      if(!matchMedia('(max-width:760px)').matches){cover.style.left=`${50*travel}%`;cover.style.width=`${100-50*travel}%`;}
-      cover.style.filter=`brightness(${1-.065*lift})`;
-      cover.style.boxShadow=`${(6-14*travel)*lift}px ${5+15*lift}px ${8+19*lift}px rgba(43,48,50,${.07+.1*lift})`;
-      if(p<1)requestAnimationFrame(frame);else{book.classList.remove('is-opening');for(const property of ['transform','opacity','filter','box-shadow','left','width'])cover.style.removeProperty(property);turning=false;sync();}
-    }requestAnimationFrame(frame);
+  async function animateOpening(closedRect){
+    cover.style.transform='none';cover.style.opacity='1';
+    const rect=cover.getBoundingClientRect();
+    const dx=closedRect.left-rect.left,dy=closedRect.top-rect.top;
+    const sx=closedRect.width/rect.width,sy=closedRect.height/rect.height;
+    const animation=cover.animate([
+      {transform:`translate3d(${dx}px,${dy}px,0) scale(${sx},${sy}) rotateY(0deg)`,opacity:1},
+      {transform:'translate3d(0,0,12px) scale(1) rotateY(-100deg)',opacity:1,offset:.58},
+      {transform:'translate3d(0,0,0) scale(1) rotateY(-180deg)',opacity:0}
+    ],motionOptions(780));
+    const paper=spread.animate([{opacity:0},{opacity:1}],{...motionOptions(580),delay:reducedMotion()?0:120});
+    try{await animation.finished;await paper.finished;}finally{
+      animation.cancel();paper.cancel();cover.style.removeProperty('transform');cover.style.removeProperty('opacity');
+      book.classList.remove('is-opening');turning=false;sync();
+    }
   }
   function open(next='cat') {
     if (turning) return;
     if(next.startsWith('record:')){const e=recordInfo(next).entry;if(e)calendarCursor=new Date(Number(e.date.slice(0,4)),Number(e.date.slice(5,7))-1,1);}
-    if (book.classList.contains('is-closed')) {tab=next;content();turning=true;cover.style.transform='rotateY(0)';cover.style.opacity='1';book.classList.add('is-opening');book.classList.remove('is-closed');cover.setAttribute('aria-expanded','true');setMobileSide('left');setThickness();sync();animateOpening();return;}
+    if (book.classList.contains('is-closed')) {const closedRect=cover.getBoundingClientRect();tab=next;content();turning=true;cover.style.transform='rotateY(0)';cover.style.opacity='1';book.classList.add('is-opening');book.classList.remove('is-closed');cover.setAttribute('aria-expanded','true');setMobileSide('left');setThickness();sync();animateOpening(closedRect);return;}
     if(tab===next)return;
-    prepareSheet(next);animateSheet(0,1,next);
+    transitionPage(next);
   }
   function sync(){book.dataset.section=tab;document.dispatchEvent(new CustomEvent('notebook-section',{detail:{tab,closed:book.classList.contains('is-closed')}}));const active=tab.startsWith('record:')||tab.startsWith('day:')?'memories':tab.startsWith('like:')?'likes':tab;document.querySelectorAll('[data-book-tab]').forEach(b=>b.classList.toggle('active',b.dataset.bookTab===active&&!book.classList.contains('is-closed')));$('#book-close').hidden=book.classList.contains('is-closed');$('#book-edit').hidden=book.classList.contains('is-closed')||!['cat','memories'].includes(tab)||!window.SUY_IS_ADMIN;$('#book-color-control').hidden=!window.SUY_IS_ADMIN;}
+  $('#book-cover-upload').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;const status=$('#book-cover-status');try{if(!await window.SUY_ADMIN?.isAdmin())return;if(file.size>10*1024*1024||!['image/jpeg','image/png','image/webp'].includes(file.type))throw Error('Choose a JPG, PNG or WebP under 10 MB.');status.textContent='UPLOADING…';const src=await window.SUY_ADMIN.uploadPublic(file,'book-cover');const next={...data,coverPhoto:src};await window.SUY_ADMIN.saveContent('about-book',next);data=next;applyCoverPhoto();status.textContent='COVER SAVED';}catch(error){status.textContent=error.message}finally{e.target.value=''}};
   $('#binder-palette-toggle').onclick=()=>{$('.binder-palette-fields').hidden=!$('.binder-palette-fields').hidden};
   $('#binder-tab-colors').innerHTML=[...document.querySelectorAll('.book-tabs > *')].map((el,i)=>`<div class="binder-tab-color-row"><span>${esc(el.textContent.trim())}</span><label aria-label="${esc(el.textContent.trim())} text color">TEXT<input id="binder-tab-text-${i}" type="color" value="${tabDefaults[i][1]}"></label></div>`).join('');
   for(const [id,key] of [['book-cover-color','coverColor'],['book-paper-color','paperColor'],['book-tab-background','tabBackground']])$('#'+id).onchange=async e=>{if(!await window.SUY_ADMIN?.isAdmin())return;const previous=data[key];data[key]=validColor(e.target.value,defaults[key]||'#191919');if(key==='tabBackground')data.uniformTabs=true;applyCoverColor();try{await window.SUY_ADMIN.saveContent('about-book',data)}catch(error){data[key]=previous;applyCoverColor();alert('Could not save book color: '+error.message)}};
@@ -220,69 +174,43 @@
   document.querySelectorAll('[data-book-tab]').forEach(b=>b.onclick=()=>open(b.dataset.bookTab));
   document.addEventListener('suyoon-admin-state',()=>{sync();spread.querySelectorAll('.book-inline-actions [data-admin-only]').forEach(el=>el.hidden=!window.SUY_IS_ADMIN);});
 
-  function animateClosing(){
+  async function animateClosing(){
     if(turning)return;turning=true;clearSheet();
-    const wrap=book.closest('.book-wrap'),left=$('#book-left'),right=$('#book-right'),back=book.querySelector('.cover-back'),spine=book.querySelector('.bound-spine'),stacks=[...book.querySelectorAll('.page-stack')];
-    const mobile=matchMedia('(max-width:760px)').matches;
-    const initial={width:wrap.getBoundingClientRect().width,height:book.getBoundingClientRect().height};
-    const priorWrapTransition=wrap.style.transition,priorBookTransition=book.style.transition;
-    // Measure the existing portrait state without painting or starting a second transition.
-    wrap.style.transition='none';book.style.transition='none';
-    book.classList.add('is-closed');
-    const target={width:wrap.getBoundingClientRect().width,height:book.getBoundingClientRect().height};
-    book.classList.remove('is-closed');
-    wrap.style.width=initial.width+'px';book.style.setProperty('height',initial.height+'px','important');
     book.classList.add('is-closing');$('#book-close').disabled=true;
-    cover.style.top='0';cover.style.height='100%';cover.style.opacity='1';
-    let started=null;const duration=reducedMotion()?0:1220;
-    const mix=(a,b,t)=>a+(b-a)*t;
-    function frame(now){
-      if(started===null)started=now;
-      const p=duration?Math.min(1,(now-started)/duration):1;
-      // A slower lift, continuous fold, then a soft landing and centering.
-      const fold=smooth(Math.min(1,p/.82)),settle=paperEase(Math.max(0,Math.min(1,(p-.43)/.57)));
-      const lift=Math.sin(Math.PI*fold);
-      wrap.style.width=mix(initial.width,target.width,settle)+'px';
-      book.style.setProperty('height',mix(initial.height,target.height,settle)+'px','important');
-      cover.style.left=(mobile?2*(1-settle):50*(1-settle))+'%';
-      cover.style.width=(mobile?98+2*settle:50+50*settle)+'%';
-      cover.style.transform=`translateZ(${9*lift}px) rotateY(${-180*(1-fold)}deg) rotateX(${.8*lift}deg)`;
-      cover.style.filter=`brightness(${1-.055*lift})`;
-      cover.style.boxShadow=`${-8*lift}px ${5+12*lift}px ${9+18*lift}px rgba(43,48,50,${.07+.09*lift})`;
-      left.style.transform=`rotateY(${-1.7+181.7*fold}deg) rotateX(${.5+1.2*lift}deg)`;
-      left.style.filter=`brightness(${1-.15*lift})`;
-      right.style.transform=`rotateY(${1.7*(1-fold)}deg) rotateX(${.5*(1-fold)}deg)`;
-      right.style.filter=`brightness(${1-.06*lift})`;
-      // The left board and paper edges disappear beneath the folded cover.
-      back.style.clipPath=`inset(0 0 0 ${mobile?0:50*fold*(1-settle)}%)`;
-      stacks.forEach(el=>{el.style.opacity=String(1-smooth(Math.max(0,(fold-.5)*2)));});
-      if(spine)spine.style.opacity=String(1-fold);
-      if(p<1)requestAnimationFrame(frame);
-      else{
-        book.classList.add('is-closed');book.classList.remove('is-closing');
-        cover.setAttribute('aria-expanded','false');
-        for(const el of [cover,left,right,back,spine,...stacks].filter(Boolean)){
-          for(const prop of ['transform','filter','box-shadow','left','width','top','height','opacity','clip-path'])el.style.removeProperty(prop);
-        }
-        wrap.style.removeProperty('width');book.style.removeProperty('height');
-        // Commit the final geometry before restoring ordinary transitions.
-        void book.offsetWidth;wrap.style.transition=priorWrapTransition;book.style.transition=priorBookTransition;
-        $('#book-close').disabled=false;turning=false;sync();cover.focus({preventScroll:true});
-      }
+    cover.style.transform='none';cover.style.opacity='1';
+    const coverFold=cover.animate([
+      {transform:'rotateY(-180deg)',opacity:0},
+      {transform:'translateZ(10px) rotateY(-85deg)',opacity:1,offset:.4},
+      {transform:'rotateY(0deg)',opacity:1}
+    ],motionOptions(520));
+    const pageFold=$('#book-left').animate([
+      {transform:'rotateY(-1.7deg)',opacity:1},
+      {transform:'rotateY(90deg)',opacity:.7,offset:.6},
+      {transform:'rotateY(180deg)',opacity:0}
+    ],motionOptions(520));
+    try{
+      await coverFold.finished;
+      const from=cover.getBoundingClientRect();
+      book.classList.add('is-closed');book.classList.remove('is-closing');
+      coverFold.cancel();pageFold.cancel();cover.style.removeProperty('transform');cover.style.removeProperty('opacity');
+      const to=cover.getBoundingClientRect();
+      // Read geometry only at the endpoints; all in-between frames are composited.
+      const settle=cover.animate([
+        {transform:`translate3d(${from.left-to.left}px,${from.top-to.top}px,0) scale(${from.width/to.width},${from.height/to.height})`},
+        {transform:'translate3d(0,0,0) scale(1)'}
+      ],motionOptions(180));
+      await settle.finished;settle.cancel();
+    }finally{
+      coverFold.cancel();pageFold.cancel();book.classList.add('is-closed');book.classList.remove('is-closing');
+      cover.style.removeProperty('transform');cover.style.removeProperty('opacity');
+      cover.setAttribute('aria-expanded','false');$('#book-close').disabled=false;turning=false;sync();cover.focus({preventScroll:true});
     }
-    requestAnimationFrame(frame);
   }
   $('#book-close').onclick=animateClosing;
   $('#book-page-corner').onclick=()=>{if(!turning)open(sections[(sectionIndex()+1)%sections.length])};
   $('#book-mobile-prev').onclick=()=>{if(mobileSide==='right')setMobileSide('left');else open(sections[(sectionIndex()+sections.length-1)%sections.length])};
   $('#book-mobile-next').onclick=()=>{if(mobileSide==='left')setMobileSide('right');else open(sections[(sectionIndex()+1)%sections.length])};
-  let dragStart=null,dragged=false,dragProgress=0,suppressCornerClick=false;
-  const corner=$('#book-page-corner');
-  corner.onclick=()=>{if(suppressCornerClick){suppressCornerClick=false;return}if(!turning)open(sections[(sectionIndex()+1)%sections.length])};
-  corner.onpointerdown=e=>{if(turning)return;dragStart=e.clientX;dragged=false;dragProgress=0;corner.setPointerCapture(e.pointerId)};
-  corner.onpointermove=e=>{if(dragStart===null||!corner.hasPointerCapture(e.pointerId))return;const distance=Math.max(0,dragStart-e.clientX);if(distance<5&&!dragged)return;if(!dragged){prepareSheet(sections[(sectionIndex()+1)%sections.length]);dragged=true;turning=true;}dragProgress=Math.min(.94,distance/Math.max(100,book.clientWidth*.46));drawSheet(dragProgress)};
-  corner.onpointerup=()=>{if(dragStart===null)return;dragStart=null;if(!dragged)return;suppressCornerClick=true;const next=sections[(sectionIndex()+1)%sections.length];animateSheet(dragProgress,dragProgress>.5?1:0,dragProgress>.5?next:null);};
-  corner.onpointercancel=()=>{dragStart=null;if(dragged){animateSheet(dragProgress,0,null);dragged=false}};
+  // Page navigation uses the same brightness transition as the index tabs.
   // Drag text only while signed in; the result uses the same persistent styling as the editor.
   let textDrag=null;
   document.addEventListener('pointerdown',e=>{const el=e.target.closest('.book-page .book-folio,.book-page h2,.book-page dt,.book-page dd,.book-page p');if(!el||!window.SUY_IS_ADMIN||e.detail>1)return;textDrag={el,key:textKey(el),x:e.clientX,y:e.clientY,from:data.textOverrides?.[textKey(el)]||{},moved:false};});
@@ -293,7 +221,8 @@
   const editor=$('#book-editor'); $('#book-editor-close').onclick=()=>editor.close();
   const setMode=mode=>{editMode=mode;$('#book-mode-content').classList.toggle('active',mode==='content');$('#book-mode-layout').classList.toggle('active',mode==='layout');$('#book-editor-fields').hidden=mode!=='content';$('#book-layout-fields').hidden=mode!=='layout';};
   $('#book-mode-content').onclick=()=>setMode('content');$('#book-mode-layout').onclick=()=>setMode('layout');
-  function seedLayout(){const stored=data.pages?.[tab];$('#layout-left').innerHTML=stored?sanitize(stored.left):sanitize($('#book-left').innerHTML);$('#layout-right').innerHTML=stored?sanitize(stored.right):sanitize($('#book-right').innerHTML);}
+  let editorTab=null;
+  function seedLayout(){for(const side of ['left','right']){const current=$('#book-'+side).cloneNode(true);current.querySelectorAll('.book-inline-actions,[data-admin-only]').forEach(el=>el.remove());$('#layout-'+side).innerHTML=sanitize(current.innerHTML);}activeEditable=$('#layout-left');}
   $('#book-reset-layout').onclick=()=>{$('#layout-left').innerHTML='';$('#layout-right').innerHTML='';$('#book-status').textContent='Save to restore the standard layout.';};
   document.querySelectorAll('.book-layout-editable').forEach(el=>{el.onfocus=()=>activeEditable=el;el.onclick=()=>activeEditable=el;});
   $('.book-layout-toolbar').onmousedown=e=>{if(e.target.closest('button[data-format]'))e.preventDefault()};
@@ -311,16 +240,16 @@
     if(tab==='contact') return `<label>INSTAGRAM URL<input name="instagram" type="url" value="${esc(data.instagram)}" placeholder="https://instagram.com/..."></label><label>EMAIL<input name="email" type="email" value="${esc(data.email)}"></label>`;
     return `<label>WORDS<textarea name="thoughts">${esc(data.thoughts)}</textarea></label>`;
   }
-  $('#book-edit').onclick=async()=>{if(!await window.SUY_ADMIN?.isAdmin())return;$('#book-editor-heading').textContent='EDIT · '+(tab==='cat'?'내 고양이':tab);$('#book-editor-fields').innerHTML=fields();seedLayout();setMode(tab==='memories'?'content':data.pages?.[tab]?'layout':'content');const st=data.style?.[tab]||{};$('#book-font').value=fontKey(st.font);$('#book-size').value=st.size||19;$('#book-size-output').textContent=$('#book-size').value+' px';$('#book-status').textContent='';editor.showModal();};
+  $('#book-edit').onclick=async()=>{const requestedTab=tab;if(!await window.SUY_ADMIN?.isAdmin()||requestedTab!==tab||turning)return;editorTab=requestedTab;$('#book-editor-heading').textContent='EDIT · '+(tab==='cat'?'내 고양이':tab);$('#book-editor-fields').innerHTML=fields();seedLayout();setMode(tab==='memories'?'content':'layout');const st=data.style?.[tab]||{};$('#book-font').value=fontKey(st.font);$('#book-size').value=st.size||19;$('#book-size-output').textContent=$('#book-size').value+' px';$('#book-status').textContent='';editor.showModal();};
   $('#book-form').onsubmit=async e=>{
     e.preventDefault();const status=$('#book-status');status.textContent='SAVING…';
-    try {if(!await window.SUY_ADMIN.isAdmin())throw Error('Admin login required');const form=new FormData(e.target);const next=structuredClone(data);next.style={...(next.style||{}),[tab]:{font:$('#book-font').value,size:Number($('#book-size').value)}};
+    try {if(!await window.SUY_ADMIN.isAdmin())throw Error('Admin login required');if(!editorTab||editorTab!==tab)throw Error('Please reopen the editor on the current page.');const form=new FormData(e.target);const next=structuredClone(data);next.style={...(next.style||{}),[tab]:{font:$('#book-font').value,size:Number($('#book-size').value)}};
       if(tab==='profile'){next.profile={...next.profile};for(const key of ['name','birthDate','mbti','favoriteFlower','hobbies','dream','message'])next.profile[key]=String(form.get(key)||'');for(const [key,min,max] of [['nameSize',18,80],['nameX',-100,100],['nameY',-100,100],['detailSize',12,36],['detailX',-100,100],['detailY',-100,100]])next.profile[key]=Math.max(min,Math.min(max,Number(form.get(key))||0));const file=form.get('portrait');if(file?.size)next.profile.image=await window.SUY_ADMIN.uploadPublic(file,'about');legacy={...(legacy||{}),personal:next.profile};await window.SUY_ADMIN.saveContent('about-interactive',legacy);}
-      if(tab==='cat'){next.catText=String(form.get('catText')||'');next.catDetails=Object.fromEntries(['name','birthday','personality','likes'].map(k=>[k,String(form.get('catDetail-'+k)||'')]));const file=form.get('catFeature');if(file?.size){next.catFeaturePhoto=await window.SUY_ADMIN.uploadPublic(file,'about-cat');if(next.photoOverrides)delete next.photoOverrides['cat:feature'];}}
+      if(tab==='cat'&&editMode==='content'){next.catText=String(form.get('catText')||'');next.catDetails=Object.fromEntries(['name','birthday','personality','likes'].map(k=>[k,String(form.get('catDetail-'+k)||'')]));const file=form.get('catFeature');if(file?.size){next.catFeaturePhoto=await window.SUY_ADMIN.uploadPublic(file,'about-cat');if(next.photoOverrides)delete next.photoOverrides['cat:feature'];}}
       if(tab==='memories'){next.memoryTitle=String(form.get('memoryTitle')||'');next.memoryText=String(form.get('memoryText')||'');}
       if(tab==='contact'){next.instagram=safeUrl(form.get('instagram'));next.email=String(form.get('email')||'').trim();}
       if(tab==='thoughts')next.thoughts=String(form.get('thoughts')||'');
-      if(editMode==='layout'){next.pages={...(next.pages||{})};const left=sanitize($('#layout-left').innerHTML),right=sanitize($('#layout-right').innerHTML);if(left.trim()||right.trim())next.pages[tab]={left,right};else delete next.pages[tab];}
+      if(editMode==='layout'){next.pages={...(next.pages||{})};const left=sanitize($('#layout-left').innerHTML),right=sanitize($('#layout-right').innerHTML);if(left.trim()||right.trim())next.pages[editorTab]={left,right,layoutVersion:2};else delete next.pages[tab];}
       await window.SUY_ADMIN.saveContent('about-book',next);data=next;content();editor.close();
     }catch(error){status.textContent='SAVE FAILED: '+error.message;}
   };

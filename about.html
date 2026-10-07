@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="style.css?v=20260921-profile1">
   <link rel="stylesheet" href="cursor.css?v=20260921-pointer1">
   <link rel="stylesheet" href="fonts.css?v=20261006-chisuga">
-  <link rel="stylesheet" href="book-calendar.css?v=6"><link rel="stylesheet" href="binder-fonts.css?v=20261006-chisuga"><link rel="stylesheet" href="binder.css?v=23-close">
+  <link rel="stylesheet" href="book-calendar.css?v=6"><link rel="stylesheet" href="binder-fonts.css?v=20261006-chisuga"><link rel="stylesheet" href="binder.css?v=23-brightness">
 </head>
 <body class="about-book-page"><script>if(new URLSearchParams(location.search).has("embedded"))document.body.classList.add("embedded-book")</script>
   <header class="book-header"><a href="index.html" class="brand">LEE SU-YOON</a><a href="index.html">← HOME</a></header>
@@ -22,7 +22,7 @@
         <div class="page-stack page-stack-left" aria-hidden="true"></div><div class="page-stack page-stack-right" aria-hidden="true"></div>
         <div class="bound-spine" aria-hidden="true"></div>
         <button id="book-cover" class="book-cover" type="button" aria-label="Open About book">
-          <img src="assets/cat-birthday-cover.svg" alt="생일 모자와 케이크를 그린 고양이 표지"><small class="cover-year">2026</small><span class="cover-open-hint">책 열기 →</span>
+          <img src="assets/cat-rain-cover.png" alt="우산과 고양이 표지"><small class="cover-year">2026</small><span class="cover-open-hint">책 열기 →</span>
         </button>
         <div class="book-spread" id="book-spread">
           <div class="book-page book-left" id="book-left"></div>
@@ -37,7 +37,7 @@
       </div>
       <nav class="book-tabs cat-index-tabs" aria-label="고양이 기록"><button type="button" data-book-tab="cat">INTRO</button><button type="button" data-book-tab="likes">FAVORITES</button><button type="button" data-book-tab="memories">MEMORIES</button></nav>
     </div>
-    </div><div class="book-actions"><div class="book-admin-actions"><div id="book-color-control" class="binder-palette" hidden><button id="binder-palette-toggle" type="button" aria-label="Book colors" title="Book colors">◒</button><div class="binder-palette-fields" hidden><label>COVER<input id="book-cover-color" type="color" value="#dce6eb"></label><label>PAPER<input id="book-paper-color" type="color" value="#f7f7f3"></label><label>TABS<input id="book-tab-background" type="color" value="#191919"></label><div id="binder-tab-colors" class="binder-tab-colors"></div></div></div><button id="book-edit" type="button" data-admin-only hidden>EDIT PAGE ↗</button></div></div>
+    </div><div class="book-actions"><div class="book-admin-actions"><div id="book-color-control" class="binder-palette" hidden><button id="binder-palette-toggle" type="button" aria-label="Book colors" title="Book colors">◒</button><div class="binder-palette-fields" hidden><label>COVER<input id="book-cover-color" type="color" value="#dce6eb"></label><label>PAPER<input id="book-paper-color" type="color" value="#f7f7f3"></label><label>TABS<input id="book-tab-background" type="color" value="#191919"></label><label class="cover-upload-label">COVER PHOTO<input id="book-cover-upload" type="file" accept="image/jpeg,image/png,image/webp"></label><p id="book-cover-status" role="status"></p><div id="binder-tab-colors" class="binder-tab-colors"></div></div></div><button id="book-edit" type="button" data-admin-only hidden>EDIT PAGE ↗</button></div></div>
   </main>
   <footer class="notebook-contact" aria-label="Contact"><a href="https://www.instagram.com/dltndbsl/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".7"/></svg></a><a href="mailto:linken0w0@gmail.com" aria-label="Email linken0w0@gmail.com"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="1"/><path d="m3 6 9 7 9-7"/></svg></a></footer>
   <dialog id="book-editor" class="book-editor"><form id="book-form"><button type="button" class="close" id="book-editor-close" aria-label="Close">×</button><h2 id="book-editor-heading">EDIT PAGE</h2><div class="book-editor-mode"><button type="button" id="book-mode-content" class="active">CONTENT</button><button type="button" id="book-mode-layout">FREE LAYOUT</button></div><div id="book-editor-fields"></div><div id="book-layout-fields" hidden><p class="layout-help">Write directly on either page. Select text to style it, or add a photo at the cursor.</p><div class="book-layout-toolbar"><button type="button" data-format="bold" aria-label="Bold"><b>B</b></button><button type="button" data-format="italic" aria-label="Italic"><i>I</i></button><button type="button" data-format="justifyLeft" aria-label="Align left">≡</button><button type="button" data-format="justifyCenter" aria-label="Center">☷</button><button type="button" data-format="justifyRight" aria-label="Align right">≡→</button><select id="layout-font" aria-label="Text font"><option value="Agdasima">English · Agdasima</option><option value="Nanum Barunpen">한국어 · Nanum Barunpen</option><option value="ChillHuoFangSong">中文 · 寒蝉活仿宋</option></select><select id="layout-font-size" aria-label="Text size"><option value="3">Small</option><option value="4" selected>Medium</option><option value="5">Large</option><option value="6">Extra large</option></select><label class="book-layout-upload">+ PHOTO<input id="book-layout-image" type="file" accept="image/*"></label></div><div class="book-layout-pages"><div><span>LEFT PAGE</span><div id="layout-left" class="book-layout-editable" contenteditable="true" role="textbox" aria-label="Left page content" aria-multiline="true"></div></div><div><span>RIGHT PAGE</span><div id="layout-right" class="book-layout-editable" contenteditable="true" role="textbox" aria-label="Right page content" aria-multiline="true"></div></div></div><button type="button" id="book-reset-layout">RESET TO STANDARD LAYOUT</button></div><label>FONT<select id="book-font"><option value="english">English · Agdasima</option><option value="korean">한국어 · Nanum Barunpen</option><option value="chinese">中文 · 寒蝉活仿宋</option></select></label><label>SIZE <span id="book-size-output"></span><input id="book-size" type="range" min="14" max="36" step="1" value="19"></label><button class="black" type="submit">SAVE</button><p id="book-status" role="status"></p></form></dialog>
@@ -47,6 +47,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js?v=20260818-imgfix2"></script>
   <script src="supabase-site.js?v=20261002-font3"></script>
-  <script src="monthly-print.js?v=4-fit"></script><script src="book-about.js?v=23-close"></script><script src="notebook-ui.js?v=10-fit"></script>
+  <script src="monthly-print.js?v=4-fit"></script><script src="book-about.js?v=23-brightness"></script><script src="notebook-ui.js?v=13-pptfont"></script>
   <script src="boot-ready.js?v=20260818-imgfix2"></script>
-<script src="site-fonts.js?v=3-contact"></script></body></html>
+<script src="site-fonts.js?v=4-dark"></script></body></html>
