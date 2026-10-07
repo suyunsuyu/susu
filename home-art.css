@@ -59,3 +59,25 @@ body.home.illustrated-home{overflow-x:hidden}
 .illustrated-home .home-art-nav a:nth-child(3)::before{transform:rotate(-1deg)}
 .illustrated-home .home-art-nav a:hover::before{opacity:1}
 .illustrated-home .home-art-nav a span{position:relative}
+
+/* Homepage composition follows the supplied presentation. */
+html:has(.ppt-home),body.home.illustrated-home.ppt-home{background:#0b0c11;color:#e8e8ee}
+.ppt-home .illustrated-home-main{position:relative;width:min(94vw,1700px);min-height:100svh;grid-template-columns:minmax(120px,.16fr) minmax(0,.59fr) minmax(180px,.20fr);column-gap:2.5%;align-content:center;align-items:start;padding:19svh 0;box-sizing:border-box}
+.ppt-home .illustrated-home-main::before{content:"";position:absolute;left:0;right:0;top:11svh;height:1px;background:#a4a5af55}
+.ppt-home .home-art-nav{grid-column:1;grid-row:1;gap:14px;align-self:start;align-items:flex-start;padding-top:0}
+.ppt-home .home-art-nav a,.ppt-home .home-art-nav a:nth-child(n){color:#f0f0f3!important;padding:0!important;min-height:24px;font-size:16px;letter-spacing:.02em}
+.ppt-home .home-art-nav a::before{display:none}
+.ppt-home .home-art-nav a:hover{opacity:.7}
+.ppt-home .home-art-nav .home-mood{margin-top:0;color:#f0f0f3;font-size:16px;letter-spacing:.02em;text-decoration:none;white-space:nowrap}
+.ppt-home .home-artwork{grid-column:2;grid-row:1;align-self:center}
+.ppt-home .home-artwork img{width:100%;height:auto;max-height:none;object-fit:contain}
+.ppt-home .notebook-margin{grid-column:3;grid-row:1;position:static;left:auto;align-self:center;width:100%;padding:0}
+.ppt-home .margin-heading{margin-bottom:8px}
+.ppt-home #notebook-margin-text{font-size:clamp(16px,1.5vw,23px)!important;color:#e1e1e9!important;line-height:1.35;min-height:0;max-height:24em;margin:0;overflow:hidden}
+.ppt-home #notebook-note-edit{color:#9f9fa9}
+.ppt-home .home-note-pager{margin-top:16px;color:#aaaab5}
+.ppt-home .home-note-pager button{color:#b8b8c2}
+.ppt-home .notebook-contact{background:transparent}
+.ppt-home .notebook-contact a{color:#b7b7c1}
+@media(max-width:1000px) and (min-width:761px){.ppt-home .illustrated-home-main{grid-template-columns:100px minmax(0,1fr) 180px;column-gap:24px}.ppt-home #notebook-margin-text{font-size:17px!important}.ppt-home .home-art-nav a,.ppt-home .home-art-nav .home-mood{font-size:14px}}
+@media(max-width:760px){.ppt-home .illustrated-home-main{width:88vw;min-height:100svh;grid-template-columns:minmax(0,1fr);row-gap:32px;align-content:start;padding:86px 0 110px}.ppt-home .illustrated-home-main::before{top:38px}.ppt-home .home-art-nav{grid-column:1;grid-row:1;flex-direction:row;flex-wrap:wrap;gap:14px 24px}.ppt-home .home-art-nav a,.ppt-home .home-art-nav .home-mood{font-size:14px;flex-basis:auto;text-align:left;margin:0}.ppt-home .home-artwork{grid-column:1;grid-row:2}.ppt-home .notebook-margin{grid-column:1;grid-row:3;width:min(100%,350px);justify-self:end;padding:0}.ppt-home #notebook-margin-text{font-size:18px!important;max-height:16em;line-height:1.5}.ppt-home .home-note-pager{justify-content:flex-start}}
