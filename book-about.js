@@ -43,6 +43,8 @@
       if(child.classList.contains('book-portrait'))el.className='book-portrait';
       if(child.classList.contains('book-portrait-empty'))el.className='book-portrait-empty';
       if(child.classList.contains('book-ins'))el.className='book-ins';
+      if(child.style.color)el.style.color=child.style.color;
+      if(/^[-\d.px% ]+$/.test(child.style.translate))el.style.translate=child.style.translate;
       const align=child.style.textAlign;if(['left','right','center','justify'].includes(align))el.style.textAlign=align;
       const family=child.style.fontFamily||child.getAttribute('face');if(family&&['Agdasima','Nanum Barunpen','ChillHuoFangSong'].some(f=>family.includes(f)))el.style.fontFamily=family;else if(family)el.style.fontFamily=languageFonts;
       const oldSize=Number(child.getAttribute('size'));const size=oldSize>=1&&oldSize<=7?({1:12,2:15,3:18,4:21,5:26,6:32,7:40})[oldSize]:parseInt(child.style.fontSize,10);if(size>=12&&size<=48)el.style.fontSize=size+'px';
@@ -250,7 +252,10 @@
       if(tab==='memories'){next.memoryTitle=String(form.get('memoryTitle')||'');next.memoryText=String(form.get('memoryText')||'');}
       if(tab==='contact'){next.instagram=safeUrl(form.get('instagram'));next.email=String(form.get('email')||'').trim();}
       if(tab==='thoughts')next.thoughts=String(form.get('thoughts')||'');
-      if(editMode==='layout'){next.pages={...(next.pages||{})};const left=sanitize($('#layout-left').innerHTML),right=sanitize($('#layout-right').innerHTML);if(left.trim()||right.trim())next.pages[editorTab]={left,right,layoutVersion:2};else delete next.pages[tab];}
+      if(editMode==='layout'){next.pages={...(next.pages||{})};const left=sanitize($('#layout-left').innerHTML),right=sanitize($('#layout-right').innerHTML);if(left.trim()||right.trim())next.pages[editorTab]={left,right,layoutVersion:2};else delete next.pages[editorTab];
+        // The visible layout already contains applied text styles. Retire stale
+        // positional text overrides so they cannot overwrite the edited words.
+        next.textOverrides=Object.fromEntries(Object.entries(next.textOverrides||{}).filter(([key])=>!key.startsWith(editorTab+':')));}
       await window.SUY_ADMIN.saveContent('about-book',next);data=next;content();editor.close();
     }catch(error){status.textContent='SAVE FAILED: '+error.message;}
   };
