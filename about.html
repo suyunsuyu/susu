@@ -2,10 +2,15 @@
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Yumi · 2026 Calendar</title>
 <link rel="stylesheet" href="style.css?v=20260921-profile1"><link rel="stylesheet" href="fonts.css?v=20261006-chisuga">
-<link rel="stylesheet" href="cursor.css?v=20260921-pointer1"><link rel="stylesheet" href="cat-calendar.css?v=2-black">
+<link rel="stylesheet" href="cursor.css?v=20260921-pointer1"><link rel="stylesheet" href="cat-calendar.css?v=3-expanded">
 </head><body class="cat-calendar-page">
 <header><span class="brand" aria-hidden="true"></span><a href="index.html">← HOME</a></header>
 <main class="cat-calendar-main">
+<section id="calendar-detail" class="cat-day-paper" hidden tabindex="-1" aria-label="날짜 기록">
+<button type="button" class="close" aria-label="달력으로 돌아가기">← 달력</button>
+<div id="calendar-detail-body"></div>
+<nav class="cat-day-nav" aria-label="날짜 이동"><button id="cat-day-prev" type="button">← 이전 날</button><button id="cat-day-next" type="button">다음 날 →</button></nav>
+</section>
 <div id="calendar-view">
 <nav class="cat-month-nav" aria-label="2026년 달력"><button id="diary-calendar-prev" type="button" aria-label="이전 달">←</button><span id="month-caption"></span><button id="diary-calendar-next" type="button" aria-label="다음 달">→</button></nav>
 <section class="cat-calendar-sheet" aria-label="유미의 2026년 달력">
@@ -13,15 +18,11 @@
 <div class="calendar-heading"><h1 id="diary-calendar-month" aria-live="polite"></h1></div>
 <div class="calendar-overlay">
 <div class="diary-calendar-weekdays" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
-<div id="diary-calendar-grid" class="diary-calendar-grid"></div>
+<div id="diary-calendar-grid" class="diary-calendar-grid"></div><div id="cat-date-photo" class="cat-date-photo" hidden></div>
 </div></section>
-<div class="calendar-actions"><button id="calendar-print-month" type="button">이번 달 달력 저장</button><button id="edit-diary" type="button" data-admin-only hidden>기록 편집</button></div>
+<div class="calendar-actions"><button id="cat-photo-close" type="button" hidden>← 달력으로</button><button id="calendar-print-month" type="button">이번 달 달력 저장</button><button id="edit-diary" type="button" data-admin-only hidden>기록 편집</button></div>
 </div>
-<section id="calendar-detail" class="cat-day-paper" hidden tabindex="-1" aria-label="날짜 기록">
-<button type="button" class="close" aria-label="달력으로 돌아가기">← 달력</button>
-<div id="calendar-detail-body"></div>
-<nav class="cat-day-nav" aria-label="날짜 이동"><button id="cat-day-prev" type="button">← 이전 날</button><button id="cat-day-next" type="button">다음 날 →</button></nav>
-</section><p id="cat-calendar-status" role="status"></p>
+<p id="cat-calendar-status" role="status"></p>
 </main>
   <dialog id="diary-dialog" class="diary-editor-dialog">
     <form id="diary-form">
@@ -62,8 +63,8 @@
         <p id="diary-style-preview">여기에 적어 주세요…</p>
       </div>
 
-      <label>사진 · 최대 4장<input id="diary-images" type="file" accept="image/*" multiple></label>
-      <div id="diary-existing-photos" class="diary-existing-photos" hidden></div>
+      <label>사진 1 · 기본으로 보여 줄 사진<input id="diary-images" type="file" accept="image/*"></label>
+      <label>사진 2 · 마우스를 올리면 보여 줄 사진<input id="diary-hover-image" type="file" accept="image/*"></label><div id="diary-existing-photos" class="diary-existing-photos" hidden></div>
       <label id="diary-remove-photo-wrap" class="diary-remove-photo" hidden><input id="diary-remove-photo" type="checkbox"> 기존 사진 삭제</label>
       <button class="black diary-save-entry" type="submit" id="save-diary-entry">기록 저장</button>
       <p id="diary-editor-status" class="diary-editor-status" role="status"></p>
@@ -76,5 +77,5 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js?v=20260818-imgfix2"></script>
 <script src="supabase-site.js?v=20261002-font3"></script><script src="monthly-print.js?v=4-fit"></script>
-<script src="cat-calendar.js?v=1"></script><script src="site-fonts.js?v=4-dark"></script>
+<script src="cat-calendar.js?v=2-expanded"></script><script src="site-fonts.js?v=4-dark"></script>
 </body></html>

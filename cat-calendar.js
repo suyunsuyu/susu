@@ -21,18 +21,91 @@
       if(!reduced)await root.animate([{filter:'brightness(.55)',opacity:.65},{filter:'brightness(1)',opacity:1}],{duration:420,easing:'cubic-bezier(0.22, 1, 0.36, 1)'}).finished;
     }finally{root.getAnimations().forEach(a=>a.cancel());changing=false;}
   }
-  function backToCalendar(){brightness(()=>{dialog.hidden=true;$('#calendar-view').hidden=false;history.replaceState(null,'',location.pathname+location.search);render();const b=$('[data-date="'+selectedDate+'"]');b?.focus({preventScroll:true});});}
-
-  function render(){const year=cursor.getFullYear(),month=cursor.getMonth(),grid=$('#diary-calendar-grid');$('#diary-calendar-month').textContent=`${year}.${pad(month+1)}`;$('#month-caption').textContent=`2026 · ${pad(month+1)}`;$('#diary-calendar-prev').disabled=month===0;$('#diary-calendar-next').disabled=month===11;grid.replaceChildren();const offset=new Date(year,month,1).getDay(),days=new Date(year,month+1,0).getDate();grid.style.gridTemplateRows=`repeat(${Math.ceil((offset+days)/7)},1fr)`;for(let n=0;n<Math.ceil((offset+days)/7)*7;n++){const day=n-offset+1,cell=document.createElement(day>0&&day<=days?'button':'span');cell.className=day>0&&day<=days?'calendar-cell':'calendar-blank';if(day>0&&day<=days){const date=`${year}-${pad(month+1)}-${pad(day)}`,entries=items.filter(x=>x.date===date);cell.type='button';cell.dataset.date=date;if(date===today())cell.classList.add('is-today');cell.setAttribute('aria-label',`${date}${entries.length?`, ${entries.length} entries`:''}`);const num=document.createElement('span');num.className='calendar-number';num.textContent=pad(day);cell.append(num);if(entries.length){const entry=entries[0],photos=Array.isArray(entry.images)?entry.images:(entry.image?[entry.image]:[]);if(photos[0]){const img=document.createElement('img');img.src=photos[0];img.loading='lazy';img.alt='';cell.append(img)}const title=document.createElement('span');title.className='calendar-snippet';title.textContent=entry.title||entry.text||'';title.style.fontFamily=fonts[entry.style?.font]||fonts.hand;cell.append(title);if(entries.length>1){const count=document.createElement('span');count.className='calendar-count';count.textContent=`+${entries.length-1}`;cell.append(count)}}cell.onclick=()=>show(date,entries);}grid.append(cell)}}
-  function show(date,entries){brightness(()=>{selectedDate=date;$('#calendar-view').hidden=true;dialog.hidden=false;$('#cat-day-prev').disabled=date==='2026-01-01';$('#cat-day-next').disabled=date==='2026-12-31';history.replaceState(null,'',location.pathname+location.search+'#'+date);const root=$('#calendar-detail-body');root.replaceChildren();const heading=document.createElement('h2');heading.textContent=date;root.append(heading);if(!entries.length){const empty=document.createElement('p');empty.className='cat-day-empty';empty.textContent='아직 기록이 없어요.';root.append(empty);if(window.SUY_IS_ADMIN){const add=document.createElement('button');add.type='button';add.textContent='사진과 글 남기기';add.onclick=()=>openEditor(null,date);root.append(add);}}entries.forEach(entry=>{const section=document.createElement('article');section.className='calendar-entry';if(entry.title){const h=document.createElement('h3');h.textContent=entry.title;section.append(h)}const photos=Array.isArray(entry.images)?entry.images:(entry.image?[entry.image]:[]);if(photos.length){const gallery=document.createElement('div');gallery.className='calendar-detail-photos';photos.forEach(src=>{const img=document.createElement('img');img.src=src;img.alt='Calendar photo';gallery.append(img)});section.append(gallery)}const p=document.createElement('p');p.textContent=entry.text||'';p.style.fontFamily=fonts[entry.style?.font]||fonts.hand;p.style.fontSize=`${Math.min(64,Math.max(14,Number(entry.style?.size)||20))}px`;p.style.color=entry.style?.color||'#777';section.append(p);if(window.SUY_IS_ADMIN){const b=document.createElement('button');b.type='button';b.textContent='EDIT ↗';b.onclick=()=>{openEditor(entry)};section.append(b)}root.append(section)});dialog.focus({preventScroll:true});})}
+  function photos(entry){return (Array.isArray(entry?.images)?entry.images:entry?.image?[entry.image]:[]).filter(Boolean).slice(0,2);}
+  function photoNode(entry,large=false){
+    const urls=photos(entry),wrap=document.createElement(large?'button':'span');
+    wrap.className='stamp-photo'+(large?' featured-photo':'')+(urls[1]?' has-alternate':'');
+    if(large){wrap.type='button';wrap.setAttribute('aria-label',urls[1]?'사진 · 마우스를 올리거나 눌러 다른 사진 보기':'날짜 사진');wrap.setAttribute('aria-pressed','false');}
+    if(!urls[0])return wrap;
+    const image=document.createElement('img');image.src=urls[0];image.alt=entry.title||'유미의 하루';image.className='photo-primary';image.loading=large?'eager':'lazy';wrap.append(image);
+    if(urls[1]){const alternate=document.createElement('img');alternate.src=urls[1];alternate.alt='';alternate.className='photo-secondary';alternate.loading=large?'eager':'lazy';wrap.append(alternate);if(large)wrap.onclick=()=>{if(!matchMedia('(hover: none)').matches)return;const active=wrap.classList.toggle('is-alternate');wrap.setAttribute('aria-pressed',String(active));};}
+    return wrap;
+  }
+  function closeDate(){
+    dialog.hidden=true;$('#cat-date-photo').hidden=true;$('#cat-photo-close').hidden=true;
+    $('#diary-calendar-grid').hidden=false;$('.cat-calendar-sheet').classList.remove('is-date-open');
+    history.replaceState(null,'',location.pathname+location.search);
+  }
+  function backToCalendar(){brightness(()=>{closeDate();render();$('[data-date="'+selectedDate+'"]')?.focus({preventScroll:true});});}
+  function render(){
+    const year=2026,month=cursor.getMonth(),grid=$('#diary-calendar-grid');
+    $('#diary-calendar-month').textContent=selectedDate&&!dialog.hidden?selectedDate.replaceAll('-','.'):year+'.'+pad(month+1);
+    $('#month-caption').textContent='2026 · '+pad(month+1);
+    $('#diary-calendar-prev').disabled=month===0;$('#diary-calendar-next').disabled=month===11;
+    grid.replaceChildren();
+    const offset=new Date(year,month,1).getDay(),days=new Date(year,month+1,0).getDate(),rows=Math.ceil((offset+days)/7);
+    grid.style.gridTemplateRows='repeat('+rows+',1fr)';
+    for(let n=0;n<rows*7;n++){
+      const day=n-offset+1,hasDay=day>0&&day<=days,cell=document.createElement(hasDay?'button':'span');
+      cell.className=hasDay?'calendar-cell':'calendar-blank';
+      if(hasDay){
+        const date=year+'-'+pad(month+1)+'-'+pad(day),entry=items.find(x=>x.date===date);
+        cell.type='button';cell.dataset.date=date;cell.setAttribute('aria-label',date+(entry?', 기록':''));
+        if(date===today())cell.classList.add('is-today');
+        const number=document.createElement('span');number.className='calendar-number';number.textContent=pad(day);cell.append(number);
+        if(entry&&photos(entry)[0]){cell.classList.add('has-record');cell.append(photoNode(entry));}
+        cell.onclick=()=>show(date,entry?[entry]:[]);
+      }
+      grid.append(cell);
+    }
+  }
+  function show(date,entries){
+    brightness(()=>{
+      selectedDate=date;cursor=new Date(2026,Number(date.slice(5,7))-1,1);
+      dialog.hidden=false;$('#cat-day-prev').disabled=date==='2026-01-01';$('#cat-day-next').disabled=date==='2026-12-31';
+      $('#diary-calendar-grid').hidden=true;$('#cat-date-photo').hidden=false;$('#cat-photo-close').hidden=false;
+      $('.cat-calendar-sheet').classList.add('is-date-open');history.replaceState(null,'',location.pathname+location.search+'#'+date);
+      render();
+      const notes=$('#calendar-detail-body'),frame=$('#cat-date-photo');notes.replaceChildren();frame.replaceChildren();
+      const heading=document.createElement('h2');heading.textContent=date.replaceAll('-','.');notes.append(heading);
+      const entry=entries[0];
+      if(entry){
+        if(photos(entry)[0])frame.append(photoNode(entry,true));
+        if(entry.title){const title=document.createElement('h3');title.textContent=entry.title;notes.append(title);}
+        const text=document.createElement('p');text.textContent=entry.text||'';text.style.fontFamily=fonts[entry.style?.font]||fonts.hand;
+        text.style.fontSize=Math.min(32,Math.max(14,Number(entry.style?.size)||18))+'px';text.style.color=entry.style?.color||'#a9a7a1';notes.append(text);
+      }else{
+        const empty=document.createElement('p');empty.className='cat-day-empty';empty.textContent='아직 기록이 없어요.';notes.append(empty);
+        const placeholder=document.createElement('span');placeholder.className='date-photo-placeholder';placeholder.textContent=date.replaceAll('-','.');frame.append(placeholder);
+      }
+      if(window.SUY_IS_ADMIN){const edit=document.createElement('button');edit.type='button';edit.textContent=entry?'이 날짜 편집':'사진과 글 남기기';edit.onclick=()=>openEditor(entry||null,date);notes.append(edit);}
+      $('.calendar-overlay').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'});
+    });
+  }
   function openEditor(entry=null,date=today()){form.reset();activeId=entry?.id||'';$('#diary-edit-id').value=activeId;$('#diary-date').min='2026-01-01';$('#diary-date').max='2026-12-31';$('#diary-date').value=valid(entry?.date||date)?(entry?.date||date):'2026-01-01';$('#diary-title').value=entry?.title||'';$('#diary-text').value=entry?.text||'';$('#diary-font').value=['english','korean','chinese'].includes(entry?.style?.font)?entry.style.font:'english';$('#diary-size').value=entry?.style?.size||'';$('#diary-color').value=entry?.style?.color||'#777777';$('#diary-color-hex').value=$('#diary-color').value.toUpperCase();$('#diary-existing-photos').replaceChildren();const photos=entry?.images||(entry?.image?[entry.image]:[]);photos.forEach(src=>{const img=document.createElement('img');img.src=src;img.alt='Existing photo';$('#diary-existing-photos').append(img)});$('#diary-existing-photos').hidden=!photos.length;$('#diary-remove-photo-wrap').hidden=!photos.length;$('#diary-editor-status').textContent='';preview();manager();editor.showModal()}
   function preview(){const p=$('#diary-style-preview');p.textContent=$('#diary-text').value||'Write here…';p.style.fontFamily=fonts[$('#diary-font').value]||fonts.hand;p.style.fontSize=($('#diary-size').value||20)+'px';p.style.color=$('#diary-color').value}
   function manager(){const root=$('#diary-manager');root.replaceChildren();$('#diary-manager-count').textContent=pad(items.length);[...items].reverse().forEach(entry=>{const row=document.createElement('div');row.className='diary-row';const name=document.createElement('span');name.textContent=`${entry.date} · ${entry.title||entry.text?.slice(0,25)||''}`;const edit=document.createElement('button');edit.type='button';edit.textContent='EDIT';edit.onclick=()=>openEditor(entry);const del=document.createElement('button');del.type='button';del.textContent='DELETE';del.onclick=async()=>{if(!confirm(`Delete ${entry.date}?`)||!await window.SUY_ADMIN.isAdmin())return;try{await save(items.filter(x=>x.id!==entry.id));manager()}catch(e){$('#diary-editor-status').textContent=e.message}};row.append(name,edit,del);root.append(row)})}
   async function save(next){await window.SUY_ADMIN.saveContent('cat-calendar-2026',{...payload,items:next});items=next;payload={...payload,items};render()}
   $('#calendar-print-month').onclick=e=>window.SUY_MONTHLY.download(cursor.getFullYear(),cursor.getMonth(),items,e.currentTarget);
-  $('#diary-calendar-prev').onclick=()=>{if(cursor.getMonth()>0)brightness(()=>{cursor=new Date(2026,cursor.getMonth()-1,1);render()})};$('#diary-calendar-next').onclick=()=>{if(cursor.getMonth()<11)brightness(()=>{cursor=new Date(2026,cursor.getMonth()+1,1);render()})};
-  $('#edit-diary').onclick=async()=>{if(await window.SUY_ADMIN.isAdmin())openEditor()};$('#diary-new-draft').onclick=()=>openEditor();$('#close-diary-editor').onclick=()=>editor.close();dialog.querySelector('.close').onclick=backToCalendar;document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!dialog.hidden&&!editor.open)backToCalendar()});['prev','next'].forEach((direction,i)=>$('#cat-day-'+direction).onclick=()=>{const d=new Date(selectedDate+'T12:00:00');d.setDate(d.getDate()+(i?1:-1));const date=`2026-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;if(d.getFullYear()===2026)show(date,items.filter(x=>x.date===date))});editor.onclick=e=>{if(e.target===editor)editor.close()};
+  $('#diary-calendar-prev').onclick=()=>{if(cursor.getMonth()>0)brightness(()=>{closeDate();cursor=new Date(2026,cursor.getMonth()-1,1);render()})};$('#diary-calendar-next').onclick=()=>{if(cursor.getMonth()<11)brightness(()=>{closeDate();cursor=new Date(2026,cursor.getMonth()+1,1);render()})};
+  $('#cat-photo-close').onclick=backToCalendar;$('#edit-diary').onclick=async()=>{if(await window.SUY_ADMIN.isAdmin())openEditor(items.find(x=>x.date===selectedDate)||null,selectedDate||today())};$('#diary-new-draft').onclick=()=>openEditor();$('#close-diary-editor').onclick=()=>editor.close();dialog.querySelector('.close').onclick=backToCalendar;document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!dialog.hidden&&!editor.open)backToCalendar()});['prev','next'].forEach((direction,i)=>$('#cat-day-'+direction).onclick=()=>{const d=new Date(selectedDate+'T12:00:00');d.setDate(d.getDate()+(i?1:-1));const date=`2026-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;if(d.getFullYear()===2026)show(date,items.filter(x=>x.date===date))});editor.onclick=e=>{if(e.target===editor)editor.close()};
   ['diary-text','diary-font','diary-size'].forEach(key=>$('#'+key).oninput=preview);$('#diary-color').oninput=()=>{$('#diary-color-hex').value=$('#diary-color').value.toUpperCase();preview()};$('#diary-color-hex').oninput=()=>{if(/^#[a-f\d]{6}$/i.test($('#diary-color-hex').value)){$('#diary-color').value=$('#diary-color-hex').value;preview()}};
-  form.onsubmit=async e=>{e.preventDefault();const status=$('#diary-editor-status');try{if(!await window.SUY_ADMIN.isAdmin())throw Error('Admin login required');const date=$('#diary-date').value,text=$('#diary-text').value.trim();if(!valid(date))throw Error('Choose a date');if(!text&&!$('#diary-images').files.length&&!items.find(x=>x.id===activeId)?.images?.length)throw Error('Add text or a photo');const existing=items.find(x=>x.id===activeId);let images=$('#diary-remove-photo').checked?[]:[...(existing?.images||(existing?.image?[existing.image]:[]))];const files=[...$('#diary-images').files];if(files.length+images.length>4)throw Error('Up to four photos per date');for(const file of files){status.textContent='UPLOADING…';images.push(await window.SUY_ADMIN.uploadPublic(file,'diary'))}const entry={...existing,id:activeId||id(),date,title:$('#diary-title').value.trim(),text,images,image:images[0]||'',style:{font:$('#diary-font').value,size:$('#diary-size').value,color:$('#diary-color').value}};status.textContent='SAVING…';await save([...items.filter(x=>x.id!==activeId),entry].sort((a,b)=>a.date.localeCompare(b.date)));cursor=new Date(2026,Number(date.slice(5,7))-1,1);render();editor.close();if(!dialog.hidden)show(date,items.filter(x=>x.date===date))}catch(error){status.textContent=error.message}};
+  form.onsubmit=async e=>{
+    e.preventDefault();const status=$('#diary-editor-status');
+    try{
+      if(!await window.SUY_ADMIN.isAdmin())throw Error('관리자 로그인이 필요해요.');
+      const date=$('#diary-date').value,text=$('#diary-text').value.trim();if(!valid(date))throw Error('2026년 날짜를 선택해 주세요.');
+      const existing=items.find(x=>x.id===activeId)||items.find(x=>x.date===date);
+      let images=$('#diary-remove-photo').checked?[]:photos(existing);
+      const first=$('#diary-images').files[0],second=$('#diary-hover-image').files[0];
+      if(second&&!first&&!images[0])throw Error('첫 번째 사진을 먼저 넣어 주세요.');
+      for(const [i,file]of [first,second].entries()){if(!file)continue;if(!['image/jpeg','image/png','image/webp','image/gif'].includes(file.type))throw Error('이미지 파일을 선택해 주세요.');status.textContent='사진 업로드 중…';images[i]=await window.SUY_ADMIN.uploadPublic(file,'cat-calendar');}
+      images=images.filter(Boolean).slice(0,2);if(!images[0])throw Error('날짜에 보여 줄 첫 번째 사진을 넣어 주세요.');
+      const entry={...existing,id:existing?.id||id(),date,title:$('#diary-title').value.trim(),text,images,image:images[0],style:{font:$('#diary-font').value,size:$('#diary-size').value,color:$('#diary-color').value}};
+      status.textContent='저장 중…';
+      await save([...items.filter(x=>x.id!==entry.id&&x.date!==date),entry].sort((a,b)=>a.date.localeCompare(b.date)));
+      cursor=new Date(2026,Number(date.slice(5,7))-1,1);render();editor.close();show(date,[entry]);
+    }catch(error){status.textContent=error.message;}
+  };
   (async()=>{try{if(window.SUY_SITE_READY)await window.SUY_SITE_READY;payload=await window.SUY_ADMIN.loadContent('cat-calendar-2026')||{items:[]};items=(Array.isArray(payload.items)?payload.items:[]).filter(x=>valid(x.date));render();const date=decodeURIComponent(location.hash.slice(1));if(valid(date)){cursor=new Date(Number(date.slice(0,4)),Number(date.slice(5,7))-1,1);render();const entries=items.filter(x=>x.date===date);show(date,entries);}}catch(e){console.warn('Calendar unavailable',e);$('#cat-calendar-status').textContent='기록을 불러오지 못했어요. 새로고침해 주세요.';render()}})();
 })();
