@@ -43,3 +43,6 @@ body.cat-calendar-page{margin:0;background:#0b0c11;color:#dfdfe3;min-height:100s
 #cat-calendar-status{font-size:13px;color:#aaa;text-align:center}
 @media(max-width:600px){.cat-calendar-main{margin-top:16px;width:94vw}.cat-day-paper{padding:28px 24px;min-height:70svh}.cat-calendar-page .calendar-cell{padding:4px}.calendar-snippet{font-size:9px}.calendar-actions{font-size:13px}.cat-month-nav{font-size:14px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* Keep the physical calendar and hanging loop; let the site's black backdrop show around them. */
+.cat-calendar-art{-webkit-mask:url('assets/cat-calendar-mask.svg') center/100% 100% no-repeat;mask:url('assets/cat-calendar-mask.svg') center/100% 100% no-repeat}
