@@ -8,7 +8,7 @@
   let notePages=[],notePage=0;
   function splitNote(text,width,rows=7){const lines=[],limit=Math.max(10,Math.floor(width/13));let line='',used=0;for(const ch of String(text)){if(ch==='\n'){lines.push(line);line='';used=0;continue}const weight=/[\u2e80-\u9fff\uac00-\ud7af]/.test(ch)?1:.55;if(used+weight>limit){lines.push(line);line='';used=0}line+=ch;used+=weight;}if(line||!lines.length)lines.push(line);const pages=[];for(let i=0;i<lines.length;i+=rows)pages.push(lines.slice(i,i+rows).join('\n'));return pages;}
   function splitPptNote(text,p){
-    const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d'),st=getComputedStyle(p);ctx.font=st.font;
+    const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d'),st=getComputedStyle(p);ctx.font=st.fontWeight+' '+st.fontSize+' '+st.fontFamily;
     const width=p.clientWidth||220,lines=[];
     for(const paragraph of String(text).split('\n')){
       let line='';for(const word of paragraph.split(/\s+/).filter(Boolean)){const candidate=line?line+' '+word:word;if(line&&ctx.measureText(candidate).width>width){lines.push(line);line=word;}else line=candidate;}lines.push(line);
