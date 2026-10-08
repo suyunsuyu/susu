@@ -95,7 +95,7 @@ body.cat-calendar-page{margin:0;background:#0b0c11;color:#dfdfe3;min-height:100s
 .calendar-heading h1{font-size:clamp(13px,1.3vw,20px);font-weight:400;letter-spacing:.03em}
 .calendar-heading button{border:0;background:transparent;color:#524b42;font-size:16px;padding:3px 12px;cursor:pointer}
 .calendar-heading button:disabled{opacity:.22;cursor:default}
-.calendar-overlay{top:6.74%;height:63.37%;background-color:#f3e7d2;background-image:url('assets/cat-calendar-2026.webp');background-size:130.72% 1120%;background-position:center 94.5%;border-color:#a4917766}
+.calendar-overlay{top:6.74%;height:63.37%;background-color:#f3e7d2;background-image:url('assets/cat-paper-texture.svg');background-size:100% auto;background-position:0 0;background-repeat:repeat;border-color:#a4917766}
 .diary-calendar-weekdays{border-color:#a4917766}
 .calendar-cell,.calendar-blank{border-color:#a4917766}
 .cat-day-paper{position:absolute;left:15%;right:15%;top:72%;height:15%;width:auto;margin:0;padding:5px 0;color:#494139;overflow:auto;box-sizing:border-box;background:none;box-shadow:none}
