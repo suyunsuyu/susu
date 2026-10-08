@@ -10,6 +10,25 @@
   let selectedDate='';
   const dialog=$('#calendar-detail'),form=$('#diary-form'),editor=$('#diary-dialog');
   const valid=s=>{if(!/^2026-\d{2}-\d{2}$/.test(s||''))return false;const d=new Date(s+'T12:00:00');return !isNaN(d)&&d.getFullYear()===2026&&d.getMonth()+1===Number(s.slice(5,7))&&d.getDate()===Number(s.slice(8,10));};
+  let folded=true,folding=false;
+  const sheet=$('.cat-calendar-sheet'),leaf=$('#calendar-lower-leaf'),foldToggle=$('#calendar-fold-toggle');
+  function sizeSheet(){const height=sheet.clientWidth*1622/969;sheet.style.height=(height*(folded?.54:1))+'px';leaf.style.top=(height*.54)+'px';leaf.style.height=(height*.46)+'px';}
+  async function setFold(next,animate=true){
+    if(folding)return;folding=true;folded=next;
+    foldToggle.setAttribute('aria-expanded',String(!next));
+    foldToggle.textContent=next?'달력 열기 ↓':'달력 접기 ↑';
+    if(!next){leaf.inert=false;leaf.setAttribute('aria-hidden','false');}
+    const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(!animate||reduced)sheet.classList.add('fold-instant');
+    sheet.classList.toggle('is-folded',next);sizeSheet();
+    $('.calendar-actions').hidden=next;
+    if(next){leaf.inert=true;leaf.setAttribute('aria-hidden','true');foldToggle.focus({preventScroll:true});}
+    if(animate&&!reduced)await new Promise(resolve=>setTimeout(resolve,650));
+    sheet.classList.remove('fold-instant');folding=false;
+  }
+  foldToggle.onclick=()=>setFold(!folded);
+  new ResizeObserver(sizeSheet).observe(sheet);
+  sizeSheet();
   let changing=false;
   async function brightness(change){
     if(changing)return;changing=true;
@@ -40,7 +59,6 @@
   function render(){
     const year=2026,month=cursor.getMonth(),grid=$('#diary-calendar-grid');
     $('#diary-calendar-month').textContent=selectedDate&&!dialog.hidden?selectedDate.replaceAll('-','.'):year+'.'+pad(month+1);
-    $('#month-caption').textContent='2026 · '+pad(month+1);
     $('#diary-calendar-prev').disabled=month===0;$('#diary-calendar-next').disabled=month===11;
     grid.replaceChildren();
     const offset=new Date(year,month,1).getDay(),days=new Date(year,month+1,0).getDate(),rows=Math.ceil((offset+days)/7);
@@ -60,6 +78,7 @@
     }
   }
   function show(date,entries){
+    if(folded)setFold(false,false);
     brightness(()=>{
       selectedDate=date;cursor=new Date(2026,Number(date.slice(5,7))-1,1);
       dialog.hidden=false;$('#cat-day-prev').disabled=date==='2026-01-01';$('#cat-day-next').disabled=date==='2026-12-31';
@@ -73,13 +92,13 @@
         if(photos(entry)[0])frame.append(photoNode(entry,true));
         if(entry.title){const title=document.createElement('h3');title.textContent=entry.title;notes.append(title);}
         const text=document.createElement('p');text.textContent=entry.text||'';text.style.fontFamily=fonts[entry.style?.font]||fonts.hand;
-        text.style.fontSize=Math.min(32,Math.max(14,Number(entry.style?.size)||18))+'px';text.style.color=entry.style?.color||'#a9a7a1';notes.append(text);
+        text.style.fontSize=Math.min(32,Math.max(14,Number(entry.style?.size)||18))+'px';text.style.color=entry.style?.color||'#494139';notes.append(text);
       }else{
         const empty=document.createElement('p');empty.className='cat-day-empty';empty.textContent='아직 기록이 없어요.';notes.append(empty);
         const placeholder=document.createElement('span');placeholder.className='date-photo-placeholder';placeholder.textContent=date.replaceAll('-','.');frame.append(placeholder);
       }
       if(window.SUY_IS_ADMIN){const edit=document.createElement('button');edit.type='button';edit.textContent=entry?'이 날짜 편집':'사진과 글 남기기';edit.onclick=()=>openEditor(entry||null,date);notes.append(edit);}
-      $('.calendar-overlay').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'center'});
+      $('.calendar-overlay').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
     });
   }
   function openEditor(entry=null,date=today()){form.reset();activeId=entry?.id||'';$('#diary-edit-id').value=activeId;$('#diary-date').min='2026-01-01';$('#diary-date').max='2026-12-31';$('#diary-date').value=valid(entry?.date||date)?(entry?.date||date):'2026-01-01';$('#diary-title').value=entry?.title||'';$('#diary-text').value=entry?.text||'';$('#diary-font').value=['english','korean','chinese'].includes(entry?.style?.font)?entry.style.font:'english';$('#diary-size').value=entry?.style?.size||'';$('#diary-color').value=entry?.style?.color||'#777777';$('#diary-color-hex').value=$('#diary-color').value.toUpperCase();$('#diary-existing-photos').replaceChildren();const photos=entry?.images||(entry?.image?[entry.image]:[]);photos.forEach(src=>{const img=document.createElement('img');img.src=src;img.alt='Existing photo';$('#diary-existing-photos').append(img)});$('#diary-existing-photos').hidden=!photos.length;$('#diary-remove-photo-wrap').hidden=!photos.length;$('#diary-editor-status').textContent='';preview();manager();editor.showModal()}
