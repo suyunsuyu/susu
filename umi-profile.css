@@ -6,10 +6,10 @@ html:has(body.umi-page), body.umi-page { background:#fff!important; color:#231f1
 .umi-paper { width:var(--umi-sheet-width); margin:16px auto 0; }
 .umi-section { position:relative; padding:40px; isolation:isolate;  }
 .umi-section + .umi-section { margin-top:80px; }
-.umi-section::before { content:''; position:absolute; inset:0; pointer-events:none; z-index:0; opacity:.05; mix-blend-mode:multiply; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='1 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Cpath filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E"); }
+.umi-section::before { content:none; }
 .umi-section > * { position:relative; z-index:1; }
-.umi-yellow { background:#fada4b; min-height:calc(var(--umi-sheet-width) * .74765); }
-.umi-green { background:#97fa4b; padding-top:55px; padding-bottom:60px; }
+.umi-yellow { background:#f4d549; min-height:calc(var(--umi-sheet-width) * .74765); }
+.umi-green { background:#93f449; padding-top:55px; padding-bottom:60px; }
 .umi-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,2fr); gap:36px; }
 .umi-page h1,.umi-page h2 { margin:0; font-size:48px; letter-spacing:0; line-height:1.02; font-weight:700; }
 .umi-page h1 { font-family:'Times New Roman',Times,serif; white-space:normal; }
@@ -18,9 +18,9 @@ html:has(body.umi-page), body.umi-page { background:#fff!important; color:#231f1
 .umi-subtitle { font-size:20px; margin-top:26px!important; }
 .umi-profile-row { margin-top:165px; }
 .umi-identity { font-size:14px; line-height:1.25; font-style:italic; padding-top:14px; }
-.umi-page main img { background:transparent!important; }
+.umi-page main img { background:transparent!important; filter:none!important; image-rendering:auto; }
 .umi-profile img { display:block; width:100%; height:auto; margin-top:25px; }
-.umi-traits { font-size:17px; line-height:1.22; font-weight:700; font-variant:small-caps; }
+.umi-traits { font-size:17px; line-height:1.22; font-weight:700; font-variant:small-caps; letter-spacing:.04em; }
 .umi-traits ul { margin:0; padding-left:24px; }
 .umi-traits .umi-love { margin-top:0; }
 .umi-story-subtitle { font:700 24px/1.2 var(--umi-caption-font); margin-top:5px!important; }
