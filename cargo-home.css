@@ -62,3 +62,8 @@ html:has(body.cargo-home),body.home.cargo-home{margin:0;background:#fff!importan
 }
 @media(max-width:420px){.cargo-home-main{column-gap:18px}.cargo-symbols{margin-bottom:18px}.cargo-quote cite{margin-top:14px}}
 @media(prefers-reduced-motion:reduce){.cargo-marquee-track{animation:none;transform:translateX(-8%);will-change:auto}.note-page-turn{animation:none}}
+
+/* Keep the Cargo reference typography separate from the site's notebook type. */
+.cargo-home .cargo-home-main,.cargo-home .cargo-home-main *,.cargo-home>.cargo-mood{font-family:Arial,Helvetica,sans-serif!important}
+.cargo-home .cargo-home-main .cargo-navigation,.cargo-home .cargo-home-main .cargo-navigation *{font-family:'Courier New',monospace!important}
+.cargo-home #notebook-margin-text{border:0;box-shadow:none}
