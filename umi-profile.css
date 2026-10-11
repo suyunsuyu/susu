@@ -14,6 +14,7 @@ html:has(body.umi-page), body.umi-page { background:#fff!important; color:#231f1
 .umi-subtitle { font-size:20px; margin-top:26px!important; }
 .umi-profile-row { margin-top:145px; }
 .umi-identity { font-size:14px; line-height:1.25; font-style:italic; }
+.umi-page main img { background:transparent!important; }
 .umi-profile img { display:block; width:100%; height:auto; margin-top:25px; }
 .umi-traits { font-size:17px; line-height:1.24; font-variant:small-caps; }
 .umi-traits ul { margin:0; padding-left:24px; }
@@ -36,7 +37,7 @@ html:has(body.umi-page), body.umi-page { background:#fff!important; color:#231f1
 .umi-page dialog::backdrop { background:#0004; }
 .umi-page dialog textarea { width:100%; font:16px/1.5 'Times New Roman',serif; margin:12px 0; padding:12px; }
 .umi-page dialog button { padding:8px 16px; background:white; border:1px solid #aaa; margin-right:8px; }
-.umi-page .admin-auth-button { position:fixed; bottom:12px; right:14px; font:10px Arial,sans-serif; color:#777; background:#fff; border:0; padding:6px; }
+.umi-page .admin-auth-button { position:fixed; bottom:12px; right:14px; left:auto; width:auto; font:10px Arial,sans-serif; color:#777; background:#fff; border:0; padding:6px; }
 .umi-page .admin-auth-card { display:grid; gap:12px; }
 .umi-page .admin-auth-card label { display:grid; gap:6px; }
 .umi-page .admin-auth-card input { padding:8px; min-width:0; width:100%; }
