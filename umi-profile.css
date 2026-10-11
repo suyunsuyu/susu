@@ -1,27 +1,29 @@
 html:has(body.umi-page), body.umi-page { background:#fff!important; color:#231f18; margin:0; }
 .umi-page * { box-sizing:border-box; }
-.umi-page { font-family:'Times New Roman',Times,serif; }
-.umi-page { --umi-sheet-width:min(1040px,calc(100vw - 64px)); }
-.umi-paper { width:var(--umi-sheet-width); margin:36px auto 0; }
-.umi-section { position:relative; padding:40px; isolation:isolate; min-height:calc(var(--umi-sheet-width) * 1.3); }
+.umi-page { --umi-caption-font:'Times New Roman',Times,serif; font-family:var(--umi-caption-font); }
+.umi-page [data-umi-text], .umi-page dialog textarea { font-family:var(--umi-caption-font)!important; }
+.umi-page { --umi-sheet-width:min(1169px,calc(100vw - 64px),calc((100svh - 32px) * 1.3375)); }
+.umi-paper { width:var(--umi-sheet-width); margin:16px auto 0; }
+.umi-section { position:relative; padding:40px; isolation:isolate;  }
 .umi-section + .umi-section { margin-top:80px; }
-.umi-section::before { content:''; position:absolute; inset:0; pointer-events:none; z-index:-1; opacity:.09; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23000' filter='url(%23n)' opacity='.5' d='M0 0h180v180H0z'/%3E%3C/svg%3E"); }
-.umi-yellow { background:#f7df43;  }
-.umi-green { background:#a6f258; padding-top:55px; padding-bottom:60px; }
+.umi-section::before { content:''; position:absolute; inset:0; pointer-events:none; z-index:0; opacity:.05; mix-blend-mode:multiply; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='1 1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Cpath filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E"); }
+.umi-section > * { position:relative; z-index:1; }
+.umi-yellow { background:#fada4b; min-height:calc(var(--umi-sheet-width) * .74765); }
+.umi-green { background:#97fa4b; padding-top:55px; padding-bottom:60px; }
 .umi-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,2fr); gap:36px; }
-.umi-page h1,.umi-page h2 { margin:0; font-size:44px; letter-spacing:0; line-height:1.02; font-weight:700; }
+.umi-page h1,.umi-page h2 { margin:0; font-size:48px; letter-spacing:0; line-height:1.02; font-weight:700; }
 .umi-page h1 { font-family:'Times New Roman',Times,serif; white-space:normal; }
-.umi-page h2 { font-family:Arial,Helvetica,sans-serif; font-weight:800; }
+.umi-page h2 { font-family:var(--umi-caption-font); font-weight:700; }
 .umi-page p { margin:0; white-space:pre-line; }
 .umi-subtitle { font-size:20px; margin-top:26px!important; }
-.umi-profile-row { margin-top:145px; }
-.umi-identity { font-size:14px; line-height:1.25; font-style:italic; }
+.umi-profile-row { margin-top:165px; }
+.umi-identity { font-size:14px; line-height:1.25; font-style:italic; padding-top:14px; }
 .umi-page main img { background:transparent!important; }
 .umi-profile img { display:block; width:100%; height:auto; margin-top:25px; }
-.umi-traits { font-size:18px; line-height:1.17; font-weight:700; font-variant:small-caps; }
+.umi-traits { font-size:17px; line-height:1.22; font-weight:700; font-variant:small-caps; }
 .umi-traits ul { margin:0; padding-left:24px; }
 .umi-traits .umi-love { margin-top:0; }
-.umi-story-subtitle { font:700 24px/1.2 Arial,Helvetica,sans-serif; margin-top:5px!important; }
+.umi-story-subtitle { font:700 24px/1.2 var(--umi-caption-font); margin-top:5px!important; }
 .umi-story-intro { margin-top:78px; align-items:start; }
 .umi-date { font-size:20px; font-style:italic; text-align:right; padding-top:3px; }
 .umi-underlined { font-size:20px; line-height:1.1; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:2px; }
@@ -46,3 +48,14 @@ html:has(body.umi-page), body.umi-page { background:#fff!important; color:#231f1
 @media(max-width:900px) { .umi-section { padding:30px; } .umi-page h1,.umi-page h2 { font-size:36px; } .umi-grid { gap:24px; } .umi-profile-row { margin-top:105px; } .umi-traits { font-size:16px; }  }
 @media(max-width:600px) { .umi-paper { width:calc(100% - 24px); margin-top:12px; } .umi-section { padding:28px 20px; min-height:0; }
 .umi-section + .umi-section { margin-top:48px; } .umi-grid { grid-template-columns:1fr; gap:24px; } .umi-heading>div:empty { display:none; } .umi-page h1,.umi-page h2 { font-size:34px; } .umi-subtitle { font-size:17px; margin-top:18px!important; } .umi-profile-row { margin-top:60px; } .umi-profile img { width:min(100%,320px); } .umi-yellow { min-height:0; } .umi-traits { font-size:17px; } .umi-story-subtitle { font-size:19px; } .umi-story-intro { margin-top:50px; gap:10px; } .umi-date { text-align:left; } .umi-underlined { font-size:19px; } .umi-story-body { margin-top:30px; gap:38px; } .umi-feibo { font-size:15px; } .umi-reflection { font-size:21px; } .umi-footer { width:calc(100% - 40px); flex-wrap:wrap; } }
+
+/* Compact desktop windows keep the complete opening sheet in view. */
+@media (min-width:901px) and (max-height:820px) {
+ .umi-section { padding:30px; }
+ .umi-page h1,.umi-page h2 { font-size:clamp(30px,5.48svh,48px); }
+ .umi-subtitle { font-size:18px; margin-top:20px!important; }
+ .umi-profile-row { margin-top:clamp(65px,18svh,145px); }
+ .umi-traits { font-size:clamp(12px,1.94svh,17px); }
+ .umi-identity { font-size:12px; }
+}
+@media (max-width:600px) { .umi-page { --umi-sheet-width:calc(100vw - 24px); } }
