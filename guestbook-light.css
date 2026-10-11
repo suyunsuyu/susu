@@ -1,0 +1,32 @@
+html:has(body.guestbook-light),body.guestbook-light{background:#fff!important;background-image:none!important;color:#111!important;--ink:#111;--line:#ccc;--paper:#fff}
+.guestbook-light>header a,.guestbook-light .notebook-contact a{color:#111!important}
+.guestbook-light .guestbook-page,.guestbook-light .guest-experience,.guestbook-light .cat-feeding-scene,.guestbook-light .guest-form-card{background:transparent!important;color:#111}
+.guestbook-light .guest-scene-image{background:transparent!important;filter:none!important;mix-blend-mode:multiply}
+.guestbook-light .sketch-kibble{filter:none!important}
+.guestbook-light .guestbook-intro p,.guestbook-light .bowl-count,.guestbook-light .bowl-hint,.guestbook-light .empty-bowl-note{color:#666}
+.guestbook-light .guestbook-intro p{font-size:11px;line-height:1.6}
+.guestbook-light #message-form{border-top:1px solid #ddd;padding-top:22px}
+.guestbook-light #message-form label{color:#111;font-size:12px}
+.guestbook-light #message-name,.guestbook-light #message-body{color:#111;caret-color:#111;background:transparent;border:0;border-bottom:1px solid #aaa;border-radius:0;font-size:16px;line-height:1.65;padding:10px 0;width:100%;box-sizing:border-box}
+.guestbook-light #message-body{min-height:140px}
+.guestbook-light #message-form small{color:#888}
+.guestbook-light .message-options{border-bottom:1px solid #ddd;margin:20px 0 24px}
+.guestbook-light .message-options summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:12px 0;color:#666;font-size:12px;letter-spacing:.06em}
+.guestbook-light .message-options summary::-webkit-details-marker{display:none}
+.guestbook-light .message-options summary span{font-size:17px;transition:transform .2s}
+.guestbook-light .message-options[open] summary span{transform:rotate(45deg)}
+.guestbook-light .message-options-body{padding:14px 0 20px}
+.guestbook-light .guest-style-controls{margin-bottom:22px}
+.guestbook-light .guest-style-controls select,.guestbook-light #message-color{background:#fff;color:#111;border:1px solid #ccc;border-radius:0}
+.guestbook-light #message-image{color:#666;background:transparent;border:0;font-size:12px;max-width:100%}
+.guestbook-light #message-image::file-selector-button{background:#fff;color:#111;border:1px solid #ccc;padding:7px 10px;margin-right:10px}
+.guestbook-light .message-manage,.guestbook-light #toggle-message-drawing{color:#333;border-color:#ccc}
+.guestbook-light #message-form .private{display:flex;align-items:center;gap:7px;margin-bottom:0;color:#666;font-size:11px}
+.guestbook-light #message-form .private input{accent-color:#111;width:auto;margin:0}
+.guestbook-light #message-form>button.black{background:#111;color:#fff;border:1px solid #111;padding:11px 18px;font-size:12px}
+.guestbook-light .guest-form-note,.guestbook-light #form-status{font-size:11px;line-height:1.6;color:#777}
+.guestbook-light .message-drawing-panel canvas{background:#fff;border:1px solid #ccc}
+.guestbook-light .drawing-toolbar button{color:#111;background:#fff;border-color:#aaa}
+.guestbook-light .message-dialog,.guestbook-light .message-manager-dialog{--ink:#111;--line:#ddd;color:#111;background:#fff}
+.guestbook-light #message-form input:focus-visible,.guestbook-light #message-form textarea:focus-visible,.guestbook-light summary:focus-visible{outline:1px solid #888;outline-offset:5px}
+@media(max-width:760px){.guestbook-light .guest-experience{gap:30px}.guestbook-light #message-body{min-height:120px}.guestbook-light .guest-style-controls{grid-template-columns:1fr 90px 50px}}

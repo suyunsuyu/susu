@@ -1,57 +1,22 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <script>document.documentElement.classList.add("site-booting");setTimeout(()=>document.documentElement.classList.remove("site-booting"),3500)</script>
-  <title>Personal Projects — Lee Su-yoon</title>
-  <link rel="stylesheet" href="style.css?v=20260903-catarchive1">
-  <link rel="stylesheet" href="cursor.css?v=20261011-native">
-  <link rel="stylesheet" href="fonts.css?v=20261006-chisuga">
-<link rel="stylesheet" href="personal-projects.css?v=7-ppt6"></head>
-<body class="personal-projects">
-  <header><span class="brand" aria-hidden="true"></span><a href="index.html">← HOME</a></header>
-  <main class="page works-portal" id="project-portal">
-    <div class="works-topline">
-      <p class="kicker">개인 작업 / PERSONAL PROJECTS</p>
-      <button id="edit-covers" class="works-cover-edit" type="button" data-admin-only hidden>사진 편집 ↗</button>
-    </div>
-    <div class="works-cover">
-      <figure class="cover-slot"><img id="cover-photo" src="assets/project-ppt-flowers.jpg" alt="Flowers photographed at night"><span id="cover-photo-empty" class="cover-empty" data-admin-only hidden>ADD PHOTOGRAPHY COVER</span></figure>
-      <figure class="cover-slot" hidden><img id="cover-drawing" src="" alt="Drawing cover" hidden><span id="cover-drawing-empty" class="cover-empty" data-admin-only hidden>ADD DRAWING COVER</span></figure>
-    </div>
-    <nav class="works-category-nav works-category-nav-small works-category-nav-three">
-      <a href="#photography" data-project-category="photo">PHOTOGRAPHY</a>
-      <a href="#drawing" data-project-category="drawing">DRAWING</a>
-      <a href="#products" data-project-category="products">PRODUCTS</a>
-    </nav>
-    <section id="cover-editor" class="cover-editor" hidden>
-      <div class="panel-head"><p class="kicker">COVER SETTINGS</p><button id="close-cover-editor" type="button">×</button></div>
-      <div class="cover-editor-grid">
-        <label>PHOTOGRAPHY COVER<input id="photo-cover-file" type="file" accept="image/*"><img id="photo-cover-preview" alt="Photography cover preview"></label>
-        <label hidden>DRAWING COVER<input id="drawing-cover-file" type="file" accept="image/*"><img id="drawing-cover-preview" alt="Drawing cover preview"></label>
-      </div>
-      <button id="save-covers" class="black" type="button">SAVE COVERS</button>
-      <button id="reset-covers" class="link-button" type="button">RESET</button>
-      <p id="cover-status" class="save-status"></p>
-    </section>
-  </main>
-  <section id="project-gallery" hidden aria-label="개인 작품">
-    <div class="project-gallery-heading"><button id="project-back" type="button">← PROJECTS</button><h1 id="project-category-title"></h1><button id="project-add" type="button" data-admin-only hidden>작품 추가 ＋</button></div>
-    <div id="project-list" class="project-list"></div><p id="project-empty" hidden>작품을 준비하고 있어요.</p>
-  </section>
-  <dialog id="project-detail" class="project-detail"><button class="project-dialog-close" type="button" aria-label="작품 닫기">×</button><article id="project-detail-body"></article></dialog>
-  <dialog id="project-editor" class="project-editor"><form id="project-form"><button class="project-dialog-close" type="button" aria-label="편집 닫기">×</button><h2>개인 Project</h2><label>작품 이름<input id="project-title" required maxlength="120"></label><label>설명<textarea id="project-description" rows="5" maxlength="6000"></textarea></label><label>표지 사진<input id="project-cover-file" type="file" accept="image/jpeg,image/png,image/webp"></label><label>PDF 업로드<input id="project-pdf-file" type="file" accept="application/pdf,.pdf"></label><label>작품 웹페이지<input id="project-web-url" type="url" placeholder="https://"></label><p id="project-existing-files"></p><button type="submit">저장 ↗</button><p id="project-status" role="status"></p></form></dialog>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js?v=20260818-imgfix2"></script>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Work — Lee Su-yoon</title><link rel="stylesheet" href="cursor.css?v=20261011-native"><link rel="stylesheet" href="work-cargo.css?v=1-white"></head><body class="work-cargo">
+<nav class="work-index" aria-label="Projects"><span>00.</span><a href="#information">Information</a><span>01.</span><a href="#project-a">A</a><span>02.</span><a href="#project-b">B</a><span>03.</span><a href="#project-c">C</a><span>04.</span><a href="#project-d">D</a><span>05.</span><a href="#project-e">E</a></nav>
+<div class="work-quote-stage"><p class="work-quote" data-work-text="quote">Life varies with diameter, and pain is related to pain.</p></div>
+<main class="work-content"><section class="work-information" id="information" aria-label="Information"><span></span><div class="work-profile"><a href="index.html">Profile</a><div class="work-contact"><a href="https://www.instagram.com/dltndbsl/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg></a><button type="button" id="work-email" aria-label="Show email address" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="1"/><path d="m2 5 10 8L22 5"/></svg></button><a class="work-email-address" id="work-email-address" href="mailto:linken0w0@gmail.com" hidden>linken0w0@gmail.com</a></div></div></section><section class="work-project" id="project-a" aria-label="Project A"><span class="work-number">01.</span><div class="work-project-body"><h1 class="work-name" data-work-text="a-title">A</h1><p class="work-meta" data-work-text="a-meta">Seoul, South Korea
+2022</p><p class="work-description" data-work-text="a-description" >These are works from when I was around 20 years old. I was going through a rebellious phase at the time. I don&#x27;t think I could take photographs like these anymore.
+Back then, I liked photographing things in dark, muted tones. I think I didn&#x27;t really understand what sadness was supposed to feel like back then. Or maybe I understood it all too well, and compared to who I was then, I&#x27;ve simply become too numb now.
+I can&#x27;t really tell which one it is.
 
-  <script src="supabase-site.js?v=20260902-auth4"></script>
-
-
-  <script src="boot-ready.js?v=20260818-imgfix2"></script>
-<script src="site-fonts.js?v=4-dark"></script><script src="personal-projects.js?v=5-ppt"></script></body>
-</html>
-
+These days, when I&#x27;m sad, all I want to do is sleep.</p><figure class="work-album" data-album="a" data-photos='["assets/work-cargo/a-01.jpg", "assets/work-cargo/a-02.jpg"]'><button class="work-photo" type="button" aria-label="Next photo in project A"><img src="assets/work-cargo/a-01.jpg" alt="Project A, photograph 1" width="1620" height="1080" fetchpriority="high"></button><figcaption class="work-pages" aria-label="Project A photo pages"><button type="button" data-photo="0" aria-label="Project A, photo 1" aria-current="true">1/2</button><button type="button" data-photo="1" aria-label="Project A, photo 2">2/2</button></figcaption></figure></div></section>
+<section class="work-project" id="project-b" aria-label="Project B"><span class="work-number">02.</span><div class="work-project-body"><h1 class="work-name" data-work-text="b-title">B</h1><p class="work-meta" data-work-text="b-meta">Seoul, South Korea
+2023</p><p class="work-description" data-work-text="b-description" hidden></p><figure class="work-album" data-album="b" data-photos='["assets/work-cargo/b-01.jpg", "assets/work-cargo/b-02.jpg"]'><button class="work-photo" type="button" aria-label="Next photo in project B"><img src="assets/work-cargo/b-01.jpg" alt="Project B, photograph 1" width="1620" height="1080" loading="lazy"></button><figcaption class="work-pages" aria-label="Project B photo pages"><button type="button" data-photo="0" aria-label="Project B, photo 1" aria-current="true">1/2</button><button type="button" data-photo="1" aria-label="Project B, photo 2">2/2</button></figcaption></figure></div></section>
+<section class="work-project" id="project-c" aria-label="Project C"><span class="work-number">03.</span><div class="work-project-body"><h1 class="work-name" data-work-text="c-title">C</h1><p class="work-meta" data-work-text="c-meta">Seoul, South Korea
+2022</p><p class="work-description" data-work-text="c-description" >A portrait series of a dear friend, featuring a sunflower borrowed from a restaurant we happened to pass by. More than the photographs themselves, it&#x27;s the person in them that I treasure most.</p><figure class="work-album" data-album="c" data-photos='["assets/work-cargo/c-01.jpg", "assets/work-cargo/c-02.jpg", "assets/work-cargo/c-03.jpg"]'><button class="work-photo" type="button" aria-label="Next photo in project C"><img src="assets/work-cargo/c-01.jpg" alt="Project C, photograph 1" width="1620" height="1080" loading="lazy"></button><figcaption class="work-pages" aria-label="Project C photo pages"><button type="button" data-photo="0" aria-label="Project C, photo 1" aria-current="true">1/3</button><button type="button" data-photo="1" aria-label="Project C, photo 2">2/3</button><button type="button" data-photo="2" aria-label="Project C, photo 3">3/3</button></figcaption></figure></div></section>
+<section class="work-project" id="project-d" aria-label="Project D"><span class="work-number">04.</span><div class="work-project-body"><h1 class="work-name" data-work-text="d-title">D</h1><p class="work-meta" data-work-text="d-meta">Seoul, South Korea
+2023</p><p class="work-description" data-work-text="d-description" hidden></p><figure class="work-album" data-album="d" data-photos='["assets/work-cargo/d-01.jpg", "assets/work-cargo/d-02.jpg"]'><button class="work-photo" type="button" aria-label="Next photo in project D"><img src="assets/work-cargo/d-01.jpg" alt="Project D, photograph 1" width="1620" height="1080" loading="lazy"></button><figcaption class="work-pages" aria-label="Project D photo pages"><button type="button" data-photo="0" aria-label="Project D, photo 1" aria-current="true">1/2</button><button type="button" data-photo="1" aria-label="Project D, photo 2">2/2</button></figcaption></figure></div></section>
+<section class="work-project" id="project-e" aria-label="Project E"><span class="work-number">05.</span><div class="work-project-body"><h1 class="work-name" data-work-text="e-title">E</h1><p class="work-meta" data-work-text="e-meta">Seoul, South Korea
+2023</p><p class="work-description" data-work-text="e-description" hidden></p><figure class="work-album" data-album="e" data-photos='["assets/work-cargo/e-01.jpg", "assets/work-cargo/e-02.jpg", "assets/work-cargo/e-03.jpg"]'><button class="work-photo" type="button" aria-label="Next photo in project E"><img src="assets/work-cargo/e-01.jpg" alt="Project E, photograph 1" width="1620" height="1080" loading="lazy"></button><figcaption class="work-pages" aria-label="Project E photo pages"><button type="button" data-photo="0" aria-label="Project E, photo 1" aria-current="true">1/3</button><button type="button" data-photo="1" aria-label="Project E, photo 2">2/3</button><button type="button" data-photo="2" aria-label="Project E, photo 3">3/3</button></figcaption></figure></div></section></main>
+<time class="work-clock" id="work-clock"></time>
+<div class="work-admin-tools" data-admin-only hidden><button id="work-save" type="button">SAVE PAGE</button><a href="project-manager.html">MANAGE PDF / WEB PROJECTS</a><span id="work-status" class="work-status" role="status"></span></div>
+<dialog id="work-editor"><form id="work-edit-form"><label>TEXT<textarea id="work-edit-text" rows="10"></textarea></label><button type="submit">APPLY</button><button id="work-edit-cancel" type="button">CANCEL</button></form></dialog><input id="work-photo-file" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js?v=20260818-imgfix2"></script><script src="supabase-site.js?v=20260902-auth4"></script><script src="work-cargo.js?v=1-white"></script></body></html>
