@@ -9,25 +9,57 @@
   <link rel="stylesheet" href="cursor.css?v=20260921-pointer1">
   <link rel="stylesheet" href="fonts.css?v=20261006-chisuga">
   <link rel="stylesheet" href="binder.css?v=17">
-  <link rel="stylesheet" href="home-art.css?v=20261007-ppt4">
+  <link rel="stylesheet" href="cargo-home.css?v=1">
 </head>
-<body class="home illustrated-home ppt-home">
-  <main class="illustrated-home-main">
-    <aside class="notebook-margin" aria-label="짧은 글"><div class="margin-heading"><span class="margin-caption">짧은 글</span><button id="notebook-note-edit" data-admin-only hidden type="button" aria-label="짧은 글 편집">편집 ↗</button></div><p id="notebook-margin-text" tabindex="0"></p><div class="home-note-pager" hidden><button id="home-note-prev" type="button" aria-label="이전 글">←</button><span id="home-note-count"></span><button id="home-note-next" type="button" aria-label="다음 글">→</button></div></aside>
-    <section class="home-artwork" aria-label="Yumi birthday drawing">
-      <img src="assets/home-cat-paper.webp" width="1536" height="1024" alt="Yumi wearing a birthday hat beside a cake, drawn on textured paper" fetchpriority="high">
+<body class="home illustrated-home cargo-home">
+  <button class="paper-open cargo-mood" type="button">TODAY’S MOOD ↗</button>
+  <main class="cargo-home-main">
+    <section class="cargo-artwork" aria-label="Umi drawings">
+      <div class="cargo-marquee"><div class="cargo-marquee-track">
+        <div class="cargo-marquee-group">
+          <img src="assets/cargo-cat-1.png" width="1254" height="1254" alt="Playful drawing of Umi" fetchpriority="high">
+          <img src="assets/cargo-cat-2.png" width="1254" height="1254" alt="Another moment with Umi">
+          <img src="assets/cargo-cat-3.png" width="1254" height="1254" alt="Umi, in a little drawing">
+          <img src="assets/cargo-cat-4.jpg" width="1080" height="1207" alt="Umi with a party hat">
+        </div>
+        <div class="cargo-marquee-group" aria-hidden="true">
+          <img src="assets/cargo-cat-1.png" width="1254" height="1254" alt="">
+          <img src="assets/cargo-cat-2.png" width="1254" height="1254" alt="">
+          <img src="assets/cargo-cat-3.png" width="1254" height="1254" alt="">
+          <img src="assets/cargo-cat-4.jpg" width="1080" height="1207" alt="">
+        </div>
+      </div></div>
+      <button id="cargo-motion-toggle" type="button" aria-label="Pause drawing movement" aria-pressed="false">Ⅱ</button>
     </section>
-    <nav class="home-art-nav" aria-label="주 메뉴">
-      <a href="about.html"><span>MY CAT</span></a>
-      <a href="guestbook.html"><span>MESSAGE</span></a>
-      <a href="works.html"><span>PROJECTS</span></a>
-    <button class="paper-open home-mood" type="button">TODAY’S MOOD ↗</button></nav>
+    <section class="cargo-introduction" aria-label="A little planet">
+      <time id="cargo-clock" aria-label="Seoul time"></time>
+      <div class="cargo-symbols" aria-hidden="true">
+        <svg class="cargo-ufo" viewBox="0 0 44 28"><ellipse cx="22" cy="17" rx="18" ry="5" transform="rotate(-17 22 17)"/><path d="M15 15c-2-10 12-16 17-6l1 3M8 21c5 6 17 4 22 0"/></svg>
+        <span class="cargo-grid-symbol"></span>
+      </div>
+      <aside class="notebook-margin" aria-label="Introduction">
+        <div class="margin-heading"><span class="margin-caption" hidden></span><button id="notebook-note-edit" data-admin-only hidden type="button" aria-label="Edit introduction">EDIT ↗</button></div>
+        <p id="notebook-margin-text" tabindex="0">I live on a lonely little planet. On August 23, 2026, a little cat named umi wandered into this place. I gathered my courage and invited her to join me on my journey. She told me she would travel with me.</p>
+        <div class="cargo-word-shadow" aria-hidden="true">I live on a lonely little planet. On August 23, 2026, a little cat named umi wandered into this place. I gathered my courage and invited her to join me on my journey. She told me she would travel with me.</div>
+        <div class="home-note-pager" hidden><button id="home-note-prev" type="button" aria-label="Previous text">←</button><span id="home-note-count"></span><button id="home-note-next" type="button" aria-label="Next text">→</button></div>
+      </aside>
+    </section>
+    <aside class="cargo-sidebar">
+      <blockquote class="cargo-quote"><p>How much better is silence; the coffee cup, the table. How much better to sit by myself like the solitary sea-bird that opens its wings on the stake. Let me sit here for ever with bare things, this coffee cup, this knife, this fork, things in themselves, myself being myself.</p><cite>Virginia Woolf, <i>The Waves</i></cite></blockquote>
+      <nav class="cargo-navigation" aria-label="Main navigation">
+        <a href="about.html">MY CAT</a>
+        <a href="guestbook.html">MESSAGE</a>
+        <a href="works.html">WORK</a>
+        <button id="cargo-info-open" type="button">INFO</button>
+      </nav>
+    </aside>
   </main>
+  <dialog id="cargo-info" aria-labelledby="cargo-info-title"><button id="cargo-info-close" type="button" aria-label="Close information">×</button><h1 id="cargo-info-title">INFO</h1><p>Lee Su-yoon</p><a href="https://www.instagram.com/dltndbsl/" target="_blank" rel="noopener noreferrer">INSTAGRAM ↗</a><a href="mailto:linken0w0@gmail.com">linken0w0@gmail.com</a></dialog>
   <footer class="notebook-contact" aria-label="Contact"><a href="https://www.instagram.com/dltndbsl/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".7"/></svg></a><a href="mailto:linken0w0@gmail.com" aria-label="Email linken0w0@gmail.com"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="1"/><path d="m3 6 9 7 9-7"/></svg></a></footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js?v=20260818-imgfix2"></script>
 
   <script src="supabase-site.js?v=20261002-font3"></script>
-<script src="notebook-ui.js?v=14-pptfont"></script><script src="boot-ready.js?v=20260818-imgfix2"></script><script src="site-fonts.js?v=4-dark"></script></body>
+<script src="notebook-ui.js?v=15-cargo"></script><script src="boot-ready.js?v=20260818-imgfix2"></script><script src="cargo-home.js?v=1"></script><script src="site-fonts.js?v=5-cargo"></script></body>
 </html>
