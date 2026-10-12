@@ -38,7 +38,7 @@
       status.textContent='Saving…';await window.SUY_ADMIN.saveContent('umi-profile-page',next);payload=next;status.textContent='Saved';
     }catch(e){status.textContent=e.message;}finally{button.disabled=false;}
   };
-  (async()=>{
+  window.SUY_UMI_READY=(async()=>{
     try{
       if(window.SUY_SITE_READY)await window.SUY_SITE_READY;
       payload=await window.SUY_ADMIN.loadContent('umi-profile-page')||{};
