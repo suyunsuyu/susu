@@ -1,0 +1,8 @@
+.site-home-link{position:fixed!important;inset:14px 18px auto auto!important;z-index:90!important;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:44px;min-height:48px;padding:4px!important;margin:0!important;border:0!important;border-radius:3px;background:rgba(255,255,255,.95)!important;color:#222!important;text-decoration:none!important;box-shadow:none!important;line-height:1!important;transition:opacity .2s}
+.site-home-link img{display:block!important;width:30px!important;height:30px!important;object-fit:contain!important;background:transparent!important;filter:none!important;mix-blend-mode:normal!important;margin:0!important}
+.site-home-link span{font:9px/1 Arial,Helvetica,sans-serif!important;color:#222!important;letter-spacing:.06em!important}
+.site-home-link:hover{opacity:.7}
+.site-home-link:focus-visible{outline:1px solid #777;outline-offset:3px}
+@media(max-width:600px){.site-home-link{top:10px!important;right:12px!important;width:40px;min-height:44px}.site-home-link img{width:27px!important;height:27px!important}}
+
+body>header .site-section-back{position:absolute;left:18px;right:auto;top:20px;max-width:calc(100% - 100px)}
