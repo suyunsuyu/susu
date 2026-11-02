@@ -10,7 +10,7 @@
     ...[...document.querySelectorAll('[data-umi-text]')].filter(el=>!el.closest('.umi-traits')).map(el=>[el.dataset.umiText,`[data-umi-text="${el.dataset.umiText}"]`,el.dataset.umiText]),['traits','.umi-traits','Article 1 · Full list']
   ];
   const blocks=specs.map(([id,selector,label])=>({id,el:document.querySelector(selector),label})).filter(b=>b.el);
-  const fonts={caption:'"Times New Roman",Times,serif',sans:'Arial,Helvetica,sans-serif',mono:'"Courier New",monospace',korean:'"Nanum Barunpen",sans-serif',chinese:'"ChillHuoFangSong",serif'};
+  const fonts={caption:journal?'UmiMono,ChisugaShotai,monospace':'"Times New Roman",Times,serif',sans:journal?'UmiMono,ChisugaShotai,monospace':'Arial,Helvetica,sans-serif',mono:journal?'UmiMono,ChisugaShotai,monospace':'"Courier New",monospace',korean:'"Nanum Barunpen",sans-serif',chinese:'"ChillHuoFangSong",serif'};
   let payload={blocks:{}},ready=false,active=null,dirty=false;
   const allowed=new Set(['P','DIV','BR','B','STRONG','I','EM','U','S','UL','OL','LI','SPAN','H1','H2','H3','BLOCKQUOTE']);
   function cleanHTML(value){

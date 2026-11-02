@@ -4,7 +4,7 @@ await window.SUY_JOURNAL_READY;
 if(window.SUY_WRITING_READY)await window.SUY_WRITING_READY;
 const key='umi-journal-units',api=window.SUY_ADMIN,clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),safe=s=>{try{const u=new URL(s,location.href);return u.protocol==='https:'||(u.protocol==='http:'&&u.origin===location.origin);}catch{return false;}};
 const uid=()=>crypto.randomUUID?.()||'n-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
-const fonts={sans:'Arial,Helvetica,sans-serif',serif:'Georgia,"Times New Roman",serif',mono:'"Courier New",Courier,monospace',hand:'"Comic Sans MS","Segoe Print",cursive'};
+const fonts={sans:'UmiMono,ChisugaShotai,monospace',serif:'Georgia,"Times New Roman",serif',mono:'UmiMono,ChisugaShotai,monospace',hand:'"Comic Sans MS","Segoe Print",cursive'};
 function textStyle(n,el){const content=el.querySelector('.unit-text-value');for(const target of [el,content]){if(!target)continue;target.style.setProperty('font-family',fonts[n.font]||fonts.sans,'important');target.style.fontWeight=n.bold?'700':'400';target.style.fontStyle=n.italic?'italic':'normal';target.style.textDecoration=n.underline?'underline':'none';}el.style.color=/^#[a-f\d]{6}$/i.test(n.color||'')?n.color:'#30302e';el.style.lineHeight=n.leading||1.25;el.style.letterSpacing=(n.spacing||0)/10+'cqw';el.style.fontSize=n.fontSize/10+'cqw';el.style.textAlign=n.align;}
 let saved={},loaded=false,active=null,draft=null,selected=null,dirty=false,uploading=false;
 const originals=new Map(),copy=x=>JSON.parse(JSON.stringify(x));
