@@ -33,7 +33,7 @@
     const block=blocks.find(b=>b.id===id),saved=payload.blocks?.[id];if(!block||!saved)return;
     block.el.innerHTML=cleanHTML(saved.html);block.el.classList.add('writing-content');
     const st=saved.style||{};
-    if(journal)block.el.style.setProperty('font-family',fonts.sans,'important');else if(fonts[st.font])block.el.style.setProperty('font-family',fonts[st.font],'important');
+    if(fonts[st.font])block.el.style.setProperty('font-family',fonts[st.font],'important');
     for(const [prop,min,max,unit] of [['font-size',8,100,'px'],['line-height',.8,3,''],['letter-spacing',-2,12,'px'],['margin-top',0,300,'px'],['margin-bottom',0,300,'px'],['width',20,100,'%']]){const value=Number(st[prop]);if(Number.isFinite(value))block.el.style.setProperty(prop,Math.min(max,Math.max(min,value))+unit,'important');}
     if(/^#[a-f\d]{6}$/i.test(st.color||''))block.el.style.setProperty('color',st.color,'important');
     if(['left','center','right','justify'].includes(st.align))block.el.style.setProperty('text-align',st.align,'important');
@@ -58,7 +58,7 @@
     const saved=payload.blocks[active.id],st=getComputedStyle(active.el);
     canvas.innerHTML=cleanHTML(saved?.html||(home&&active.id==='intro'?window.SUY_NOTEBOOK_TEXT?.():null)||active.el.innerHTML);
     const rgb=st.color.match(/\d+/g);const color=rgb?'#'+rgb.slice(0,3).map(n=>Number(n).toString(16).padStart(2,'0')).join(''):'#333333';
-    const style=saved?.style||{};$('#writing-font').value=journal?'sans':style.font||(cat?'caption':/courier|mono/i.test(st.fontFamily)?'mono':'sans');$('#writing-color').value=style.color||color;$('#writing-align').value=style.align||(['left','center','right','justify'].includes(st.textAlign)?st.textAlign:'left');
+    const style=saved?.style||{};$('#writing-font').value=style.font||(cat?'caption':/courier|mono/i.test(st.fontFamily)?'mono':'sans');$('#writing-color').value=style.color||color;$('#writing-align').value=style.align||(['left','center','right','justify'].includes(st.textAlign)?st.textAlign:'left');
     $('#writing-weight').value=style.weight||(Number(st.fontWeight)>=600?'700':'400');$('#writing-slant').value=style.slant||st.fontStyle;$('#writing-caps').value=style.caps||(st.fontVariant.includes('small-caps')?'small-caps':'normal');
     const currentWidth=journal?Math.round(active.el.getBoundingClientRect().width/Math.max(1,active.el.parentElement.getBoundingClientRect().width)*100):100;
     const defaults={'font-size':parseFloat(st.fontSize),'line-height':parseFloat(st.lineHeight)/parseFloat(st.fontSize)||1.25,'letter-spacing':parseFloat(st.letterSpacing)||0,width:Math.max(20,Math.min(100,currentWidth)),'margin-top':parseFloat(st.marginTop)||0,'margin-bottom':parseFloat(st.marginBottom)||0};
