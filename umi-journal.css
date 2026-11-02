@@ -171,3 +171,7 @@ body.umi-journal,body.umi-journal *{font-family:UmiMono,ChisugaShotai,monospace!
 /* Saved writing remains authoritative at every screen size. */
 body.umi-journal .writing-content *{font-family:inherit!important}
 @media(max-width:700px){.journal-directory{border-top:0;border-bottom:0;border-block:0}}
+
+/* Separate the journal with whitespace rather than rules. */
+.umi-journal .journal-gallery{border-left:0;border-right:0}
+.umi-journal .journal-why,.umi-journal .journal-story{border-top:0}
