@@ -1,0 +1,93 @@
+:root{--journal-paper:#fffff8;--journal-ink:#30302e;--journal-line:#d7d7d0}
+*{box-sizing:border-box}
+html,body.umi-journal{margin:0;background:var(--journal-paper);color:var(--journal-ink);height:100%;font:11px/1.22 'Courier New',Courier,monospace;letter-spacing:.015em}
+.umi-journal [hidden]{display:none!important}
+.umi-journal a{color:inherit;text-decoration:none}
+.umi-journal a:hover{text-decoration:underline}
+.umi-journal button{font:inherit;letter-spacing:inherit;color:inherit;cursor:pointer}
+.journal-layout{display:grid;grid-template-columns:25% 50% 25%;height:100svh;padding:13px 0 0}
+.journal-pane{min-width:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#cecec5 transparent}
+.journal-pane:focus-visible{outline:1px solid #999;outline-offset:-3px}
+.journal-left{padding:14px 12px 25px 5px;position:relative}
+.journal-profile{min-height:calc(40svh - 35px)}
+.journal-mark{display:block;font-size:12px;line-height:1;margin-bottom:2px;color:#70706b}
+.journal-profile p{margin:0;white-space:pre-line}
+.journal-why{border-top:1px solid var(--journal-line);padding-top:18px;padding-bottom:35px}
+.journal-why h1,.journal-directory h2,.journal-story h2{font:inherit;letter-spacing:inherit;margin:0;font-weight:400}
+.journal-why>p{margin-top:28px;white-space:pre-line;line-height:1.24}
+.journal-clock{position:fixed;left:5px;bottom:1px;font-size:10px;color:#a6a69f;font-variant-numeric:tabular-nums;background:var(--journal-paper);z-index:2}
+.journal-gallery{border-left:1px solid var(--journal-line);border-right:1px solid var(--journal-line);padding:0 10px 0;scroll-behavior:smooth;isolation:isolate}
+.journal-gallery-lead{height:10svh;min-height:60px;border-bottom:1px solid var(--journal-line);margin-bottom:44px}
+.journal-entry{padding:0 0 24px;margin:0 0 18px;border-bottom:1px solid var(--journal-line);scroll-margin-top:18px;position:relative}
+.journal-art{display:block;width:100%;padding:0;margin:0;position:relative;border:0;background:transparent;text-align:left;line-height:0;cursor:zoom-in!important}
+.journal-art img{display:block;width:100%;height:auto;max-height:none;object-fit:contain;background:transparent;filter:none}
+.journal-art.art-small{width:48%;margin:20px auto 34px}
+.journal-enlarge{position:absolute;right:12px;bottom:12px;font:20px/1 Arial,sans-serif;opacity:0;transform:translate(-2px,-2px);transition:opacity .22s,transform .3s}
+.journal-art:hover .journal-enlarge,.journal-art:focus-visible .journal-enlarge{opacity:1;transform:none}
+.journal-art:focus-visible{outline:1px solid #aaa;outline-offset:3px}
+.journal-caption{padding:22px 4px 20px;min-height:38px}
+.journal-caption p{margin:0;white-space:pre-line}
+.caption-right{width:50%;margin-left:auto!important;text-align:center}
+.caption-left{width:50%;text-align:center}
+.caption-center{text-align:center}
+.caption-food{font-size:14px;line-height:1.28;text-align:center;padding:14px 0 34px}
+.caption-split{display:grid;grid-template-columns:1fr 1fr;gap:16px;text-align:center}
+.caption-split>p:first-child{padding-top:10px}
+.caption-extras{display:flex;justify-content:flex-end;align-items:center;gap:12px;margin:22px 2% 0;min-height:30px;text-align:center}
+.caption-extras p{max-width:65%;white-space:pre-line}
+.journal-sticker{display:block;width:18%;height:auto;object-fit:contain;background:transparent}
+.journal-sticker.tin{width:25px;transform:rotate(7deg);transition:transform .4s}
+.caption-extras:hover .tin{transform:rotate(-7deg)}
+.journal-sticker.poop{width:60%;margin:5px 0 0 auto}
+.journal-sticker.hand{width:19%}
+.journal-sticker.thumbs{width:15%}
+.food-top-sticker{display:flex;justify-content:flex-end;padding:0 6% 8px 0}
+.journal-sticker.food-reaction{width:13%;max-width:100px}
+.journal-pair{display:grid;grid-template-columns:1fr 1fr;align-items:end;gap:8px;padding-top:10px}
+.journal-entry[data-entry=umi] .journal-caption{padding:0;min-height:0}
+.journal-right{padding:37px 12px 35px;}
+.journal-directory{padding-right:45px;min-height:263px;}
+.journal-directory h2{margin-bottom:14px}
+.journal-directory ol{margin:0;padding:0;list-style:none;width:115px}
+.journal-directory li{height:14px}
+.journal-directory button{display:flex;align-items:center;gap:12px;background:none;border:0;padding:0;width:100%;text-align:left;height:14px;position:relative}
+.journal-directory button>span:first-child{width:20px}
+.journal-directory button[aria-current=true]::before{content:'';position:absolute;width:3px;height:3px;background:#363632;left:-7px;top:5px}
+.gallery-meter{height:1px;flex:1;background:#e5e5de;overflow:hidden;opacity:0;transition:opacity .35s}
+.gallery-meter i{display:block;background:#55554b;width:100%;height:100%;transform:scaleX(var(--read,0));transform-origin:left}
+.journal-directory button[aria-current=true] .gallery-meter,.journal-directory button:hover .gallery-meter,.journal-directory button.is-read .gallery-meter{opacity:1}
+#journal-position{display:block;font-size:9px;color:#9a9a91;margin-top:12px}
+.journal-story{border-top:1px solid var(--journal-line);padding-top:18px;margin-top:0}
+.journal-story h2{max-width:150px;margin-bottom:14px}
+.journal-story-text{width:66%;margin:0 0 0 auto;white-space:pre-line;line-height:1.24}
+.journal-end{display:flex;gap:20px;flex-wrap:wrap;justify-content:space-between;padding:24px 4px 60px;color:#88887f;font-size:10px}
+.journal-end button{border:0;padding:0;background:none}
+.journal-end button:hover{text-decoration:underline}
+.journal-skip{position:fixed;left:10px;top:-60px;z-index:99;background:var(--journal-paper);padding:10px}
+.journal-skip:focus{top:10px}
+.umi-journal .site-home-link{background:var(--journal-paper)!important}
+.umi-journal .site-home-link img{mix-blend-mode:multiply!important}
+.umi-journal .writing-tools{position:fixed;bottom:38px;left:8px;z-index:20;background:var(--journal-paper);padding:6px}
+.journal-admin{position:fixed;bottom:72px;left:8px;z-index:20;background:var(--journal-paper);padding:6px;font-size:10px;max-width:23vw}
+.journal-admin button{background:none;border:1px solid #bbb;padding:6px;font-size:10px}
+.journal-admin span{display:block;margin-top:5px}
+.umi-journal #admin-auth-button{position:fixed;left:5px;right:auto;bottom:14px;border:0;background:var(--journal-paper);color:#999;font:9px 'Courier New',monospace;padding:0}
+.umi-journal .admin-auth-dialog{width:min(420px,90vw);background:var(--journal-paper);border:1px solid #aaa;padding:24px;color:#333}
+.umi-journal .admin-auth-card{display:grid;gap:14px}
+.umi-journal .admin-auth-card label{display:grid;gap:6px}
+.umi-journal .admin-auth-head{display:flex;justify-content:space-between}
+.umi-journal .admin-auth-card input{width:100%;padding:9px;border:1px solid #ccc;background:transparent;font:inherit}
+.umi-journal .admin-auth-card button{background:none;border:1px solid #bbb;padding:8px}
+#journal-photo-dialog{width:95vw;max-width:none;height:94svh;max-height:none;padding:30px;background:var(--journal-paper);border:0;overflow:hidden}
+#journal-photo-dialog::backdrop{background:#25251fbb}
+#journal-photo-large{display:block;width:100%;height:100%;object-fit:contain;background:transparent}
+#journal-photo-close{position:absolute;right:16px;top:10px;background:none;border:0;font:26px Arial,sans-serif;padding:5px}
+.journal-caption[data-reveal]{opacity:1;transform:none}
+.journal-motion .journal-caption[data-reveal]{opacity:0;transform:translateY(9px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
+.journal-motion .journal-caption.is-visible{opacity:1;transform:none}
+.journal-entry[data-entry=earphones] .journal-caption.is-visible{animation:journal-ink .9s ease-out}
+@keyframes journal-ink{from{letter-spacing:.11em}to{letter-spacing:.015em}}
+@media(min-width:1700px){.journal-profile{min-height:calc(40svh - 16px)}.journal-directory{min-height:263px}}
+@media(max-width:1050px) and (min-width:701px){.journal-layout{grid-template-columns:23% 54% 23%}.journal-left,.journal-right{font-size:10px}.journal-story-text{width:90%}.journal-caption{font-size:10px}.caption-food{font-size:12px}.journal-right{padding-left:10px}}
+@media(max-width:700px){html,body.umi-journal{height:auto}.journal-layout{display:flex;flex-direction:column;height:auto;padding:0}.journal-pane{overflow:visible}.journal-left{padding:24px 18px 22px}.journal-profile{min-height:100px;padding-right:60px}.journal-why{padding:18px 0 0}.journal-why>p{margin-top:22px;max-width:48em}.journal-gallery{order:2;border:0;padding:0 12px;margin-top:52px;overflow:visible}.journal-gallery-lead{height:0;min-height:0;margin-bottom:24px}.journal-right{display:contents}.journal-directory{position:sticky;top:0;z-index:15;order:1;min-height:0;padding:9px 66px 9px 12px;background:var(--journal-paper);border-block:1px solid var(--journal-line);display:flex;align-items:center;gap:10px}.journal-directory>.journal-mark,.journal-directory h2{display:none}.journal-directory ol{display:flex;justify-content:space-between;width:100%;gap:4px}.journal-directory li{height:22px;flex:1}.journal-directory button{width:100%;height:22px;display:block;text-align:center;padding-bottom:4px}.journal-directory button>span:first-child{width:auto}.journal-directory button[aria-current=true]::before{display:none}.gallery-meter{display:block;position:absolute;bottom:0;left:0;width:100%;height:2px;opacity:.4}.journal-directory button[aria-current=true]{font-weight:700}#journal-position{display:none}.journal-story{order:3;padding:24px 18px 70px;margin:0 12px}.journal-story h2{max-width:none;margin-bottom:26px}.journal-story-text{width:100%;max-width:54em}.journal-entry{margin-bottom:22px;scroll-margin-top:60px}.journal-art.art-small{width:65%}.journal-caption{padding:18px 2px 20px;font-size:10px}.caption-food{font-size:11px;padding-top:5px}.journal-pair{gap:0}.caption-right{width:65%}.caption-extras{margin-top:15px}.journal-clock{position:static;display:block;margin-top:24px}.journal-end{padding-bottom:34px}.umi-journal .site-home-link{z-index:30!important;top:5px!important;right:10px!important}.umi-journal .writing-tools{max-width:95vw;bottom:28px}.journal-admin{max-width:90vw;bottom:75px}.umi-journal #admin-auth-button{bottom:5px;padding:3px;background:var(--journal-paper)}}
+@media(prefers-reduced-motion:reduce){.journal-gallery{scroll-behavior:auto}.journal-motion .journal-caption[data-reveal]{opacity:1;transform:none;transition:none;animation:none!important}.journal-sticker.tin{transition:none}.journal-enlarge{transition:none}}

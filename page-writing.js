@@ -2,9 +2,10 @@
   'use strict';
   const home=document.body.classList.contains('cargo-home');
   const cat=document.body.classList.contains('umi-page');
-  if(!home&&!cat)return;
-  const key=home?'page-writing-home':'page-writing-umi';
-  const specs=home?[['intro','#notebook-margin-text','Introduction'],['quote','.cargo-quote p','Quotation'],['credit','.cargo-quote cite','Quotation credit'],['info','#cargo-info p','Information'],['mood','.cargo-mood','Mood label'],...['cat','message','work'].map((id,i)=>['nav-'+id,`.cargo-navigation a:nth-of-type(${i+1})`,'Navigation · '+id]),['nav-info','#cargo-info-open','Navigation · info']]:[
+  const journal=document.body.classList.contains('umi-journal');
+  if(!home&&!cat&&!journal)return;
+  const key=journal?'umi-journal-writing':home?'page-writing-home':'page-writing-umi';
+  const specs=journal?[...document.querySelectorAll('[data-journal-text]')].map(el=>[el.dataset.journalText,`[data-journal-text="${el.dataset.journalText}"]`,el.dataset.journalText]):home?[['intro','#notebook-margin-text','Introduction'],['quote','.cargo-quote p','Quotation'],['credit','.cargo-quote cite','Quotation credit'],['info','#cargo-info p','Information'],['mood','.cargo-mood','Mood label'],...['cat','message','work'].map((id,i)=>['nav-'+id,`.cargo-navigation a:nth-of-type(${i+1})`,'Navigation · '+id]),['nav-info','#cargo-info-open','Navigation · info']]:[
     ...[...document.querySelectorAll('[data-umi-text]')].filter(el=>!el.closest('.umi-traits')).map(el=>[el.dataset.umiText,`[data-umi-text="${el.dataset.umiText}"]`,el.dataset.umiText]),['traits','.umi-traits','Article 1 · Full list']
   ];
   const blocks=specs.map(([id,selector,label])=>({id,el:document.querySelector(selector),label})).filter(b=>b.el);
@@ -58,7 +59,8 @@
     const rgb=st.color.match(/\d+/g);const color=rgb?'#'+rgb.slice(0,3).map(n=>Number(n).toString(16).padStart(2,'0')).join(''):'#333333';
     const style=saved?.style||{};$('#writing-font').value=style.font||(cat?'caption':/courier|mono/i.test(st.fontFamily)?'mono':'sans');$('#writing-color').value=style.color||color;$('#writing-align').value=style.align||st.textAlign||'left';
     $('#writing-weight').value=style.weight||(Number(st.fontWeight)>=600?'700':'400');$('#writing-slant').value=style.slant||st.fontStyle;$('#writing-caps').value=style.caps||(st.fontVariant.includes('small-caps')?'small-caps':'normal');
-    const defaults={'font-size':parseFloat(st.fontSize),'line-height':parseFloat(st.lineHeight)/parseFloat(st.fontSize)||1.25,'letter-spacing':parseFloat(st.letterSpacing)||0,width:100,'margin-top':parseFloat(st.marginTop)||0,'margin-bottom':parseFloat(st.marginBottom)||0};
+    const currentWidth=journal?Math.round(active.el.getBoundingClientRect().width/Math.max(1,active.el.parentElement.getBoundingClientRect().width)*100):100;
+    const defaults={'font-size':parseFloat(st.fontSize),'line-height':parseFloat(st.lineHeight)/parseFloat(st.fontSize)||1.25,'letter-spacing':parseFloat(st.letterSpacing)||0,width:Math.max(20,Math.min(100,currentWidth)),'margin-top':parseFloat(st.marginTop)||0,'margin-bottom':parseFloat(st.marginBottom)||0};
     for(const [prop,f]of Object.entries(fields))$('#writing-'+f).value=style[prop]??defaults[prop];preview();
     if(cat){if(dialog.open)collectLayout();layoutSection=active.el.closest('.umi-green')?'second':'first';showLayout();}
   }
