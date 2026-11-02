@@ -141,7 +141,7 @@ html,body.umi-journal{margin:0;background:var(--journal-paper);color:var(--journ
 @media(prefers-reduced-motion:reduce){.journal-entry *{animation:none!important}.journal-motion .journal-caption[data-reveal]{opacity:1!important;transform:none!important;transition:none!important}.scene-detail{display:none!important}}
 
 /* A single body typeface and quiet, contextual editing. */
-body.umi-journal,body.umi-journal *{font-family:UmiMono,ChisugaShotai,monospace!important}
+body.umi-journal,body.umi-journal *{font-family:Arial,Helvetica,sans-serif!important}
 .umi-journal .writing-tools{display:none!important}
 .umi-journal #writing-dialog label[hidden]{display:none!important}
 @media(min-width:701px){
@@ -172,6 +172,6 @@ body.umi-journal,body.umi-journal *{font-family:UmiMono,ChisugaShotai,monospace!
 body.umi-journal .writing-content *{font-family:inherit!important}
 @media(max-width:700px){.journal-directory{border-top:0;border-bottom:0;border-block:0}}
 
-/* Separate the journal with whitespace rather than rules. */
+/* Whitespace replaces page separator rules. */
 .umi-journal .journal-gallery{border-left:0;border-right:0}
 .umi-journal .journal-why,.umi-journal .journal-story{border-top:0}
