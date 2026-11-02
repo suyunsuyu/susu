@@ -27,7 +27,7 @@
   if(active!==lastActive){buttons.forEach((b,i)=>{if(i===active)b.setAttribute('aria-current','true');else b.removeAttribute('aria-current');});entries.forEach((e,i)=>e.classList.toggle('is-scene-active',i===active));document.querySelector('#journal-position').textContent=String(active+1).padStart(2,'0')+' / '+entries.length;lastActive=active;}
  }
  function requestUpdate(){if(!scheduled){scheduled=true;requestAnimationFrame(update);}}
- function jump(id){const target=document.getElementById(id);if(!target?.classList.contains('journal-entry'))return;const behavior=reduced.matches?'auto':'smooth';if(desktop.matches)gallery.scrollTo({top:gallery.scrollTop+target.getBoundingClientRect().top-gallery.getBoundingClientRect().top-18,behavior});else target.scrollIntoView({behavior,block:'start'});}
+ function jump(id){const target=document.getElementById(id);if(!target?.classList.contains('journal-entry'))return;const behavior=reduced.matches?'auto':'smooth';if(desktop.matches)gallery.scrollTo({top:target===entries[0]?0:gallery.scrollTop+target.getBoundingClientRect().top-gallery.getBoundingClientRect().top-18,behavior});else target.scrollIntoView({behavior,block:'start'});}
  gallery.addEventListener('scroll',requestUpdate,{passive:true});addEventListener('scroll',requestUpdate,{passive:true});addEventListener('resize',requestUpdate,{passive:true});desktop.addEventListener('change',()=>{observer.disconnect();observer=makeObserver();entries.forEach(decorate);requestUpdate();});
  document.querySelector('#journal-back-top').onclick=()=>jump(entries[0].id);
  if(!reduced.matches)document.documentElement.classList.add('journal-motion');
