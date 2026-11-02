@@ -6,3 +6,6 @@
 @media(max-width:600px){.site-home-link{top:10px!important;right:12px!important;width:40px;min-height:44px}.site-home-link img{width:27px!important;height:27px!important}}
 
 body>header .site-section-back{position:absolute;left:18px;right:auto;top:20px;max-width:calc(100% - 100px)}
+
+
+.site-home-link{background:transparent!important}.site-home-link img{mix-blend-mode:normal!important;image-rendering:auto}

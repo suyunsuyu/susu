@@ -377,33 +377,10 @@
     $('#reset-covers').onclick=async()=>{if(!await isAdmin()||!confirm('Remove both cover images?'))return;covers={};await saveContent('covers',covers);render()};
   }
 
-  async function initDiary(){
-    if(!$('#diary-main-trigger'))return;
-    let payload=await loadContent('diary').catch(()=>null)||{items:[]};let items=Array.isArray(payload.items)?payload.items:[];
-    const fontMap={serif:'var(--serif)',sans:'var(--sans)',mono:'var(--mono)',cormorant:"'Cormorant Garamond',serif",bodoni:"'Bodoni Moda',serif",hand:"'Caveat',cursive",cute:"'Gaegu','Nanum Pen Script',cursive",pen:"'Nanum Pen Script',cursive",clean:"'Quicksand',sans-serif",modern:"'Josefin Sans',sans-serif"};
-    const normalizedStyle=s=>{s=s||{};const font=fontMap[s.font]?s.font:'serif',n=Number(s.size),size=Number.isFinite(n)&&n>=10&&n<=96?String(n):'',color=/^#[0-9a-f]{6}$/i.test(s.color||'')?s.color:'#111111';return{font,size,color}};
-    const styleAttr=s=>{const v=normalizedStyle(s),parts=[`font-family:${fontMap[v.font]}`];if(v.size)parts.push(`font-size:${v.size}px`);if(v.color)parts.push(`color:${v.color}`);return parts.join(';')};
-    const dateList=$('#diary-date-list'),detail=$('#diary-detail'),trigger=$('#diary-main-trigger');
-    const renderDates=()=>{dateList.innerHTML=items.length?items.map((x,i)=>`<button type="button" class="diary-date-button" data-diary-index="${i}">${esc(x.date||'UNDATED')}</button>`).join(''):'<p class="diary-empty">NO DIARY ENTRIES YET.</p>';$$('[data-diary-index]',dateList).forEach(b=>b.onclick=()=>showDetail(Number(b.dataset.diaryIndex)))};
-    const showDetail=i=>{const x=items[i];if(!x)return;detail.innerHTML=`<article class="diary-reading-entry">${x.image?`<img src="${esc(x.image)}" alt="diary photo">`:''}<small>${esc(x.date||'')}</small><p style="${styleAttr(x.style)}">${esc(x.text||'').replace(/\n/g,'<br>')}</p></article>`;detail.hidden=false;detail.scrollIntoView({behavior:'smooth',block:'start'})};
-    trigger.onclick=()=>{dateList.hidden=!dateList.hidden;trigger.setAttribute('aria-expanded',String(!dateList.hidden));trigger.querySelector('span').textContent=dateList.hidden?'OPEN DIARY ↘':'CLOSE DIARY ↗';if(!dateList.hidden)renderDates()};
-    const manager=()=>{$('#diary-manager').innerHTML=items.map((x,i)=>`<div class="diary-row"><span>${esc(x.date||'UNTITLED')}</span><button type="button" data-remove="${i}">×</button></div>`).join('');$$('[data-remove]',$('#diary-manager')).forEach(b=>b.onclick=()=>{items.splice(Number(b.dataset.remove),1);manager();renderDates()})};
-    const readStyleControls=()=>normalizedStyle({font:$('#diary-font')?.value||'serif',size:$('#diary-size')?.value||'',color:$('#diary-color')?.value||'#111111'});
-    const updatePreview=()=>{const preview=$('#diary-style-preview');if(!preview)return;const s=readStyleControls();preview.textContent=$('#diary-text')?.value||'Write here…';preview.style.fontFamily=fontMap[s.font];preview.style.fontSize=s.size?`${s.size}px`:'';preview.style.color=s.color};
-    const syncColor=(fromHex=false)=>{const picker=$('#diary-color'),hex=$('#diary-color-hex');if(!picker||!hex)return;if(fromHex){if(/^#[0-9a-f]{6}$/i.test(hex.value)){picker.value=hex.value;updatePreview()}}else{hex.value=picker.value;updatePreview()}};
-    const resetComposer=()=>{$('#diary-date').value='';$('#diary-text').value='';$('#diary-image').value='';$('#diary-font').value='serif';$('#diary-size').value='';$('#diary-color').value='#111111';$('#diary-color-hex').value='#111111';updatePreview()};
-    ['diary-text','diary-font','diary-size'].forEach(id=>$('#'+id)?.addEventListener('input',updatePreview));$('#diary-color')?.addEventListener('input',()=>syncColor(false));$('#diary-color-hex')?.addEventListener('input',()=>syncColor(true));updatePreview();
-    $('#edit-diary').onclick=()=>{manager();updatePreview();$('#diary-dialog').showModal()};
-    $('#close-diary-editor').onclick=()=>$('#diary-dialog').close();
-    $('#new-diary-entry').onclick=async()=>{if(!await isAdmin())return;try{const text=$('#diary-text').value.trim();if(!text){alert('Please write something first.');return}const f=$('#diary-image').files?.[0];let image='';if(f)image=await uploadPublic(f,'diary');items.unshift({date:$('#diary-date').value,text,image,style:readStyleControls()});resetComposer();manager();renderDates()}catch(err){alert('UPLOAD FAILED: '+err.message)}};
-    $('#save-diary').onclick=async()=>{if(!await isAdmin())return;try{await saveContent('diary',{items});renderDates();$('#diary-dialog').close()}catch(err){alert('SAVE FAILED: '+err.message)}};
-    renderDates();
-  }
-
   async function init(){
     try{
       authUI();await refreshAdminState();
-      await Promise.allSettled([initGuestbook(),initProfile(),initCovers(),initDiary()]);
+      await Promise.allSettled([initGuestbook(),initProfile(),initCovers()]);
     } catch (error) {
       console.error('Supabase site initialization failed', error);
     } finally {

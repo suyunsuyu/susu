@@ -1,10 +1,11 @@
-(() => {
+(async () => {
   'use strict';
   const home=document.body.classList.contains('cargo-home');
   const cat=document.body.classList.contains('umi-page');
   const journal=document.body.classList.contains('umi-journal');
   if(!home&&!cat&&!journal)return;
   const key=journal?'umi-journal-writing':home?'page-writing-home':'page-writing-umi';
+  if(journal&&window.SUY_JOURNAL_READY)await window.SUY_JOURNAL_READY;
   const specs=journal?[...document.querySelectorAll('[data-journal-text]')].map(el=>[el.dataset.journalText,`[data-journal-text="${el.dataset.journalText}"]`,el.dataset.journalText]):home?[['intro','#notebook-margin-text','Introduction'],['quote','.cargo-quote p','Quotation'],['credit','.cargo-quote cite','Quotation credit'],['info','#cargo-info p','Information'],['mood','.cargo-mood','Mood label'],...['cat','message','work'].map((id,i)=>['nav-'+id,`.cargo-navigation a:nth-of-type(${i+1})`,'Navigation · '+id]),['nav-info','#cargo-info-open','Navigation · info']]:[
     ...[...document.querySelectorAll('[data-umi-text]')].filter(el=>!el.closest('.umi-traits')).map(el=>[el.dataset.umiText,`[data-umi-text="${el.dataset.umiText}"]`,el.dataset.umiText]),['traits','.umi-traits','Article 1 · Full list']
   ];
