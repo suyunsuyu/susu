@@ -139,3 +139,20 @@ html,body.umi-journal{margin:0;background:var(--journal-paper);color:var(--journ
 .umi-journal [data-journal-image]{cursor:default}
 @media(max-width:700px){.journal-index-track{width:100%;margin:0;padding-left:6px}.journal-progress{left:0;top:0;bottom:0;width:1px}.journal-directory button[aria-current=true]::before{display:none}.journal-gallery .journal-art{width:94%}.caption-food{width:96%}.caption-split{grid-template-columns:25% 1fr;gap:15px}.journal-pair .journal-art{width:100%}}
 @media(prefers-reduced-motion:reduce){.journal-entry *{animation:none!important}.journal-motion .journal-caption[data-reveal]{opacity:1!important;transform:none!important;transition:none!important}.scene-detail{display:none!important}}
+
+/* A single body typeface and quiet, contextual editing. */
+body.umi-journal,body.umi-journal *{font-family:Arial,Helvetica,sans-serif!important}
+.umi-journal .writing-tools{display:none!important}
+.umi-journal #writing-dialog label[hidden]{display:none!important}
+@media(min-width:701px){
+ .journal-layout{grid-template-columns:24% 52% 24%;column-gap:0}
+ .journal-left{padding-right:14px;padding-left:14px}
+ .journal-right{padding-left:14px;padding-right:14px}
+ .journal-why{margin-inline:-14px;padding-inline:14px}
+ .journal-story{margin-inline:-14px;padding-inline:14px}
+ .journal-gallery .journal-art{width:76%}
+ .journal-gallery .journal-art.art-small{width:41%}
+ .journal-pair .journal-art{width:100%}
+}
+
+.journal-caption .caption-center{text-align:center;width:100%;margin-inline:auto}

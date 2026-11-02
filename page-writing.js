@@ -33,7 +33,7 @@
     const block=blocks.find(b=>b.id===id),saved=payload.blocks?.[id];if(!block||!saved)return;
     block.el.innerHTML=cleanHTML(saved.html);block.el.classList.add('writing-content');
     const st=saved.style||{};
-    if(fonts[st.font])block.el.style.setProperty('font-family',fonts[st.font],'important');
+    if(journal)block.el.style.setProperty('font-family',fonts.sans,'important');else if(fonts[st.font])block.el.style.setProperty('font-family',fonts[st.font],'important');
     for(const [prop,min,max,unit] of [['font-size',8,100,'px'],['line-height',.8,3,''],['letter-spacing',-2,12,'px'],['margin-top',0,300,'px'],['margin-bottom',0,300,'px'],['width',20,100,'%']]){const value=Number(st[prop]);if(Number.isFinite(value))block.el.style.setProperty(prop,Math.min(max,Math.max(min,value))+unit,'important');}
     if(/^#[a-f\d]{6}$/i.test(st.color||''))block.el.style.setProperty('color',st.color,'important');
     if(['left','center','right','justify'].includes(st.align))block.el.style.setProperty('text-align',st.align,'important');
@@ -58,7 +58,7 @@
     const saved=payload.blocks[active.id],st=getComputedStyle(active.el);
     canvas.innerHTML=cleanHTML(saved?.html||(home&&active.id==='intro'?window.SUY_NOTEBOOK_TEXT?.():null)||active.el.innerHTML);
     const rgb=st.color.match(/\d+/g);const color=rgb?'#'+rgb.slice(0,3).map(n=>Number(n).toString(16).padStart(2,'0')).join(''):'#333333';
-    const style=saved?.style||{};$('#writing-font').value=style.font||(cat?'caption':/courier|mono/i.test(st.fontFamily)?'mono':'sans');$('#writing-color').value=style.color||color;$('#writing-align').value=style.align||st.textAlign||'left';
+    const style=saved?.style||{};$('#writing-font').value=journal?'sans':style.font||(cat?'caption':/courier|mono/i.test(st.fontFamily)?'mono':'sans');$('#writing-color').value=style.color||color;$('#writing-align').value=style.align||(['left','center','right','justify'].includes(st.textAlign)?st.textAlign:'left');
     $('#writing-weight').value=style.weight||(Number(st.fontWeight)>=600?'700':'400');$('#writing-slant').value=style.slant||st.fontStyle;$('#writing-caps').value=style.caps||(st.fontVariant.includes('small-caps')?'small-caps':'normal');
     const currentWidth=journal?Math.round(active.el.getBoundingClientRect().width/Math.max(1,active.el.parentElement.getBoundingClientRect().width)*100):100;
     const defaults={'font-size':parseFloat(st.fontSize),'line-height':parseFloat(st.lineHeight)/parseFloat(st.fontSize)||1.25,'letter-spacing':parseFloat(st.letterSpacing)||0,width:Math.max(20,Math.min(100,currentWidth)),'margin-top':parseFloat(st.marginTop)||0,'margin-bottom':parseFloat(st.marginBottom)||0};
@@ -79,9 +79,16 @@
     try{if(!ready||!await window.SUY_ADMIN.isAdmin())throw Error('Admin login required');collect();collectLayout();status.textContent='Saving…';const current=await window.SUY_ADMIN.loadContent(key)||{};await window.SUY_ADMIN.saveContent(key,{...current,...payload});blocks.forEach(b=>apply(b.id));applyLayouts();draftBackup=JSON.stringify(payload);dirty=false;status.textContent='Saved';document.querySelector('.writing-tools span').textContent='Saved';dialog.close();}catch(err){status.textContent=err.message;}finally{button.disabled=false;}
   };
   const tools=document.createElement('div');tools.className='writing-tools';tools.setAttribute('data-admin-only','');tools.hidden=true;const button=document.createElement('button');button.type='button';button.textContent='EDIT TEXT & LAYOUT';button.onclick=()=>open(blocks[0].id);const tip=document.createElement('span');tip.textContent='Double-click text to edit';tools.append(button,tip);(cat?document.querySelector('.umi-footer'):document.body).append(tools);
+  if(journal){
+    $('#writing-font').closest('label').hidden=true;
+    $('#writing-align').previousSibling.textContent='TEXT ALIGNMENT';
+    [...$('#writing-align').options].forEach(o=>{if(o.value==='justify')o.remove();else{const value=o.value;o.value=value;o.textContent={left:'Left',center:'Center',right:'Right'}[value];}});
+    const topics=$('#journal-add-topic');topics.hidden=false;$('#writing-dialog .writing-actions').append(topics);
+    const manage=topics.onclick;topics.onclick=async()=>{cancel();await manage();};
+  }
   blocks.forEach(b=>b.el.addEventListener('dblclick',e=>{if(!window.SUY_IS_ADMIN)return;e.preventDefault();e.stopImmediatePropagation();open(b.id);},true));
   if(home)$('#notebook-note-edit').onclick=()=>open('intro');
-  document.addEventListener('suyoon-admin-state',e=>{tools.hidden=!e.detail?.admin;});
+  document.addEventListener('suyoon-admin-state',e=>{tools.hidden=journal||!e.detail?.admin;});
   window.SUY_WRITING={has:id=>!!payload.blocks?.[id],apply,open};
-  (async()=>{try{if(window.SUY_SITE_READY)await window.SUY_SITE_READY;if(home&&window.SUY_NOTEBOOK_READY)await window.SUY_NOTEBOOK_READY;if(cat&&window.SUY_UMI_READY)await window.SUY_UMI_READY;const saved=await window.SUY_ADMIN.loadContent(key);payload=saved&&typeof saved==='object'?{...saved,blocks:saved.blocks||{}}:{blocks:{}};blocks.forEach(b=>apply(b.id));applyLayouts();ready=true;tools.hidden=!window.SUY_IS_ADMIN;}catch(err){tip.textContent='Could not load saved writing. Refresh before editing.';console.warn('Writing editor unavailable',err);}})();
+  (async()=>{try{if(window.SUY_SITE_READY)await window.SUY_SITE_READY;if(home&&window.SUY_NOTEBOOK_READY)await window.SUY_NOTEBOOK_READY;if(cat&&window.SUY_UMI_READY)await window.SUY_UMI_READY;const saved=await window.SUY_ADMIN.loadContent(key);payload=saved&&typeof saved==='object'?{...saved,blocks:saved.blocks||{}}:{blocks:{}};blocks.forEach(b=>apply(b.id));applyLayouts();ready=true;tools.hidden=journal||!window.SUY_IS_ADMIN;}catch(err){tip.textContent='Could not load saved writing. Refresh before editing.';console.warn('Writing editor unavailable',err);}})();
 })();

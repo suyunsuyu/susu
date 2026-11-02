@@ -35,7 +35,6 @@
  async function pickImage(img){if(!ready||!await window.SUY_ADMIN?.isAdmin())return;selected=img;file.value='';file.click();}
  function bindImage(img){img.addEventListener('dblclick',()=>pickImage(img));img.addEventListener('load',requestUpdate);}
  document.querySelectorAll('[data-journal-image]').forEach(bindImage);
- document.querySelector('#journal-replace-image').onclick=()=>pickImage(entries[Math.max(0,lastActive)].querySelector('img'));
  function checkImage(input){if(!['image/png','image/jpeg','image/webp'].includes(input.type)||input.size>10*1024*1024)throw Error('Choose a PNG, JPG or WebP image under 10 MB.');}
  file.onchange=async()=>{
   const input=file.files[0],target=selected;if(!input||!target)return;
@@ -47,7 +46,7 @@
   const section=document.createElement('section');section.className='journal-entry';section.id='journal-'+topic.id;section.dataset.entry=topic.id;section.dataset.theme=['quiet','play','sleep','water','food'].includes(topic.theme)?topic.theme:'quiet';section.setAttribute('aria-label',(index+13)+'. '+topic.title);
   const art=photos.length===2?document.createElement('div'):section;if(photos.length===2){art.className='journal-pair';section.append(art);}
   photos.forEach((src,i)=>{const figure=document.createElement('figure');figure.className='journal-art';const img=document.createElement('img');img.src=src;img.alt=topic.title||'Umi';img.loading='lazy';img.decoding='async';img.dataset.journalImage=topic.id+'-'+i;figure.append(img);art.append(figure);bindImage(img);});
-  const caption=document.createElement('div');caption.className='journal-caption';caption.dataset.reveal='';const text=document.createElement('p');text.className=topic.align==='right'?'caption-right':'caption-left';text.dataset.journalText=topic.id+'-caption';text.textContent=topic.text||'';caption.append(text);section.append(caption);gallery.insertBefore(section,document.querySelector('.journal-end'));
+  const caption=document.createElement('div');caption.className='journal-caption';caption.dataset.reveal='';const text=document.createElement('p');text.className=topic.align==='right'?'caption-right':topic.align==='center'?'caption-center':'caption-left';text.dataset.journalText=topic.id+'-caption';text.textContent=topic.text||'';caption.append(text);section.append(caption);gallery.insertBefore(section,document.querySelector('.journal-end'));
   const li=document.createElement('li'),button=document.createElement('button'),span=document.createElement('span');button.type='button';button.dataset.jump=section.id;button.title=topic.title;button.setAttribute('aria-label',(index+13)+'. '+topic.title);span.textContent=(index+13)+'.';button.append(span);li.append(button);document.querySelector('.journal-directory ol').append(li);
  }
  const dialog=document.querySelector('#journal-topic-dialog'),form=document.querySelector('#journal-topic-form'),select=document.querySelector('#topic-select'),field=name=>document.querySelector('#topic-'+name);
@@ -65,25 +64,6 @@
    if(old&&files.some(Boolean)){const imageSettings=await window.SUY_ADMIN.loadContent('umi-journal-images')||{};imageSettings.images||={};files.forEach((f,i)=>{if(f)imageSettings.images[nextItem.id+'-'+i]=images[i];});await window.SUY_ADMIN.saveContent('umi-journal-images',imageSettings);}
    await window.SUY_ADMIN.saveContent('umi-journal-topics',{...latest,items});location.reload();
   }catch(error){field('status').textContent=error.message;}finally{button.disabled=false;}
- };
- document.querySelector('#journal-clear-calendar').onclick=async e=>{
-  const button=e.currentTarget;button.disabled=true;
-  try{
-   if(!await window.SUY_ADMIN.isAdmin())throw Error('Admin login required');
-   const api=window.SUY_ADMIN,keys=['diary','cat-calendar-2026'],records=await Promise.all(keys.map(k=>api.loadContent(k))),urls=new Set();
-   const collect=value=>{if(typeof value==='string'&&/^https:\/\//i.test(value))urls.add(value);else if(Array.isArray(value))value.forEach(collect);else if(value&&typeof value==='object')Object.values(value).forEach(collect);};records.forEach(collect);
-   const count=records.reduce((n,r)=>n+(Array.isArray(r?.items)?r.items.length:0),0);
-   if(!records.some(Boolean)){status.textContent='No old calendar data remains.';return;}
-   if(!confirm(`Permanently delete ${count} old calendar record(s) and their unshared uploaded photos? This cannot be undone.`))return;
-   status.textContent='Removing old calendar data…';
-   const other=await api.sb.from('site_content').select('key,data');if(other.error)throw other.error;
-   const retained=JSON.stringify((other.data||[]).filter(r=>!keys.includes(r.key))),groups={};
-   for(const src of urls){if(retained.includes(src))continue;const url=new URL(src),project=new URL(window.SUPABASE_CONFIG.url);if(url.origin!==project.origin)continue;const match=url.pathname.match(/^\/storage\/v1\/object\/public\/(site-media)\/(.+)$/);if(!match)continue;const path=decodeURIComponent(match[2]);if(!/^(diary|cat-calendar)\//.test(path))continue;(groups[match[1]]||=[]).push(path);}
-   for(const [bucket,paths]of Object.entries(groups)){const result=await api.sb.storage.from(bucket).remove(paths);if(result.error)throw result.error;}
-   const result=await api.sb.from('site_content').delete().in('key',keys);if(result.error)throw result.error;
-   const check=await api.sb.from('site_content').select('key').in('key',keys);if(check.error)throw check.error;if(check.data?.length)throw Error('Calendar records remain. Please try again.');
-   status.textContent='Old calendar data deleted.';button.hidden=true;
-  }catch(error){status.textContent=error.message;}finally{button.disabled=false;}
  };
  window.SUY_JOURNAL_READY=(async()=>{
   try{if(window.SUY_SITE_READY)await window.SUY_SITE_READY;const values=await Promise.all([window.SUY_ADMIN.loadContent('umi-journal-images'),window.SUY_ADMIN.loadContent('umi-journal-topics')]);imageData=values[0]||{};topicData=values[1]||{items:[]};if(!Array.isArray(topicData.items))topicData.items=[];topicData.items.forEach(renderTopic);document.querySelectorAll('[data-journal-image]').forEach(img=>{const saved=imageData.images?.[img.dataset.journalImage];if(safeImage(saved))img.src=saved;});ready=true;refresh();}
