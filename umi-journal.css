@@ -158,3 +158,12 @@ body.umi-journal,body.umi-journal *{font-family:Arial,Helvetica,sans-serif!impor
 .journal-caption .caption-center{text-align:center;width:100%;margin-inline:auto}
 
 #journal-mealtime [data-journal-text="eating"]{width:100%;max-width:32em;margin-left:auto!important;text-align:right}
+
+/* A travelling paw replaces the ruled progress track. */
+.journal-index-track .journal-progress{left:var(--paw-x,-12px);top:var(--paw-y,0px);bottom:auto;width:14px;height:14px;background:none;overflow:visible;color:#46463f;pointer-events:none;transition:top .16s ease-out,left .16s ease-out}
+.journal-progress svg{display:block;width:14px;height:14px;fill:currentColor;transform:rotate(-12deg);transition:transform .25s}
+.journal-progress[data-direction=up] svg{transform:rotate(12deg)}
+.journal-directory button[aria-current=true]::before{content:none!important;display:none!important}
+.journal-directory button[aria-current=true]{font-weight:700}
+@media(max-width:700px){.journal-index-track .journal-progress{top:25px;width:12px;height:12px}.journal-directory{padding-bottom:17px}.journal-progress svg{width:12px;height:12px}}
+@media(prefers-reduced-motion:reduce){.journal-index-track .journal-progress,.journal-progress svg{transition:none}}
