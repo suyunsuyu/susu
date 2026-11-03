@@ -175,3 +175,28 @@ body.umi-journal .writing-content *{font-family:inherit!important}
 /* Whitespace replaces page separator rules. */
 .umi-journal .journal-gallery{border-left:0;border-right:0}
 .umi-journal .journal-why,.umi-journal .journal-story{border-top:0}
+
+/* One independently edited unit per horizontal slide. */
+.umi-journal .journal-gallery{display:flex;flex-direction:row;align-items:stretch;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none;padding:0;height:100%;min-height:0;gap:0}
+.journal-gallery::-webkit-scrollbar{display:none}
+.journal-gallery>.journal-gallery-lead,.journal-gallery>.journal-end{display:none}
+.umi-journal .journal-gallery>.journal-entry{flex:0 0 100%;width:100%;height:100%;min-width:0;margin:0;padding:24px 16px;scroll-snap-align:start;scroll-snap-stop:always;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;justify-content:center;align-items:stretch;scroll-margin:0}
+.umi-journal .journal-gallery>.journal-entry.has-unit-layout{flex-direction:row;align-items:center;justify-content:center;overflow:hidden}
+.journal-entry .unit-surface{flex:none;max-width:100%;margin:auto;transform:none}
+.journal-gallery .journal-art{flex-shrink:1;min-height:0}
+.journal-gallery .journal-art img{max-height:55svh;object-fit:contain}
+.journal-gallery .journal-caption{flex-shrink:0}
+.journal-directory button{color:var(--journal-ink);transition:color .35s ease,opacity .35s ease}
+.journal-directory button.is-read{color:var(--gallery-accent,var(--journal-ink))}
+.journal-directory button[aria-current=true]{color:var(--gallery-accent,var(--journal-ink));font-weight:700}
+.journal-directory button[aria-current=true]::before{display:none!important;content:none!important}
+.journal-entry{--slide-enter:26px}
+.journal-entry[data-slide-direction=prev]{--slide-enter:-26px}
+.journal-motion .journal-entry.is-slide-active .unit-image,.journal-motion .journal-entry.is-slide-active>.journal-art,.journal-motion .journal-entry.is-slide-active>.journal-pair{animation:unit-image-enter .72s cubic-bezier(.2,.7,.2,1) both}
+.journal-motion .journal-entry.is-slide-active .unit-text,.journal-motion .journal-entry.is-slide-active .journal-caption{animation:unit-text-enter .65s cubic-bezier(.2,.7,.2,1) both;animation-delay:.12s}
+.journal-motion .journal-entry.is-slide-active .unit-node:nth-child(3n){animation-delay:.2s}
+.journal-motion .journal-entry.is-slide-active .journal-caption[data-reveal]{opacity:1;transform:none}
+@keyframes unit-image-enter{from{opacity:0;transform:translateX(var(--slide-enter)) rotate(-.5deg)}to{opacity:1;transform:translateX(0) rotate(0)}}
+@keyframes unit-text-enter{from{opacity:0;transform:translateX(calc(var(--slide-enter)*.6)) translateY(6px)}to{opacity:1;transform:translate(0)}}
+@media(max-width:700px){.umi-journal .journal-gallery{height:75svh;min-height:380px;max-height:900px;margin-top:20px;width:100%}.journal-directory{padding-bottom:9px}.journal-gallery .journal-art img{max-height:43svh}.umi-journal .journal-gallery>.journal-entry{padding:18px 12px}.journal-gallery .journal-caption{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.journal-motion .journal-entry .unit-node,.journal-motion .journal-entry .journal-art,.journal-motion .journal-entry .journal-pair,.journal-motion .journal-entry .journal-caption{animation:none!important;transform:none!important}}
