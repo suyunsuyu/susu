@@ -1,0 +1,55 @@
+.home-art-canvas,#home-art-stage{position:relative;overflow:hidden}
+.home-art-canvas{height:clamp(360px,40vw,730px)}
+.home-art-canvas .home-art-item,#home-art-stage.canvas .home-art-item{position:absolute}
+.home-art-item img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.cargo-home #home-art-open{position:absolute;top:0;right:0;z-index:2;padding:6px 8px;background:#fffffff2;border:1px solid #ddd;font-size:11px;letter-spacing:.04em}
+.home-art-item img[data-effect],.cargo-marquee img[data-effect]{animation-duration:var(--effect-time,5s);animation-iteration-count:infinite;animation-timing-function:ease-in-out}
+img[data-effect="float"]{animation-name:home-art-float}
+img[data-effect="sway"]{animation-name:home-art-sway}
+img[data-effect="pulse"]{animation-name:home-art-pulse}
+img[data-effect="fade"]{animation-name:home-art-fade}
+@keyframes home-art-float{50%{transform:translateY(-5%)}}
+@keyframes home-art-sway{25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+@keyframes home-art-pulse{50%{transform:scale(1.06)}}
+@keyframes home-art-fade{50%{opacity:.38}}
+.cargo-artwork.is-paused img[data-effect]{animation-play-state:paused}
+#home-art-editor{width:min(1100px,94vw);max-height:92dvh;margin:auto;padding:20px;border:1px solid #d8d6d0;background:#fffefa;color:#242321;overflow:auto;font:14px/1.4 Arial,Helvetica,sans-serif}
+#home-art-editor::backdrop{background:#17171455}
+#home-art-editor header,#home-art-editor footer,.home-art-toolbar,.home-art-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#home-art-editor header{justify-content:space-between;margin-bottom:14px}
+#home-art-editor h2{font:500 19px/1.25 Arial,Helvetica,sans-serif;margin:0}
+#home-art-editor button:not(.home-art-item),#home-art-editor select,#home-art-editor input:not([type=file]){font:inherit;border:1px solid #d5d3cc;padding:6px 9px;background:#fff;color:inherit;max-width:100%;min-width:0}
+#home-art-editor button:disabled{cursor:default;opacity:.55}
+#home-art-editor button[data-action=save]{background:#242321;color:white;border-color:#242321}
+#home-art-editor input[type=number]{width:76px}
+.home-art-toolbar{padding-bottom:12px}
+.home-art-workspace{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:16px}
+#home-art-stage{height:clamp(230px,47vh,550px);background:#fff;border:1px solid #e0ded8}
+#home-art-stage.marquee:not(.is-preview){display:flex;align-items:center;gap:8px;padding:8px;overflow-x:auto}
+#home-art-stage.marquee .home-art-item{position:relative;flex:0 0 44%;width:44%!important;height:94%!important;left:auto!important;top:auto!important}
+#home-art-stage .home-art-item{padding:0;background:none;border:1px solid transparent}
+#home-art-stage .home-art-item[aria-pressed=true]{border-color:#6c6a63;z-index:1}
+#home-art-stage .home-art-item:focus-visible{outline-offset:-3px}
+#home-art-stage.canvas button.home-art-item{cursor:grab;touch-action:none}
+#home-art-stage.canvas button.home-art-item:active{cursor:grabbing}
+#home-art-stage:not(.is-preview) img{animation:none}
+.home-art-preview-row,.home-art-preview-group{display:flex;height:100%}
+.home-art-preview-row{width:max-content;animation:cargo-marquee linear infinite}
+.home-art-preview-group{gap:10px;padding-right:10px}
+#home-art-stage .home-art-preview-group .home-art-item{width:min(26vw,300px)!important;flex:none;height:100%!important}
+.home-art-workspace aside label{display:grid;gap:3px;margin-bottom:8px}
+#home-art-fields{border:0;padding:0;margin:0;min-width:0}
+.home-art-geometry{display:grid;grid-template-columns:1fr 1fr;gap:4px 8px}
+.home-art-hint{margin:10px 0;color:#67635d;font-size:12px}
+#home-art-editor footer{justify-content:flex-end;border-top:1px solid #e0ded8;padding-top:12px}
+#home-art-status{margin-right:auto;color:#6e5140}
+@media(max-width:760px){
+  .home-art-canvas{height:min(76vw,450px)}
+  #home-art-editor{padding:12px}
+  .home-art-workspace{grid-template-columns:1fr}
+  #home-art-stage{height:clamp(210px,34vh,360px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .cargo-artwork img[data-effect],#home-art-stage img[data-effect],.home-art-preview-row{animation:none!important}
+  .cargo-artwork:has(.home-art-canvas:not([hidden])) #cargo-motion-toggle{display:none}
+}
