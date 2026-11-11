@@ -4,7 +4,7 @@
  const tick=()=>{const now=new Date();clock.textContent=format.format(now);clock.dateTime=now.toISOString();};
  tick();setInterval(tick,1000);
  const motion=document.getElementById('cargo-motion-toggle'),art=document.querySelector('.cargo-artwork');
- motion.addEventListener('click',()=>{const paused=art.classList.toggle('is-paused');motion.setAttribute('aria-pressed',String(paused));motion.setAttribute('aria-label',paused?'Resume drawing movement':'Pause drawing movement');motion.textContent=paused?'▷':'Ⅱ';});
+ motion?.addEventListener('click',()=>{const paused=art.classList.toggle('is-paused');motion.setAttribute('aria-pressed',String(paused));motion.setAttribute('aria-label',paused?'Resume drawing movement':'Pause drawing movement');motion.textContent=paused?'▷':'Ⅱ';});
  const dialog=document.getElementById('cargo-info');
  document.getElementById('cargo-info-open').addEventListener('click',()=>dialog.showModal());
  document.getElementById('cargo-info-close').addEventListener('click',()=>dialog.close());

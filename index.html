@@ -10,29 +10,10 @@
   <link rel="stylesheet" href="fonts.css?v=20261006-chisuga">
   <link rel="stylesheet" href="binder.css?v=17">
   <link rel="stylesheet" href="cargo-home.css?v=1">
-<link rel="stylesheet" href="page-writing.css?v=1"><link rel="icon" type="image/png" href="assets/site-cat-icon.png?v=20261013"><link rel="stylesheet" href="site-identity.css?v=1"><link rel="stylesheet" href="home-art-editor.css?v=1"></head>
+<link rel="stylesheet" href="page-writing.css?v=1"><link rel="icon" type="image/png" href="assets/site-cat-icon.png?v=20261013"><link rel="stylesheet" href="site-identity.css?v=1"><link rel="stylesheet" href="home-photo-grid.css?v=1"></head>
 <body class="home illustrated-home cargo-home">
-  <button class="paper-open cargo-mood" type="button">TODAY’S MOOD ↗</button>
   <main class="cargo-home-main">
-    <section class="cargo-artwork" aria-label="Umi drawings">
-      <div class="cargo-marquee"><div class="cargo-marquee-track">
-        <div class="cargo-marquee-group">
-          <img src="assets/cargo-cat-1.png" width="1254" height="1254" alt="Playful drawing of Umi" fetchpriority="high">
-          <img src="assets/cargo-cat-2.png" width="1254" height="1254" alt="Another moment with Umi">
-          <img src="assets/cargo-cat-3.png" width="1254" height="1254" alt="Umi, in a little drawing">
-          <img src="assets/cargo-cat-4.jpg" width="1080" height="1207" alt="Umi with a party hat">
-        </div>
-        <div class="cargo-marquee-group" aria-hidden="true">
-          <img src="assets/cargo-cat-1.png" width="1254" height="1254" alt="">
-          <img src="assets/cargo-cat-2.png" width="1254" height="1254" alt="">
-          <img src="assets/cargo-cat-3.png" width="1254" height="1254" alt="">
-          <img src="assets/cargo-cat-4.jpg" width="1080" height="1207" alt="">
-        </div>
-      </div></div>
-      <div class="home-art-canvas" hidden></div>
-      <button id="home-art-open" type="button" hidden>EDIT ARTWORK ↗</button>
-      <button id="cargo-motion-toggle" type="button" aria-label="Pause drawing movement" aria-pressed="false">Ⅱ</button>
-    </section>
+    <section class="cargo-artwork home-photo-area" aria-label="Photo gallery"><div id="home-photo-grid"></div><button id="home-photos-open" type="button" hidden>EDIT PHOTOS ↗</button><p id="home-photo-load-status" role="status"></p></section>
     <section class="cargo-introduction" aria-label="A little planet">
       <time id="cargo-clock" aria-label="Seoul time"></time>
       <div class="cargo-symbols" aria-hidden="true">
@@ -63,7 +44,7 @@
   <script src="config.js?v=20260818-imgfix2"></script>
 
   <script src="supabase-site.js?v=20261002-font3"></script>
-<script src="notebook-ui.js?v=16-writing"></script><script src="boot-ready.js?v=20260818-imgfix2"></script><script src="cargo-home.js?v=1"></script><script src="site-fonts.js?v=5-cargo"></script><script src="page-writing.js?v=1"></script><script src="home-art-editor.js?v=1"></script></body>
+<script src="notebook-ui.js?v=16-writing"></script><script src="boot-ready.js?v=20260818-imgfix2"></script><script src="cargo-home.js?v=2-photos"></script><script src="site-fonts.js?v=5-cargo"></script><script src="page-writing.js?v=1"></script><script src="home-photo-grid.js?v=1"></script></body>
 </html>
 
 
