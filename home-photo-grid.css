@@ -19,3 +19,14 @@
 #home-photo-editor footer{justify-content:flex-end;border-top:1px solid #eee;padding-top:12px}
 #home-photo-save-status{margin-right:auto;color:#74533a}
 @media(max-width:760px){.home-photo-area{margin-top:10px}#home-photo-grid{gap:10px}#home-photo-list li{grid-template-columns:90px 1fr}#home-photo-list img{width:90px;height:75px}#home-photo-editor{padding:14px}}
+.cargo-home #home-symbol-open{margin:-10px 0 12px;padding:4px 7px;border:1px solid #ddd;font-size:10px;background:white}
+.home-symbol-content img{display:block;max-width:100%;height:auto;object-fit:contain}
+#home-symbol-editor{width:min(450px,94vw);max-height:90dvh;overflow:auto;padding:22px;border:1px solid #ddd;background:white;color:#222;font:14px/1.4 Arial,Helvetica,sans-serif}
+#home-symbol-editor::backdrop{background:#0005}
+#home-symbol-editor h2{font-size:18px;font-weight:400;margin-top:0}
+#home-symbol-preview{min-height:120px;padding:10px;background:#fafafa;margin-bottom:15px}
+#home-symbol-editor label{display:block;margin:10px 0}
+#home-symbol-editor input{display:block;max-width:100%;font:inherit;border:1px solid #ddd;padding:6px}
+#home-symbol-editor button{font:inherit;background:white;color:#222;border:1px solid #ddd;padding:7px 10px}
+#home-symbol-editor footer{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+#home-symbol-editor #home-symbol-save{background:#222;color:white}
