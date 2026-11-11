@@ -67,3 +67,11 @@ html:has(body.cargo-home),body.home.cargo-home{margin:0;background:#fff!importan
 .cargo-home .cargo-home-main,.cargo-home .cargo-home-main *,.cargo-home>.cargo-mood{font-family:Arial,Helvetica,sans-serif!important}
 .cargo-home .cargo-home-main .cargo-navigation,.cargo-home .cargo-home-main .cargo-navigation *{font-family:'Courier New',monospace!important}
 .cargo-home #notebook-margin-text{border:0;box-shadow:none}
+
+/* Exchange the illustration and photo gallery columns without changing their widths. */
+@media(min-width:761px){
+.cargo-home-main{grid-template-columns:minmax(0,1fr) minmax(0,2fr) minmax(0,1fr)}
+.cargo-introduction{grid-column:1;grid-row:1}
+.cargo-artwork{grid-column:2;grid-row:1}
+.cargo-sidebar{grid-column:3;grid-row:1}
+}
