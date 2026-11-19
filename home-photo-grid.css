@@ -1,5 +1,5 @@
 .home-photo-area{margin-top:60px;min-height:200px}
-#home-photo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+#home-photo-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
 #home-photo-grid img{display:block;width:100%;aspect-ratio:4/3;object-fit:contain;background:transparent}
 .cargo-home #home-photos-open{position:absolute;right:0;top:-35px;border:1px solid #ddd;padding:6px 9px;background:#fff;font-size:11px}
 #home-photo-load-status{font-size:12px;color:#888}
@@ -52,3 +52,5 @@
 
 #home-photo-editor,#home-photo-editor *{box-sizing:border-box}
 #home-photo-list li>div{min-width:0}
+
+#home-photo-grid:empty::before{content:"";display:block;aspect-ratio:4/3;width:100%}
