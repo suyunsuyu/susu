@@ -6,14 +6,14 @@
 <title>MY CAT — A little picture show</title>
 <meta name="description" content="Umi's photo corridor and an interactive vintage television.">
 <link rel="icon" type="image/png" href="assets/site-cat-icon.png?v=20261013">
-<link rel="stylesheet" href="cat-photo-gallery.css?v=3-theatre">
-<link rel="stylesheet" href="cat-picture-show.css?v=2-white">
+<link rel="stylesheet" href="cat-photo-gallery.css?v=4-separate">
+<link rel="stylesheet" href="cat-picture-show.css?v=3-separate">
 </head>
 <body class="cat-photo-page">
 <a class="cat-home" href="index.html" aria-label="Back to home"><img src="assets/site-cat.svg?v=20261102" width="30" height="30" alt=""><span>HOME</span></a>
 <main class="cat-picture-show" aria-label="Umi's picture show">
 <section class="cat-photo-area is-empty" aria-label="Photo corridor">
-<header class="corridor-heading"><button id="cat-photos-open" type="button" hidden>Upload / edit photos</button></header>
+<header class="corridor-heading"><button id="cat-photos-open" type="button" hidden>Edit corridor photos</button></header>
 <div class="film-reel">
 <div class="film-perforations" aria-hidden="true"></div>
 <div id="cat-photo-grid" class="corridor-track" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Photo slides"></div>
@@ -23,8 +23,9 @@
 <div id="corridor-thumbnails" class="corridor-thumbnails" aria-label="Choose a photo"></div>
 <p id="cat-photo-load-status" role="status"></p>
 </section>
-<section class="television-area" aria-label="Vintage television">
+<section class="television-area tv-photo-area" aria-label="Vintage television">
 
+<button id="tv-photos-open" type="button" hidden>Edit TV photos</button><div id="tv-photo-grid" hidden></div>
 <div class="retro-tv" data-state="off">
 <div class="tv-antenna" aria-hidden="true"><i></i><i></i><span></span></div>
 <div class="tv-cabinet">
@@ -38,12 +39,14 @@
 </div>
 <div class="tv-remote"><button id="tv-prev" type="button" aria-label="Previous television channel">CH −</button><span id="tv-state-label" role="status">Television is off</span><button id="tv-next" type="button" aria-label="Next television channel">CH +</button></div>
 
+<p id="tv-photo-load-status" role="status"></p>
 </section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js?v=20260818-imgfix2"></script>
 <script src="supabase-site.js?v=20261002-font3"></script>
-<script src="cat-picture-show.js?v=2-white"></script>
-<script src="cat-photo-gallery.js?v=3-theatre"></script>
+<script src="cat-picture-show.js?v=3-separate"></script>
+<script src="cat-photo-gallery.js?v=4-separate"></script>
+<script src="tv-photo-gallery.js?v=1"></script>
 </body>
 </html>

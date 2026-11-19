@@ -72,7 +72,7 @@
 .tv-remote{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:400px;margin:26px auto 0}
 #tv-state-label{font:11px 'Courier New',monospace;color:#79766e;text-align:center}
 .tv-hint{color:#5e5b56;font-size:11px;text-align:center;letter-spacing:.035em;margin:14px 0 0}
-#cat-photo-editor .gallery-settings,#cat-photo-editor .preview-label,#cat-layout-preview{display:none}
+:is(#cat-photo-editor,#tv-photo-editor) .gallery-settings,:is(#cat-photo-editor,#tv-photo-editor) .preview-label,:is(#cat-layout-preview,#tv-layout-preview){display:none}
 @keyframes crt-start{0%{opacity:0;transform:scale(.02,.003);filter:brightness(4)}25%{opacity:1;transform:scale(1,.008);filter:brightness(3)}55%{transform:scale(1,.85);filter:brightness(1.8)}100%{opacity:1;transform:scale(1);filter:brightness(1.1)}}
 @keyframes crt-stop{0%{opacity:1;transform:scale(1);filter:brightness(1.1)}50%{opacity:1;transform:scale(1,.006);filter:brightness(4)}75%{opacity:.8;transform:scale(.1,.003);filter:brightness(5)}100%{opacity:0;transform:scale(0)}}
 @keyframes crt-flash{0%{opacity:0;transform:scale(.01,.004)}28%{opacity:.8;transform:scale(1,.008)}68%{opacity:0;transform:scale(1)}100%{opacity:0;transform:scale(1)}}
@@ -102,11 +102,19 @@ body.cat-photo-page{background:#fff;color:#222}
 .television-area{padding-top:50px}
 #tv-state-label{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .tv-cabinet{box-shadow:inset 3px 3px 2px #e5d8bc99,inset -5px -5px 2px #67573d88,0 14px 30px #0002,4px 2px 0 #514536}
-#cat-photo-editor{background:#fff;color:#222;border-color:#ddd}
-#cat-photo-editor::backdrop{background:#0004}
-#cat-photo-editor button,#cat-photo-list input{background:#fff;color:#222;border-color:#ddd}
-#cat-photo-editor [data-action=save]{background:#222;color:#fff}
-#cat-photo-save-status{color:#666}
+:is(#cat-photo-editor,#tv-photo-editor){background:#fff;color:#222;border-color:#ddd}
+:is(#cat-photo-editor,#tv-photo-editor)::backdrop{background:#0004}
+:is(#cat-photo-editor,#tv-photo-editor) button,:is(#cat-photo-list,#tv-photo-list) input{background:#fff;color:#222;border-color:#ddd}
+:is(#cat-photo-editor,#tv-photo-editor) [data-action=save]{background:#222;color:#fff}
+:is(#cat-photo-save-status,#tv-photo-save-status){color:#666}
 .cat-photo-page #admin-auth-button{position:fixed;left:16px;bottom:14px;z-index:10;border-color:#ddd!important;color:#555!important;background:#fff!important;padding:6px 9px;font-size:12px}
 button:focus-visible,a:focus-visible,input:focus-visible{outline-color:#777}
 @media(max-width:760px){.cat-picture-show{padding-top:100px;gap:60px}.corridor-heading{flex-direction:row;justify-content:flex-end}.television-area{padding-top:50px}}
+
+/* Warm pale grey sampled from the supplied cabinet color. */
+.tv-cabinet{border-color:#b1a7a5;background:linear-gradient(120deg,#e2dcda 0%,#d4ccca 42%,#c4bcba 100%);box-shadow:inset 3px 3px 2px #f2ecea99,inset -5px -5px 2px #92898788,0 14px 30px #0002,4px 2px 0 #817775}
+.tv-brand,.dial-label,.tv-bottom{color:#5c5553}
+.tv-speaker{background:repeating-linear-gradient(0deg,#625a58 0 2px,#d0c6c3 2px 5px);box-shadow:inset 0 1px 2px #a59a97}
+.tv-antenna span{background:linear-gradient(#d4ccca,#948986)}
+#tv-photos-open{position:absolute;top:-16px;right:0;border:1px solid #ddd;color:#555;background:#fff;padding:8px 10px;font:14px/1.5 Arial,Helvetica,sans-serif}
+#tv-photo-load-status{font-size:14px;color:#777;margin:14px 0 0}
