@@ -82,3 +82,31 @@
 @media(max-width:1050px){.cat-picture-show{padding:100px 30px 70px;gap:36px;grid-template-columns:minmax(0,1.4fr) minmax(280px,1fr)}.tv-front{grid-template-columns:minmax(0,1fr) 38px;gap:9px}.tv-cabinet{padding:14px 12px 10px}.tv-screen-surround{padding:8px}.tv-hardware{gap:4px}.tv-speaker{margin:3px 0}.tv-brand{font-size:9px}.tv-dial{width:30px;height:30px}.tv-bottom{font-size:5px}.corridor-heading{align-items:flex-start;flex-direction:column;gap:12px}}
 @media(max-width:760px){.cat-picture-show{display:flex;flex-direction:column;align-items:stretch;gap:80px;padding:100px 22px 80px;min-height:100svh}.cat-picture-show .cat-photo-area{padding:0;width:100%;min-height:0}.corridor-heading{flex-direction:row;align-items:flex-end}.corridor-heading h1{font-size:24px}.cat-picture-show #cat-photos-open{font-size:14px;max-width:145px;white-space:normal}.corridor-controls button{font-size:14px}.television-area{width:min(430px,100%);margin:0 auto}.television-caption{margin-bottom:64px}.tv-hardware{gap:6px}.tv-cabinet{padding:18px 16px 10px}.tv-front{grid-template-columns:minmax(0,1fr) 42px;gap:10px}.tv-speaker{min-height:24px}.tv-bottom{font-size:6px}.cat-home{position:absolute;right:22px}.slide-caption{font-size:11px}.corridor-thumbnails button{width:48px;height:38px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.03s!important;transition-duration:.03s!important}}
+
+/* Clean white presentation; descriptions remain available to assistive technology. */
+:root{color-scheme:light;background:#fff;color:#222}
+body.cat-photo-page{background:#fff;color:#222}
+.cat-home{color:#333}.cat-home img{filter:none}
+.cat-picture-show{padding-top:90px}
+.corridor-heading{justify-content:flex-end;margin-bottom:18px;min-height:0}
+.cat-picture-show #cat-photos-open{color:#555;border-color:#ddd;background:#fff}
+.film-reel{background:#fafafa;border:1px solid #eee}
+.film-perforations{background:repeating-linear-gradient(90deg,#d8d8d4 0 10px,transparent 10px 26px);opacity:.65}
+.corridor-slide{background:#fff;color:#555}
+#cat-photo-grid .corridor-slide img{height:100%}
+.corridor-empty{background:#fff}
+#corridor-count,.corridor-controls button,.tv-remote button{color:#666}
+.corridor-controls button:hover,.tv-remote button:hover{color:#111}
+.corridor-thumbnails button{background:#fff;border-color:#ddd}
+.corridor-thumbnails button.is-selected{border-color:#444}
+.television-area{padding-top:50px}
+#tv-state-label{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.tv-cabinet{box-shadow:inset 3px 3px 2px #e5d8bc99,inset -5px -5px 2px #67573d88,0 14px 30px #0002,4px 2px 0 #514536}
+#cat-photo-editor{background:#fff;color:#222;border-color:#ddd}
+#cat-photo-editor::backdrop{background:#0004}
+#cat-photo-editor button,#cat-photo-list input{background:#fff;color:#222;border-color:#ddd}
+#cat-photo-editor [data-action=save]{background:#222;color:#fff}
+#cat-photo-save-status{color:#666}
+.cat-photo-page #admin-auth-button{position:fixed;left:16px;bottom:14px;z-index:10;border-color:#ddd!important;color:#555!important;background:#fff!important;padding:6px 9px;font-size:12px}
+button:focus-visible,a:focus-visible,input:focus-visible{outline-color:#777}
+@media(max-width:760px){.cat-picture-show{padding-top:100px;gap:60px}.corridor-heading{flex-direction:row;justify-content:flex-end}.television-area{padding-top:50px}}
