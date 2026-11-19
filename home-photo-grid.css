@@ -1,6 +1,6 @@
 .home-photo-area{margin-top:60px;min-height:200px}
 #home-photo-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
-#home-photo-grid img{display:block;width:100%;aspect-ratio:4/3;object-fit:contain;background:transparent}
+#home-photo-grid img{display:block;width:100%;height:auto;aspect-ratio:auto;object-fit:contain;background:transparent}
 .cargo-home #home-photos-open{position:absolute;right:0;top:-35px;border:1px solid #ddd;padding:6px 9px;background:#fff;font-size:11px}
 #home-photo-load-status{font-size:12px;color:#888}
 #home-photo-editor{width:min(780px,94vw);max-height:90dvh;overflow:auto;background:#fff;color:#222;border:1px solid #ddd;padding:20px;font:14px/1.4 Arial,Helvetica,sans-serif}
@@ -38,17 +38,17 @@
 #home-symbol-editor .home-symbol-zoom button{width:34px;padding:3px;font-size:19px}
 #home-symbol-editor .home-symbol-resize-hint{font-size:12px;color:#777;margin:0 0 10px}
 
-#home-photo-grid .home-photo-frame{width:100%;aspect-ratio:4/3;overflow:hidden;background:transparent}
-#home-photo-grid .home-photo-frame img{height:100%;transform-origin:center}
-#home-photo-list .home-photo-frame{width:120px;height:90px;overflow:hidden;background:transparent}
-#home-photo-list .home-photo-frame img{display:block;width:100%;height:100%;transform-origin:center}
+#home-photo-grid .home-photo-frame{width:100%;height:auto;overflow:visible;background:transparent;margin:0 auto}
+#home-photo-grid .home-photo-frame img{height:auto;aspect-ratio:auto;transform:none}
+#home-photo-list .home-photo-frame{width:100%;height:auto;overflow:visible;background:transparent;margin:0 auto}
+#home-photo-list .home-photo-frame img{display:block;width:100%;height:auto;aspect-ratio:auto;transform:none}
 #home-photo-list .home-photo-zoom{margin:10px 0}
 #home-photo-list .home-photo-zoom label{font-size:14px}
 #home-photo-list .home-photo-zoom output{margin-left:6px;font-variant-numeric:tabular-nums}
 #home-photo-list .home-photo-zoom-actions{display:flex;align-items:center;gap:8px}
 #home-photo-list .home-photo-zoom-actions input[type=range]{min-width:50px;flex:1;width:auto;padding:0;accent-color:#222}
 #home-photo-list .home-photo-zoom-actions button{flex:none;min-width:34px}
-@media(max-width:760px){#home-photo-list .home-photo-frame{width:90px;height:75px}#home-photo-list .home-photo-zoom-actions{gap:4px}#home-photo-list .home-photo-zoom-actions button{padding:6px;min-width:28px}}
+@media(max-width:760px){#home-photo-list .home-photo-frame{height:auto}#home-photo-list .home-photo-zoom-actions{gap:4px}#home-photo-list .home-photo-zoom-actions button{padding:6px;min-width:28px}}
 
 #home-photo-editor,#home-photo-editor *{box-sizing:border-box}
 #home-photo-list li>div{min-width:0}
