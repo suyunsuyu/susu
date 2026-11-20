@@ -192,3 +192,18 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline-color:#777}
 .film-reel{--film-edge:polygon(evenodd,0 0,100% 0,100% 100%,0 100%,0 0,5.7% 3.7%,34.2% 3.7%,34.2% 5.8%,35.8% 5.8%,35.8% 3.9%,64.6% 3.9%,64.6% 5.9%,66.3% 5.9%,66.3% 4%,94.8% 4.1%,94.8% 6.1%,97% 6.1%,97% 47.3%,94.7% 47.3%,94.7% 49.7%,97% 49.7%,97% 90.8%,94.7% 90.8%,94.7% 92.9%,66.1% 92.9%,66.1% 90.9%,64.5% 90.9%,64.5% 92.8%,35.7% 92.8%,35.7% 90.8%,34.1% 90.8%,34.1% 92.8%,5.5% 92.8%,5.5% 90.7%,3.4% 90.7%,3.4% 49.2%,5.6% 49.2%,5.6% 47%,3.5% 47%,3.5% 5.7%,5.7% 5.7%,5.7% 3.7%)}
 .film-reel::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:#dbd5d3 url("assets/film-paper-texture.png") repeat;background-size:113px 74px;clip-path:var(--film-edge)}
 .film-reel::after{filter:invert(1) grayscale(1) brightness(1.025);mix-blend-mode:multiply}
+
+/* The original white filmstrip remains available in the photo editor. */
+.film-reel[data-frame=original]{background:#fafafa;border:1px solid #eee;border-radius:3px}
+.film-reel[data-frame=original]::before,.film-reel[data-frame=original]::after{display:none}
+.film-reel[data-frame=original] .film-perforations{display:block;position:absolute;left:12px;right:12px;top:10px;height:12px;margin:0}
+.film-reel[data-frame=original] .film-perforations:last-child{top:auto;bottom:10px}
+.film-reel[data-frame=original] #cat-photo-grid.corridor-track{inset:34px 0}
+#cat-photo-editor .frame-style-label{display:block;margin:18px 0 12px;color:#555;font:14px/1.5 Arial,Helvetica,sans-serif}
+#cat-frame-style{display:block;width:100%;margin-top:6px;padding:9px;border:1px solid #ddd;background:#fff;color:#333;font:inherit}
+.frame-style-preview{width:min(360px,100%);margin:0 auto 20px}
+.frame-style-preview .frame-photo{position:absolute;inset:7% 5% 9%;width:90%;height:84%;object-fit:contain;display:block}
+.frame-style-preview .frame-photo[hidden]{display:none}
+.frame-style-preview .film-reel[data-frame=original] .frame-photo{inset:34px 4%;width:92%;height:calc(100% - 68px)}
+/* Fine paper grain on the cabinet, with the existing molded highlights. */
+.tv-cabinet{background-color:#d9d1cf;background-image:linear-gradient(120deg,#ffffff38,transparent 45%,#65565212),url('assets/tv-paper-surface.png');background-size:100% 100%,378px 159px;background-repeat:no-repeat,repeat}
