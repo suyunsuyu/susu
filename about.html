@@ -8,10 +8,10 @@
 <link rel="icon" type="image/png" href="assets/site-cat-icon.png?v=20261013">
 <link rel="stylesheet" href="cat-photo-gallery.css?v=4-separate">
 <link rel="stylesheet" href="cat-picture-show.css?v=9-frame-choice">
-<style id="mobile-projector">
-@media (max-width: 760px) {
-  .cat-picture-show { padding: 76px clamp(14px, 4vw, 24px) 56px; gap: 40px; }
-  .cat-picture-show .television-area { width: min(460px, 100%); padding-top: 12px; }
+<style id="desktop-projector">
+@media (width > 760px) {
+  .cat-picture-show .television-area { padding-top: 12px; }
+  .retro-tv { max-width: 460px; }
   .television-area .tv-admin-tools { position: relative; top: auto; margin-bottom: 8px; }
   .television-area .tv-admin-tools:not(:has(button:not([hidden]))) { display: none; }
   .retro-tv .tv-antenna, .retro-tv .tv-feet, .retro-tv .tv-bottom,
@@ -20,7 +20,7 @@
   .retro-tv .tv-cabinet { padding: 0; border: 0; background: none; box-shadow: none; }
   .retro-tv .tv-front {
     grid-template-columns: clamp(76px, 23%, 106px) minmax(0, 1fr);
-    gap: clamp(28px, 12vw, 64px);
+    gap: clamp(32px, 3.6vw, 56px);
     align-items: center;
     padding-bottom: 12px;
   }
@@ -61,7 +61,7 @@
     pointer-events: none;
     left: calc(100% + clamp(19px, 6vw, 28px));
     top: calc(36% - 22px);
-    width: calc(clamp(28px, 12vw, 64px) - clamp(19px, 6vw, 28px));
+    width: calc(clamp(32px, 3.6vw, 56px) - clamp(19px, 6vw, 28px));
     height: 78px;
     clip-path: polygon(0 37%, 100% 0, 100% 100%, 0 61%);
     background: linear-gradient(90deg, #f2ce825c, #f5e1a521);
