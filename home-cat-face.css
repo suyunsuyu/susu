@@ -47,3 +47,9 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:1px solid #777;
 #home-photo-grid{position:relative}
 #home-photo-grid .home-photo-frame{position:absolute;left:50%;top:50%;height:var(--photo-height,100%);transform:translate(-50%,-50%);max-width:none;margin:0}
 #home-photo-list .home-photo-frame{max-width:100%}
+
+/* Detach the original pull while retaining the supplied line artwork. */
+.cat-home-scene.has-zipper-motion .cat-home-outline{mask-image:url('assets/cat-zipper-mask.svg');mask-mode:luminance;mask-size:100% 100%;mask-repeat:no-repeat}
+.cat-zipper-layer{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;display:none}
+.has-zipper-motion .cat-zipper-layer{display:block}
+#cat-zipper-pull{will-change:transform}

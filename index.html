@@ -8,12 +8,17 @@
 <link rel="icon" type="image/png" href="assets/site-cat-icon.png?v=20261013">
 <link rel="stylesheet" href="fonts.css?v=20261006-chisuga">
 <link rel="stylesheet" href="home-photo-grid.css?v=6-size">
-<link rel="stylesheet" href="home-cat-face.css?v=2-vector-zoom">
+<link rel="stylesheet" href="home-cat-face.css?v=3-zipper">
 </head>
 <body class="cat-face-home">
 <main class="cat-home-main" aria-label="Lee Su-yoon homepage">
 <div class="cat-home-scene">
 <img class="cat-home-outline" src="assets/home-cat-outline-soft.png" width="1254" height="1254" alt="A softly drawn cat-shaped bag" fetchpriority="high" draggable="false">
+<svg class="cat-zipper-layer" viewBox="0 0 1254 1254" aria-hidden="true" focusable="false">
+<defs><clipPath id="cat-zipper-clip"><path d="M1085 638 C1071 635 1063 643 1066 659 C1066 669 1070 676 1078 679 L1084 723 C1086 739 1119 740 1117 723 L1103 658 C1101 644 1096 639 1085 638Z"/></clipPath></defs>
+<g class="cat-zipper-rail" fill="none" stroke="#a6a6a6" stroke-width="1.25" stroke-linecap="round"><path d="M1063 630 C1068 662 1073 708 1077 740"/><path d="M1080 630 C1085 664 1090 709 1093 740"/><path d="M1089 630 C1094 664 1099 709 1103 740"/></g>
+<g id="cat-zipper-pull"><image href="assets/home-cat-outline-soft.png" width="1254" height="1254" clip-path="url(#cat-zipper-clip)"/></g>
+</svg>
 <section class="home-photo-area cat-mouth-photo" aria-label="Homepage photo">
 <div id="home-photo-grid"></div>
 <button id="home-photos-open" type="button" hidden>UPLOAD PHOTO</button>
@@ -37,6 +42,6 @@
 <script src="config.js?v=20260818-imgfix2"></script>
 <script src="supabase-site.js?v=20261002-font3"></script>
 <script src="home-cat-photo.js?v=2-zoom"></script>
-<script src="home-cat-face.js?v=1"></script>
+<script src="home-cat-face.js?v=2-zipper"></script>
 </body>
 </html>
