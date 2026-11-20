@@ -8,109 +8,80 @@
 <link rel="icon" type="image/png" href="assets/site-cat-icon.png?v=20261013">
 <link rel="stylesheet" href="cat-photo-gallery.css?v=4-separate">
 <link rel="stylesheet" href="cat-picture-show.css?v=9-frame-choice">
-<style id="desktop-projector">
+<style id="desktop-clear-television">
 @media (width > 760px) {
-  .cat-picture-show .television-area { padding-top: 12px; }
-  .retro-tv { max-width: 460px; }
-  .television-area .tv-admin-tools { position: relative; top: auto; margin-bottom: 8px; }
-  .television-area .tv-admin-tools:not(:has(button:not([hidden]))) { display: none; }
-  .retro-tv .tv-antenna, .retro-tv .tv-feet, .retro-tv .tv-bottom,
-  .retro-tv .tv-brand, .retro-tv .dial-label, .retro-tv .tv-speaker,
-  .retro-tv .crt-glass, .retro-tv .crt-static, .retro-tv .crt-power-light { display: none; }
-  .retro-tv .tv-cabinet { padding: 0; border: 0; background: none; box-shadow: none; }
-  .retro-tv .tv-front {
-    grid-template-columns: clamp(76px, 23%, 106px) minmax(0, 1fr);
-    gap: clamp(32px, 3.6vw, 56px);
-    align-items: center;
-    padding-bottom: 12px;
+  .retro-tv .tv-cabinet {
+    border: 1px solid #a8b4b9;
+    background: linear-gradient(142deg, #fff9, #c4d4da16 40%, #e9f0f32e 70%, #a5b6bd40);
+    box-shadow: inset 0 0 0 3px #fff9, inset -3px -4px 0 #adbdc342,
+      3px 3px 0 #c6d0d47a, 0 13px 24px #33474c1c;
   }
-  .retro-tv .tv-hardware {
-    grid-area: 1 / 1;
-    position: relative;
-    isolation: isolate;
-    gap: 3px;
-    padding: 8px 6px;
-    border: 1px solid #ae9779;
-    border-bottom: 7px solid #b99c75;
-    border-radius: 7px;
-    background: repeating-linear-gradient(90deg, #ad90651a 0 1px, transparent 1px 4px),
-      linear-gradient(115deg, #f3e9d5, #d7c2a1);
-    box-shadow: inset 0 0 0 3px #f8edda80, 0 7px 12px #614c332c;
-    color: #504232;
-  }
-  .retro-tv .tv-hardware::before {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    left: 100%;
-    top: 36%;
-    width: clamp(19px, 6vw, 28px);
-    height: 34px;
-    border-radius: 0 8px 8px 0;
-    background: linear-gradient(90deg, #b49a75 0 36%, #4a4034 40% 71%, #907758 74% 86%, #44392c 90%);
-    box-shadow: 1px 2px 3px #42352338;
-  }
-  .retro-tv[data-state=on] .tv-hardware::before,
-  .retro-tv[data-state=starting] .tv-hardware::before {
-    background: linear-gradient(90deg, #b49a75 0 36%, #4a4034 40% 71%, #907758 74% 86%, #fff2c6 90%);
-  }
-  .retro-tv[data-state=on] .tv-hardware::after,
-  .retro-tv[data-state=starting] .tv-hardware::after {
-    content: "";
-    position: absolute;
-    pointer-events: none;
-    left: calc(100% + clamp(19px, 6vw, 28px));
-    top: calc(36% - 22px);
-    width: calc(clamp(32px, 3.6vw, 56px) - clamp(19px, 6vw, 28px));
-    height: 78px;
-    clip-path: polygon(0 37%, 100% 0, 100% 100%, 0 61%);
-    background: linear-gradient(90deg, #f2ce825c, #f5e1a521);
-  }
+
   .retro-tv .tv-screen-surround {
-    grid-area: 1 / 2;
-    position: relative;
-    align-self: center;
-    padding: clamp(8px, 3vw, 15px);
-    border: 1px solid #c0ab8e;
-    border-radius: 5px;
-    background: repeating-linear-gradient(0deg, #8d724315 0 1px, transparent 1px 3px),
-      repeating-linear-gradient(90deg, #8d724311 0 1px, transparent 1px 3px), #e5d8bd;
-    box-shadow: inset 0 0 0 3px #f3e8d6, 0 5px 13px #614c3324;
+    border: 1px solid #a6b5bb;
+    background: linear-gradient(144deg, #8fa4ab56, #f2f7f85c 50%, #a0b4ba48);
+    box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #778d954a;
   }
-  .retro-tv .tv-screen-surround::after {
-    content: "";
-    position: absolute;
-    pointer-events: none;
-    inset: 100% 9% auto;
-    height: 10px;
-    border-inline: 7px solid #ad906a;
-    border-radius: 0 0 3px 3px;
-  }
+
   .retro-tv .crt-screen {
-    aspect-ratio: 4 / 5;
-    border-radius: 2px;
-    clip-path: none;
-    background: #d9cbb0;
-    box-shadow: inset 0 1px 12px #826c4729;
+    background: #91a8af29;
+    box-shadow: inset 0 0 0 1px #879ba2a3, inset 0 0 18px #69868f24;
   }
-  .retro-tv .crt-picture { background: #28231d; }
-  .retro-tv .tv-dial, .retro-tv .tv-power-button {
-    width: 44px;
-    height: 44px;
+
+  .retro-tv .crt-glass {
+    background: linear-gradient(143deg, #fff7, transparent 32%),
+      radial-gradient(ellipse at center, transparent 62%, #526f7829);
+    box-shadow: inset 0 0 14px #54707926;
   }
-  .retro-tv .tv-power-button svg { margin: auto; width: 19px; height: 19px; }
-  .retro-tv .tv-hardware .tv-media-modes { gap: 3px; margin: 0; }
-  .retro-tv .tv-hardware .tv-media-modes button,
-  .retro-tv .tv-hardware .tv-media-modes #tv-sound {
-    width: 100%;
-    min-height: 44px;
-    font-size: 9px;
-    letter-spacing: .025em;
+
+  .retro-tv:is([data-state=starting], [data-state=on], [data-state=stopping]) .crt-glass {
+    background: linear-gradient(143deg, #fff2, transparent 32%),
+      radial-gradient(ellipse at center, transparent 72%, #0003);
+    box-shadow: none;
   }
-  .television-area .tv-remote { margin-top: 12px; gap: 8px; }
-  .television-area .tv-remote button,
-  .cat-picture-show .corridor-controls button { min-height: 44px; min-width: 44px; }
-  .cat-picture-show .corridor-thumbnails button { min-height: 44px; }
+
+  .retro-tv .tv-brand, .retro-tv .dial-label, .retro-tv .tv-bottom { color: #485c63; }
+
+  .retro-tv .tv-speaker {
+    background: repeating-linear-gradient(0deg, #5c747d9c 0 1px, transparent 1px 5px);
+    box-shadow: none;
+  }
+
+  .retro-tv .tv-dial {
+    border-color: #879ba2;
+    background: repeating-conic-gradient(#d4dfe1 0deg 6deg, #a3b5bb 6deg 12deg);
+    box-shadow: 1px 2px 3px #4158623b;
+  }
+
+  .retro-tv .tv-dial span, .retro-tv .tv-power-button {
+    border-color: #788e96;
+    background: linear-gradient(135deg, #849ba3, #3e545d);
+    box-shadow: 0 1px 3px #41586255;
+  }
+
+  .retro-tv .tv-power-button svg { stroke: #eef6f8; }
+
+  .retro-tv .tv-hardware .tv-media-modes button {
+    border-color: #8b9fa6;
+    background: linear-gradient(#f5f9faad, #bdcdd280);
+    box-shadow: inset 0 1px #fffe, 0 1px 1px #566d764a;
+    color: #40545c;
+  }
+
+  .retro-tv .tv-hardware .tv-media-modes button[aria-pressed=true] {
+    background: linear-gradient(#6b818a, #40575f);
+    box-shadow: inset 0 1px 2px #354950;
+    color: #f7fafb;
+  }
+
+  .retro-tv .tv-antenna span, .retro-tv .tv-feet i {
+    background: linear-gradient(#b4c7cdb3, #8298a080);
+    box-shadow: inset 0 0 0 1px #7d959e66;
+  }
+
+  .retro-tv .tv-antenna i {
+    background: linear-gradient(90deg, #6f868f, #ebf2f4, #6f868f);
+  }
 }
 </style>
 </head>
