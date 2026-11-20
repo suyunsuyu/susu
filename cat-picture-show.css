@@ -152,3 +152,20 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline-color:#777}
 #tv-layout-editor [data-layout-action=save]{background:#333;color:white}
 #tv-layout-status{display:block;color:#777;margin-top:8px}
 @media(max-width:760px){#tv-layout-editor{left:16px;bottom:16px}.tv-admin-tools{top:-20px}.tv-admin-tools #tv-photos-open,.tv-admin-tools #tv-layout-open{font-size:12px;padding:6px 8px}}
+
+/* Small image selectors without a page counter. */
+.corridor-thumbnails{margin-top:16px;align-items:center;padding:3px 0}
+.corridor-thumbnails button{width:64px;height:48px;border:1px solid #eee;background:#fff;opacity:.55;cursor:pointer}
+.corridor-thumbnails button[aria-pressed=true]{opacity:1;border-color:#666}
+.corridor-thumbnails img{width:100%;height:100%;object-fit:contain}
+.crt-picture video{position:absolute;inset:0;width:100%;height:100%;object-fit:var(--tv-photo-fit,cover);border-radius:inherit}
+.crt-picture video[hidden],.crt-picture img[hidden]{display:none}
+.tv-media-modes{display:flex;justify-content:center;gap:14px;margin:22px 0 0}
+.tv-media-modes button{background:none;border:0;border-bottom:1px solid transparent;padding:4px;color:#999;font:13px Arial,sans-serif;cursor:pointer}
+.tv-media-modes button[aria-pressed=true]{color:#333;border-bottom-color:#777}
+.tv-media-modes #tv-sound{font-size:11px}
+.tv-remote{margin-top:14px}
+#tv-photo-list video{width:120px;height:90px;object-fit:contain}
+.tv-editor-filters{display:flex;gap:8px;margin-top:14px}
+#tv-photo-editor .tv-editor-filters button[aria-pressed=true]{background:#333;color:#fff}
+@media(max-width:600px){#tv-photo-list video{width:80px;height:65px}}
