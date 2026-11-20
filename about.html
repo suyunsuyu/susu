@@ -8,6 +8,111 @@
 <link rel="icon" type="image/png" href="assets/site-cat-icon.png?v=20261013">
 <link rel="stylesheet" href="cat-photo-gallery.css?v=4-separate">
 <link rel="stylesheet" href="cat-picture-show.css?v=9-frame-choice">
+<style id="mobile-projector">
+@media (max-width: 760px) {
+  .cat-picture-show { padding: 76px clamp(14px, 4vw, 24px) 56px; gap: 40px; }
+  .cat-picture-show .television-area { width: min(460px, 100%); padding-top: 12px; }
+  .television-area .tv-admin-tools { position: relative; top: auto; margin-bottom: 8px; }
+  .television-area .tv-admin-tools:not(:has(button:not([hidden]))) { display: none; }
+  .retro-tv .tv-antenna, .retro-tv .tv-feet, .retro-tv .tv-bottom,
+  .retro-tv .tv-brand, .retro-tv .dial-label, .retro-tv .tv-speaker,
+  .retro-tv .crt-glass, .retro-tv .crt-static, .retro-tv .crt-power-light { display: none; }
+  .retro-tv .tv-cabinet { padding: 0; border: 0; background: none; box-shadow: none; }
+  .retro-tv .tv-front {
+    grid-template-columns: clamp(76px, 23%, 106px) minmax(0, 1fr);
+    gap: clamp(28px, 12vw, 64px);
+    align-items: center;
+    padding-bottom: 12px;
+  }
+  .retro-tv .tv-hardware {
+    grid-area: 1 / 1;
+    position: relative;
+    isolation: isolate;
+    gap: 3px;
+    padding: 8px 6px;
+    border: 1px solid #ae9779;
+    border-bottom: 7px solid #b99c75;
+    border-radius: 7px;
+    background: repeating-linear-gradient(90deg, #ad90651a 0 1px, transparent 1px 4px),
+      linear-gradient(115deg, #f3e9d5, #d7c2a1);
+    box-shadow: inset 0 0 0 3px #f8edda80, 0 7px 12px #614c332c;
+    color: #504232;
+  }
+  .retro-tv .tv-hardware::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: 100%;
+    top: 36%;
+    width: clamp(19px, 6vw, 28px);
+    height: 34px;
+    border-radius: 0 8px 8px 0;
+    background: linear-gradient(90deg, #b49a75 0 36%, #4a4034 40% 71%, #907758 74% 86%, #44392c 90%);
+    box-shadow: 1px 2px 3px #42352338;
+  }
+  .retro-tv[data-state=on] .tv-hardware::before,
+  .retro-tv[data-state=starting] .tv-hardware::before {
+    background: linear-gradient(90deg, #b49a75 0 36%, #4a4034 40% 71%, #907758 74% 86%, #fff2c6 90%);
+  }
+  .retro-tv[data-state=on] .tv-hardware::after,
+  .retro-tv[data-state=starting] .tv-hardware::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    left: calc(100% + clamp(19px, 6vw, 28px));
+    top: calc(36% - 22px);
+    width: calc(clamp(28px, 12vw, 64px) - clamp(19px, 6vw, 28px));
+    height: 78px;
+    clip-path: polygon(0 37%, 100% 0, 100% 100%, 0 61%);
+    background: linear-gradient(90deg, #f2ce825c, #f5e1a521);
+  }
+  .retro-tv .tv-screen-surround {
+    grid-area: 1 / 2;
+    position: relative;
+    align-self: center;
+    padding: clamp(8px, 3vw, 15px);
+    border: 1px solid #c0ab8e;
+    border-radius: 5px;
+    background: repeating-linear-gradient(0deg, #8d724315 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(90deg, #8d724311 0 1px, transparent 1px 3px), #e5d8bd;
+    box-shadow: inset 0 0 0 3px #f3e8d6, 0 5px 13px #614c3324;
+  }
+  .retro-tv .tv-screen-surround::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    inset: 100% 9% auto;
+    height: 10px;
+    border-inline: 7px solid #ad906a;
+    border-radius: 0 0 3px 3px;
+  }
+  .retro-tv .crt-screen {
+    aspect-ratio: 4 / 5;
+    border-radius: 2px;
+    clip-path: none;
+    background: #d9cbb0;
+    box-shadow: inset 0 1px 12px #826c4729;
+  }
+  .retro-tv .crt-picture { background: #28231d; }
+  .retro-tv .tv-dial, .retro-tv .tv-power-button {
+    width: 44px;
+    height: 44px;
+  }
+  .retro-tv .tv-power-button svg { margin: auto; width: 19px; height: 19px; }
+  .retro-tv .tv-hardware .tv-media-modes { gap: 3px; margin: 0; }
+  .retro-tv .tv-hardware .tv-media-modes button,
+  .retro-tv .tv-hardware .tv-media-modes #tv-sound {
+    width: 100%;
+    min-height: 44px;
+    font-size: 9px;
+    letter-spacing: .025em;
+  }
+  .television-area .tv-remote { margin-top: 12px; gap: 8px; }
+  .television-area .tv-remote button,
+  .cat-picture-show .corridor-controls button { min-height: 44px; min-width: 44px; }
+  .cat-picture-show .corridor-thumbnails button { min-height: 44px; }
+}
+</style>
 </head>
 <body class="cat-photo-page">
 <a class="cat-home" href="index.html" aria-label="Back to home"><img src="assets/site-cat.svg?v=20261102" width="30" height="30" alt=""><span>HOME</span></a>
