@@ -42,3 +42,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:1px solid #777;
 #admin-auth-status{font-size:11px}
 @media(max-width:600px){.cat-home-scene{width:100vw}.cat-face-navigation{left:71.8%;top:69%;font-size:9px;line-height:2}.cat-face-home #home-photos-open{font-size:9px;padding:4px 6px}.cat-home-main{min-height:420px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Enlarge the whole photo around its center, without cropping it. */
+#home-photo-grid{position:relative}
+#home-photo-grid .home-photo-frame{position:absolute;left:50%;top:50%;height:var(--photo-height,100%);transform:translate(-50%,-50%);max-width:none;margin:0}
+#home-photo-list .home-photo-frame{max-width:100%}
