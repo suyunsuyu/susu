@@ -7,7 +7,7 @@
 <meta name="description" content="Umi's photo corridor and an interactive vintage television.">
 <link rel="icon" type="image/png" href="assets/site-cat-icon.png?v=20261013">
 <link rel="stylesheet" href="cat-photo-gallery.css?v=4-separate">
-<link rel="stylesheet" href="cat-picture-show.css?v=5-media">
+<link rel="stylesheet" href="cat-picture-show.css?v=6-cabinet-controls">
 </head>
 <body class="cat-photo-page">
 <a class="cat-home" href="index.html" aria-label="Back to home"><img src="assets/site-cat.svg?v=20261102" width="30" height="30" alt=""><span>HOME</span></a>
@@ -32,13 +32,13 @@
 <div class="tv-cabinet">
 <div class="tv-front">
 <div class="tv-screen-surround"><button id="tv-screen" class="crt-screen" type="button" aria-label="Turn television on" aria-pressed="false"><span class="crt-picture"><img id="tv-photo" alt="" hidden><video id="tv-video" playsinline muted loop preload="metadata" hidden></video><span id="tv-no-signal" hidden>NO SIGNAL</span><span id="tv-channel-label" aria-hidden="true">CH 01</span></span><span class="crt-glass" aria-hidden="true"></span><span class="crt-static" aria-hidden="true"></span><span class="crt-power-light" aria-hidden="true"></span></button></div>
-<div class="tv-hardware"><span class="tv-brand">UMI<br><small>COLOR TV</small></span><button id="tv-channel" class="tv-dial" type="button" aria-label="Next television channel"><span aria-hidden="true"></span></button><span class="dial-label">CHANNEL</span><div class="tv-speaker" aria-hidden="true"></div><button id="tv-power" class="tv-power-button" type="button" aria-label="Turn television on" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v9m-5-7a8 8 0 1 0 10 0"/></svg></button><span class="dial-label">POWER</span><i class="tv-led" aria-hidden="true"></i></div>
+<div class="tv-hardware"><span class="tv-brand">UMI<br><small>COLOR TV</small></span><button id="tv-channel" class="tv-dial" type="button" aria-label="Next television channel"><span aria-hidden="true"></span></button><span class="dial-label">CHANNEL</span><div class="tv-speaker" aria-hidden="true"></div><div class="tv-media-modes" aria-label="Television media"><button id="tv-mode-photo" type="button" aria-pressed="true"><i aria-hidden="true"></i><span>PHOTO</span></button><button id="tv-mode-video" type="button" aria-pressed="false"><i aria-hidden="true"></i><span>VIDEO</span></button><button id="tv-sound" type="button" hidden aria-pressed="false">SOUND</button></div><button id="tv-power" class="tv-power-button" type="button" aria-label="Turn television on" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v9m-5-7a8 8 0 1 0 10 0"/></svg></button><span class="dial-label">POWER</span><i class="tv-led" aria-hidden="true"></i></div>
 </div>
 <div class="tv-bottom"><span>PORTABLE / SOLID STATE</span><span>● UMI–01</span></div>
 </div>
 <div class="tv-feet" aria-hidden="true"><i></i><i></i></div>
 </div>
-<div class="tv-media-modes" aria-label="Television media"><button id="tv-mode-photo" type="button" aria-pressed="true">照片</button><button id="tv-mode-video" type="button" aria-pressed="false">视频</button><button id="tv-sound" type="button" hidden aria-pressed="false">开启声音</button></div>
+
 <div class="tv-remote"><button id="tv-prev" type="button" aria-label="Previous television channel">CH −</button><span id="tv-state-label" role="status">Television is off</span><button id="tv-next" type="button" aria-label="Next television channel">CH +</button></div>
 
 </div>
@@ -48,9 +48,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js?v=20260818-imgfix2"></script>
 <script src="supabase-site.js?v=20261002-font3"></script>
-<script src="cat-picture-show.js?v=5-media"></script>
+<script src="cat-picture-show.js?v=6-cabinet-controls"></script>
 <script src="cat-photo-gallery.js?v=4-separate"></script>
-<script src="tv-photo-gallery.js?v=2-media"></script>
-<script src="tv-layout-editor.js?v=1"></script>
+<script src="tv-photo-gallery.js?v=3-english"></script>
+<script src="tv-layout-editor.js?v=2-english"></script>
 </body>
 </html>
