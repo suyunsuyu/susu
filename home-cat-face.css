@@ -1,0 +1,44 @@
+:root{color-scheme:light;background:#fff;color:#646464}
+*{box-sizing:border-box}
+html,body{margin:0;min-width:280px;background:#fff}
+body.cat-face-home{font:14px/1.5 'Courier New',monospace;overflow-x:hidden}
+[hidden]{display:none!important}
+button,a,input{font:inherit}
+button,a{touch-action:manipulation}
+button{cursor:pointer}
+button:disabled{cursor:wait}
+a{color:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:1px solid #777;outline-offset:4px}
+.cat-home-main{position:relative;height:100svh;min-height:440px;overflow:hidden}
+.cat-home-scene{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(1140px,calc(100vw - 24px),120svh);aspect-ratio:1;flex:none}
+.cat-home-outline{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none}
+.cat-mouth-photo.home-photo-area{position:absolute;left:28%;top:45.5%;width:30%;height:24.5%;margin:0;min-height:0;isolation:isolate}
+#home-photo-grid{display:grid;place-items:center;width:100%;height:100%;gap:0}
+#home-photo-grid:empty::before{display:none}
+#home-photo-grid .home-photo-frame{display:flex;align-items:center;justify-content:center;height:100%;margin:0 auto;background:transparent}
+#home-photo-grid .home-photo-frame img{display:block;width:100%;height:100%;max-height:100%;object-fit:contain;aspect-ratio:auto;box-shadow:none}
+.cat-face-home #home-photos-open{position:absolute;left:50%;bottom:-26px;transform:translateX(-50%);border:1px solid #ddd;background:#fffc;color:#777;padding:5px 8px;font-size:10px;white-space:nowrap}
+.cat-mouth-photo:has(#home-photo-grid:empty) #home-photos-open{bottom:auto;top:50%;transform:translate(-50%,-50%)}
+#home-photo-load-status{position:absolute;top:100%;left:0;width:100%;font-size:10px;text-align:center;color:#888;margin:30px 0 0}
+.cat-face-navigation{position:absolute;left:72%;top:70%;width:17%;display:flex;flex-direction:column;align-items:flex-start;gap:0;font-size:clamp(9px,1.1vw,13px);line-height:2.1;letter-spacing:.045em}
+.cat-face-navigation a,.cat-face-navigation button{display:block;position:relative;margin:0;padding:0 3px;border:0;background:transparent;color:#626262;text-align:left;text-decoration:none;white-space:nowrap;transition:color .15s,transform .15s}
+.cat-face-navigation a:hover,.cat-face-navigation button:hover{color:#111;transform:translateX(3px)}
+#cat-home-info{width:min(420px,calc(100vw - 32px));padding:26px;border:1px solid #ddd;color:#666;background:#fff;font:14px/1.8 'Courier New',monospace}
+#cat-home-info::backdrop{background:#fff9;backdrop-filter:blur(3px)}
+#cat-home-info header{display:flex;justify-content:space-between;align-items:center}
+#cat-home-info h1{margin:0;font:inherit}
+#cat-home-info header button{border:0;background:none;color:#777;font-size:22px}
+#cat-home-info a{display:block;width:fit-content;margin:10px 0;text-decoration:none}
+#cat-home-info a:hover{text-decoration:underline}
+.cat-face-home #admin-auth-button{position:fixed;left:16px;bottom:14px;border:0;background:#fffc;color:#aaa;padding:4px 6px;font-size:10px;z-index:5}
+.admin-auth-dialog{width:min(390px,calc(100vw - 32px));max-height:90svh;overflow:auto;padding:24px;border:1px solid #ddd;background:white;color:#555;font:13px/1.6 Arial,sans-serif}
+.admin-auth-dialog::backdrop{background:#fff9;backdrop-filter:blur(3px)}
+.admin-auth-head{display:flex;align-items:center;justify-content:space-between}
+.admin-auth-head button{border:0;background:transparent;color:#555;font-size:22px}
+.admin-auth-card label{display:block;margin:14px 0}
+.admin-auth-card input{display:block;width:100%;margin-top:6px;padding:9px;border:1px solid #ddd;background:white;color:#555}
+.admin-auth-card>button{display:block;width:100%;margin:12px 0 0;padding:9px;border:1px solid #ddd;background:white;color:#555}
+.admin-auth-card>button.black{background:#555;color:white}
+#admin-auth-status{font-size:11px}
+@media(max-width:600px){.cat-home-scene{width:100vw}.cat-face-navigation{left:71.8%;top:69%;font-size:9px;line-height:2}.cat-face-home #home-photos-open{font-size:9px;padding:4px 6px}.cat-home-main{min-height:420px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
