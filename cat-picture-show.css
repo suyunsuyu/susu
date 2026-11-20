@@ -184,6 +184,11 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline-color:#777}
 /* Original film-scan edge, recolored as a warm paper mount. */
 .film-reel{position:relative;isolation:isolate;aspect-ratio:2048/1426;padding:0;border:0;border-radius:0;background:#fff}
 .film-reel .film-perforations{display:none}
-.film-reel::after{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;background:url('assets/film-scan-frame.jpg') center/100% 100% no-repeat;filter:invert(1) sepia(.28) saturate(.6) brightness(.96);clip-path:polygon(evenodd,0 0,100% 0,100% 100%,0 100%,0 0,5.7% 3.7%,34.2% 3.7%,34.2% 5.8%,35.8% 5.8%,35.8% 3.9%,64.6% 3.9%,64.6% 5.9%,66.3% 5.9%,66.3% 4%,94.8% 4.1%,94.8% 6.1%,97% 6.1%,97% 47.3%,94.7% 47.3%,94.7% 49.7%,97% 49.7%,97% 90.8%,94.7% 90.8%,94.7% 92.9%,66.1% 92.9%,66.1% 90.9%,64.5% 90.9%,64.5% 92.8%,35.7% 92.8%,35.7% 90.8%,34.1% 90.8%,34.1% 92.8%,5.5% 92.8%,5.5% 90.7%,3.4% 90.7%,3.4% 49.2%,5.6% 49.2%,5.6% 47%,3.5% 47%,3.5% 5.7%,5.7% 5.7%,5.7% 3.7%)}
+.film-reel::after{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;background:url('assets/film-scan-frame.jpg') center/100% 100% no-repeat;filter:invert(1) sepia(.28) saturate(.6) brightness(.96);clip-path:var(--film-edge)}
 .film-reel #cat-photo-grid.corridor-track{position:absolute;inset:6.5% 4.5% 8.5%;margin:0;aspect-ratio:auto;height:auto;background:#fff}
 .film-reel .corridor-slide{padding:12px 14px;background:#fff}
+
+/* Paper tone and grain taken directly from the supplied swatch. */
+.film-reel{--film-edge:polygon(evenodd,0 0,100% 0,100% 100%,0 100%,0 0,5.7% 3.7%,34.2% 3.7%,34.2% 5.8%,35.8% 5.8%,35.8% 3.9%,64.6% 3.9%,64.6% 5.9%,66.3% 5.9%,66.3% 4%,94.8% 4.1%,94.8% 6.1%,97% 6.1%,97% 47.3%,94.7% 47.3%,94.7% 49.7%,97% 49.7%,97% 90.8%,94.7% 90.8%,94.7% 92.9%,66.1% 92.9%,66.1% 90.9%,64.5% 90.9%,64.5% 92.8%,35.7% 92.8%,35.7% 90.8%,34.1% 90.8%,34.1% 92.8%,5.5% 92.8%,5.5% 90.7%,3.4% 90.7%,3.4% 49.2%,5.6% 49.2%,5.6% 47%,3.5% 47%,3.5% 5.7%,5.7% 5.7%,5.7% 3.7%)}
+.film-reel::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:#dbd5d3 url("assets/film-paper-texture.png") repeat;background-size:113px 74px;clip-path:var(--film-edge)}
+.film-reel::after{filter:invert(1) grayscale(1) brightness(1.025);mix-blend-mode:multiply}
