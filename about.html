@@ -84,6 +84,53 @@
   }
 }
 </style>
+
+<style id="borderless-slideshow">
+.film-reel[data-frame=none] { background: transparent; border: 0; border-radius: 0; box-shadow: none; }
+.film-reel[data-frame=none]::before,
+.film-reel[data-frame=none]::after,
+.film-reel[data-frame=none] .film-perforations { display: none; }
+.film-reel[data-frame=none] #cat-photo-grid.corridor-track { inset: 0; background: transparent; }
+.film-reel[data-frame=none] .corridor-slide { padding: 0; background: transparent; }
+.frame-style-preview .film-reel[data-frame=none] .frame-photo { inset: 0; width: 100%; height: 100%; }
+.cat-photo-area:has(.film-reel[data-frame=none]) .corridor-thumbnails button {
+  border: 0; padding: 0; background: transparent;
+}
+</style>
+<style id="desktop-glass-controls">
+@media (width > 760px), (hover: hover) and (pointer: fine) {
+  .retro-tv .tv-cabinet {
+    border-color: #829ca7;
+    background: linear-gradient(145deg, #fffffff2 0%, #d5ebf13d 21%, #fff1 48%, #b0d0df3b 75%, #87aab775 100%);
+    box-shadow: inset 0 0 0 2px #fff, inset -5px -5px 0 #9dbbc65c,
+      4px 5px 0 #88a6b34d, 0 15px 26px #38596c26;
+  }
+  .retro-tv .tv-screen-surround {
+    background: linear-gradient(140deg, #9cb8c070, #fff9 35%, #b5d0da52 78%, #89a5b070);
+  }
+  .retro-tv .tv-dial,
+  .retro-tv .tv-dial span,
+  .retro-tv .tv-power-button,
+  .retro-tv .tv-hardware .tv-media-modes button,
+  .television-area .tv-remote button {
+    border: 1px solid #8ba5af;
+    background: linear-gradient(155deg, #fff 3%, #eff9fcac 38%, #aac9d47a 72%, #dbeef2bd);
+    box-shadow: inset 0 1px 0 #fff, inset 0 -2px 2px #6b96a339, 0 2px 3px #375b6a38;
+    color: #263f49;
+    cursor: pointer;
+  }
+  .retro-tv .tv-dial span:after { background: #486876; }
+  .retro-tv .tv-power-button svg { stroke: #294b59; }
+  .retro-tv .tv-power-button[aria-pressed=true],
+  .retro-tv .tv-hardware .tv-media-modes button[aria-pressed=true] {
+    border-color: #527987;
+    background: linear-gradient(155deg, #f3fcff, #b2d9e680 42%, #76a9bbad);
+    box-shadow: inset 0 1px 3px #688d9a80, 0 1px 0 #fff;
+    color: #203d49;
+  }
+  .television-area .tv-remote button { padding: 5px 10px; border-radius: 8px; }
+}
+</style>
 </head>
 <body class="cat-photo-page">
 <a class="cat-home" href="index.html" aria-label="Back to home"><img src="assets/site-cat.svg?v=20261102" width="30" height="30" alt=""><span>HOME</span></a>
@@ -125,7 +172,7 @@
 <script src="config.js?v=20260818-imgfix2"></script>
 <script src="supabase-site.js?v=20261002-font3"></script>
 <script src="cat-picture-show.js?v=6-cabinet-controls"></script>
-<script src="cat-photo-gallery.js?v=5-frame-choice"></script>
+<script src="cat-photo-gallery.js?v=6-no-frame"></script>
 <script src="tv-photo-gallery.js?v=3-english"></script>
 <script src="tv-layout-editor.js?v=2-english"></script>
 </body>
