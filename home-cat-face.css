@@ -10,7 +10,7 @@ button:disabled{cursor:wait}
 a{color:inherit}
 button:focus-visible,a:focus-visible,input:focus-visible{outline:1px solid #777;outline-offset:4px}
 .cat-home-main{position:relative;height:100svh;min-height:440px;overflow:hidden}
-.cat-home-scene{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(1140px,calc(100vw - 24px),120svh);aspect-ratio:1;flex:none}
+.cat-home-scene{position:absolute;left:50%;top:calc(50% + 18px);transform:translate(-50%,-50%);width:min(1140px,calc(100vw - 24px),107svh);aspect-ratio:1;flex:none}
 .cat-home-outline{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;user-select:none}
 .cat-mouth-photo.home-photo-area{position:absolute;left:28%;top:45.5%;width:30%;height:24.5%;margin:0;min-height:0;isolation:isolate}
 #home-photo-grid{display:grid;place-items:center;width:100%;height:100%;gap:0}
@@ -20,7 +20,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:1px solid #777;
 .cat-face-home #home-photos-open{position:absolute;left:50%;bottom:-26px;transform:translateX(-50%);border:1px solid #ddd;background:#fffc;color:#777;padding:5px 8px;font-size:10px;white-space:nowrap}
 .cat-mouth-photo:has(#home-photo-grid:empty) #home-photos-open{bottom:auto;top:50%;transform:translate(-50%,-50%)}
 #home-photo-load-status{position:absolute;top:100%;left:0;width:100%;font-size:10px;text-align:center;color:#888;margin:30px 0 0}
-.cat-face-navigation{position:absolute;left:72%;top:70%;width:17%;display:flex;flex-direction:column;align-items:flex-start;gap:0;font-size:clamp(9px,1.1vw,13px);line-height:2.1;letter-spacing:.045em}
+.cat-face-navigation{position:absolute;z-index:2;inset:clamp(12px,4svh,42px) 12px auto;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:clamp(10px,3vw,30px);font-size:clamp(10px,1.1vw,13px);line-height:2.1;letter-spacing:.045em}
 .cat-face-navigation a,.cat-face-navigation button{display:block;position:relative;margin:0;padding:0 3px;border:0;background:transparent;color:#626262;text-align:left;text-decoration:none;white-space:nowrap;transition:color .15s,transform .15s}
 .cat-face-navigation a:hover,.cat-face-navigation button:hover{color:#111;transform:translateX(3px)}
 #cat-home-info{width:min(420px,calc(100vw - 32px));padding:26px;border:1px solid #ddd;color:#666;background:#fff;font:14px/1.8 'Courier New',monospace}
@@ -40,16 +40,11 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:1px solid #777;
 .admin-auth-card>button{display:block;width:100%;margin:12px 0 0;padding:9px;border:1px solid #ddd;background:white;color:#555}
 .admin-auth-card>button.black{background:#555;color:white}
 #admin-auth-status{font-size:11px}
-@media(max-width:600px){.cat-home-scene{width:100vw}.cat-face-navigation{left:71.8%;top:69%;font-size:9px;line-height:2}.cat-face-home #home-photos-open{font-size:9px;padding:4px 6px}.cat-home-main{min-height:420px}}
+@media(max-width:600px){.cat-home-scene{width:100vw}.cat-face-home #home-photos-open{font-size:9px;padding:4px 6px}.cat-home-main{min-height:420px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 
 /* Enlarge the whole photo around its center, without cropping it. */
 #home-photo-grid{position:relative}
-#home-photo-grid .home-photo-frame{position:absolute;left:50%;top:50%;height:var(--photo-height,100%);transform:translate(-50%,-50%);max-width:none;margin:0}
-#home-photo-list .home-photo-frame{max-width:100%}
+#home-photo-grid .home-photo-frame{position:absolute;left:calc(50% + var(--photo-x,0%));top:50%;height:var(--photo-height,100%);transform:translate(-50%,-50%);max-width:none;margin:0}
+#home-photo-list .home-photo-frame{position:relative;left:var(--photo-x,0%);max-width:100%}
 
-/* Detach the original pull while retaining the supplied line artwork. */
-.cat-home-scene.has-zipper-motion .cat-home-outline{mask-image:url('assets/cat-zipper-mask.svg');mask-mode:luminance;mask-size:100% 100%;mask-repeat:no-repeat}
-.cat-zipper-layer{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;display:none}
-.has-zipper-motion .cat-zipper-layer{display:block}
-#cat-zipper-pull{will-change:transform}
