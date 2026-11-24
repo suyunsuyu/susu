@@ -1,8 +1,5 @@
 (() => {
   'use strict';
-  const clock=document.querySelector('#work-clock');
-  const tick=()=>{const now=new Date();clock.dateTime=now.toISOString();clock.textContent=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(now);};
-  tick();setInterval(tick,1000);
   document.querySelector('#work-email').onclick=e=>{const link=document.querySelector('#work-email-address');link.hidden=!link.hidden;e.currentTarget.setAttribute('aria-expanded',String(!link.hidden));};
   const albums=[...document.querySelectorAll('[data-album]')].map(el=>({el,key:el.dataset.album,photos:JSON.parse(el.dataset.photos),index:0,img:el.querySelector('img')}));
   const show=(album,index)=>{
