@@ -49,6 +49,11 @@
 .work-control-row label:first-child { flex-basis: 100%; }
 .work-control-panel [role=status]:not(:empty) { display: block; margin-top: 6px; color: #666; }
 .work-cargo .site-home-link { width: auto; min-width: 0; height: auto; }
+#work-slides-manager { width: min(540px, calc(100% - 24px)); max-height: 82svh; overflow: auto; }
+#work-slides-manager::backdrop { background: #0004; }
+#work-slides-list { list-style: none; padding: 0; display: grid; gap: 8px; }
+#work-slides-list label { display: grid; grid-template-columns: auto 72px minmax(0, 1fr); align-items: center; gap: 10px; overflow-wrap: anywhere; }
+#work-slides-list img { width: 72px; height: 54px; object-fit: contain; }
 </style></head><body class="work-cargo"><a class="site-home-link" href="index.html" aria-label="Back to home" title="Back to home"><span>Home</span></a>
 <nav class="work-index" aria-label="Projects"><span>00.</span><a href="#information">Information</a><span>01.</span><a href="#project-a">A</a><span>02.</span><a href="#project-b">B</a><span>03.</span><a href="#project-c">C</a><span>04.</span><a href="#project-d">D</a><span>05.</span><a href="#project-e">E</a></nav>
 <p data-work-text="quote" hidden>Life varies with diameter, and pain is related to pain.</p>
@@ -67,8 +72,13 @@ These days, when I&#x27;m sad, all I want to do is sleep.</p><figure class="work
 2023</p><p class="work-description" data-work-text="d-description" hidden></p><figure class="work-album" data-album="d" data-photos='["assets/work-cargo/d-01.jpg", "assets/work-cargo/d-02.jpg"]'><button class="work-photo" type="button" aria-label="Next photo in project D"><img src="assets/work-cargo/d-01.jpg" alt="Project D, photograph 1" width="1620" height="1080" loading="lazy"></button><figcaption class="work-pages" aria-label="Project D photo pages"><button type="button" data-photo="0" aria-label="Project D, photo 1" aria-current="true">1/2</button><button type="button" data-photo="1" aria-label="Project D, photo 2">2/2</button></figcaption></figure></div></section>
 <section class="work-project" id="project-e" aria-label="Project E"><span class="work-number">05.</span><div class="work-project-body"><h1 class="work-name" data-work-text="e-title">E</h1><p class="work-meta" data-work-text="e-meta">Seoul, South Korea
 2023</p><p class="work-description" data-work-text="e-description" hidden></p><figure class="work-album" data-album="e" data-photos='["assets/work-cargo/e-01.jpg", "assets/work-cargo/e-02.jpg", "assets/work-cargo/e-03.jpg"]'><button class="work-photo" type="button" aria-label="Next photo in project E"><img src="assets/work-cargo/e-01.jpg" alt="Project E, photograph 1" width="1620" height="1080" loading="lazy"></button><figcaption class="work-pages" aria-label="Project E photo pages"><button type="button" data-photo="0" aria-label="Project E, photo 1" aria-current="true">1/3</button><button type="button" data-photo="1" aria-label="Project E, photo 2">2/3</button><button type="button" data-photo="2" aria-label="Project E, photo 3">3/3</button></figcaption></figure></div></section></main>
-<details class="work-admin-tools" data-admin-only hidden><summary>Controls</summary><div class="work-control-panel"><fieldset><legend>Slideshow</legend><div class="work-control-row"><label>Photos <input id="work-slides-upload" type="file" multiple accept="image/jpeg,image/png,image/webp" disabled></label><label>Effect <select id="work-slides-effect" disabled><option value="loop">Continuous loop</option><option value="fade">Fade</option><option value="slide">Slide</option><option value="zoom">Soft zoom</option><option value="cut">Instant</option></select></label><label>Ratio <select id="work-slides-ratio" disabled><option value="16:9">16:9</option><option value="3:2">3:2</option><option value="4:3">4:3</option><option value="1:1">1:1</option></select></label></div><span id="work-slides-status" role="status"></span></fieldset><fieldset><legend>Projects</legend><div class="work-control-row"><button id="work-save" type="button">Save</button><button id="work-add" type="button">Edit projects</button><a href="project-manager.html">PDF and web</a></div><span id="work-status" class="work-status" role="status"></span></fieldset></div></details>
-<dialog id="work-editor"><form id="work-edit-form"><label>TEXT<textarea id="work-edit-text" rows="10"></textarea></label><button type="submit">APPLY</button><button id="work-edit-cancel" type="button">CANCEL</button></form></dialog><input id="work-photo-file" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+<details class="work-admin-tools" data-admin-only hidden><summary>Controls</summary><div class="work-control-panel"><fieldset><legend>Slideshow</legend><div class="work-control-row"><label>Photos <input id="work-slides-upload" type="file" multiple accept="image/jpeg,image/png,image/webp" disabled></label><label>Effect <select id="work-slides-effect" disabled><option value="loop">Continuous loop</option><option value="fade">Fade</option><option value="slide">Slide</option><option value="zoom">Soft zoom</option><option value="cut">Instant</option></select></label><label>Ratio <select id="work-slides-ratio" disabled><option value="16:9">16:9</option><option value="3:2">3:2</option><option value="4:3">4:3</option><option value="1:1">1:1</option></select></label></div><button id="work-slides-manage" type="button" disabled>Manage photos</button><span id="work-slides-status" role="status"></span></fieldset><fieldset><legend>Projects</legend><div class="work-control-row"><button id="work-save" type="button">Save</button><button id="work-add" type="button">Edit projects</button><a href="project-manager.html">PDF and web</a></div><span id="work-status" class="work-status" role="status"></span></fieldset></div></details>
+<dialog id="work-slides-manager" aria-labelledby="work-slides-manager-title">
+<h2 id="work-slides-manager-title">Slideshow photos</h2>
+<ul id="work-slides-list"></ul>
+<p id="work-slides-manager-status" role="status"></p>
+<div class="work-control-row"><button id="work-slides-close" type="button">Close</button><button id="work-slides-save" type="button" disabled>Save changes</button></div>
+</dialog><dialog id="work-editor"><form id="work-edit-form"><label>TEXT<textarea id="work-edit-text" rows="10"></textarea></label><button type="submit">APPLY</button><button id="work-edit-cancel" type="button">CANCEL</button></form></dialog><input id="work-photo-file" type="file" accept="image/jpeg,image/png,image/webp" hidden>
 <dialog id="work-project-editor"><form id="work-project-form"><h2>PROJECT</h2><label>PROJECT<select id="work-project-select"><option value="">＋ NEW PROJECT</option></select></label><label>TITLE<input id="work-project-title" required maxlength="150"></label><label>LOCATION / YEAR<textarea id="work-project-meta" rows="2"></textarea></label><label>DESCRIPTION<textarea id="work-project-description" rows="6"></textarea></label><label>PHOTOS<input id="work-project-photos" type="file" multiple accept="image/jpeg,image/png,image/webp"></label><label>PDF<input id="work-project-pdf" type="file" accept="application/pdf,.pdf"></label><label>WEB PAGE<input id="work-project-web" type="url" placeholder="https://"></label><p id="work-project-files"></p><button type="submit">SAVE PROJECT</button><button id="work-project-delete" type="button" hidden>DELETE PROJECT</button><button id="work-project-cancel" type="button">CANCEL</button><p id="work-project-status" role="status"></p></form></dialog><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js?v=20260818-imgfix2"></script><script src="supabase-site.js?v=20260902-auth4"></script><script src="work-projects.js?v=1"></script>
 <script>
 (() => {
@@ -79,6 +89,7 @@ These days, when I&#x27;m sad, all I want to do is sleep.</p><figure class="work
   const toggle = stage.querySelector('button');
   const input = document.querySelector('#work-slides-upload');
   const status = document.querySelector('#work-slides-status');
+  const manage = document.querySelector('#work-slides-manage');
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   const effectInput = document.querySelector('#work-slides-effect');
   const ratioInput = document.querySelector('#work-slides-ratio');
@@ -165,11 +176,72 @@ These days, when I&#x27;m sad, all I want to do is sleep.</p><figure class="work
       const items = (Array.isArray(saved?.photos) ? saved.photos : []).filter(photo =>
         typeof photo?.src === 'string' && photo.src.startsWith('https://'));
       if (items.length) display(items);
-      input.disabled = false;
+      manage.disabled = input.disabled = false;
       effectInput.disabled = ratioInput.disabled = false;
+      const dialog = document.querySelector('#work-slides-manager');
+      const list = document.querySelector('#work-slides-list');
+      const feedback = document.querySelector('#work-slides-manager-status');
+      const close = document.querySelector('#work-slides-close');
+      const save = document.querySelector('#work-slides-save');
+      let snapshot, saving = false;
+      const photoList = value => Array.isArray(value?.photos) ? value.photos : [];
+      close.onclick = () => dialog.close();
+      dialog.addEventListener('cancel', event => { if (saving) event.preventDefault(); });
+      manage.onclick = async () => {
+        manage.disabled = true;
+        try {
+          if (!await api.isAdmin()) throw Error('Admin login required.');
+          snapshot = photoList(await api.loadContent(key));
+          list.replaceChildren();
+          feedback.textContent = snapshot.length ? 'Select the photos to remove.' : 'No photos yet.';
+          save.disabled = true;
+          for (const [i, photo] of snapshot.entries()) {
+            if (typeof photo?.src !== 'string' || !photo.src.startsWith('https://')) continue;
+            const row = document.createElement('li');
+            const label = document.createElement('label');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = i;
+            const thumbnail = document.createElement('img');
+            thumbnail.src = photo.src;
+            thumbnail.alt = '';
+            label.append(checkbox, thumbnail, photo.alt || 'Photo ' + (i + 1));
+            row.append(label);
+            list.append(row);
+          }
+          dialog.showModal();
+        } catch (error) { status.textContent = error.message; }
+        finally { manage.disabled = false; }
+      };
+      list.onchange = () => { save.disabled = !list.querySelector('input:checked'); };
+      save.onclick = async () => {
+        const selected = new Set([...list.querySelectorAll('input:checked')].map(input => Number(input.value)));
+        if (saving || !selected.size) return;
+        saving = true;
+        save.disabled = close.disabled = true;
+        const checkboxes = [...list.querySelectorAll('input')];
+        checkboxes.forEach(input => input.disabled = true);
+        try {
+          if (!await api.isAdmin()) throw Error('Admin login required.');
+          const latest = await api.loadContent(key);
+          if (JSON.stringify(photoList(latest)) !== JSON.stringify(snapshot)) {
+            throw Error('The photo list changed. Close and reopen to refresh.');
+          }
+          const remaining = snapshot.filter((_, i) => !selected.has(i));
+          await api.saveContent(key, {...latest, photos: remaining});
+          display(remaining.filter(photo => typeof photo?.src === 'string' && photo.src.startsWith('https://')));
+          dialog.close();
+          status.textContent = 'Photos removed.';
+        } catch (error) { feedback.textContent = error.message; }
+        finally {
+          saving = false;
+          close.disabled = save.disabled = false;
+          checkboxes.forEach(input => input.disabled = false);
+        }
+      };
       ratioInput.onchange = async () => {
         const chosen = ratioInput.value;
-        input.disabled = effectInput.disabled = ratioInput.disabled = true;
+        manage.disabled = input.disabled = effectInput.disabled = ratioInput.disabled = true;
         try {
           if (!await api.isAdmin()) throw Error('Admin login required.');
           const latest = await api.loadContent(key);
@@ -181,13 +253,13 @@ These days, when I&#x27;m sad, all I want to do is sleep.</p><figure class="work
           ratioInput.value = ratio;
           status.textContent = error.message;
         } finally {
-          input.disabled = effectInput.disabled = ratioInput.disabled = false;
+          manage.disabled = input.disabled = effectInput.disabled = ratioInput.disabled = false;
         }
       };
       effectInput.onchange = async () => {
         const chosen = effectInput.value;
         if (!validEffect(chosen)) return;
-        input.disabled = effectInput.disabled = ratioInput.disabled = true;
+        manage.disabled = input.disabled = effectInput.disabled = ratioInput.disabled = true;
         try {
           if (!await api.isAdmin()) throw Error('Admin login required.');
           const latest = await api.loadContent(key);
@@ -200,7 +272,7 @@ These days, when I&#x27;m sad, all I want to do is sleep.</p><figure class="work
           effectInput.value = effect;
           status.textContent = error.message;
         } finally {
-          input.disabled = effectInput.disabled = ratioInput.disabled = false;
+          manage.disabled = input.disabled = effectInput.disabled = ratioInput.disabled = false;
         }
       };
       input.onchange = async () => {
@@ -211,7 +283,7 @@ These days, when I&#x27;m sad, all I want to do is sleep.</p><figure class="work
           status.textContent = 'Choose JPG, PNG or WebP photos up to 10 MB each.';
           return;
         }
-        input.disabled = effectInput.disabled = ratioInput.disabled = true;
+        manage.disabled = input.disabled = effectInput.disabled = ratioInput.disabled = true;
         try {
           if (!await api.isAdmin()) throw Error('Admin login required.');
           const next = [];
@@ -226,7 +298,7 @@ These days, when I&#x27;m sad, all I want to do is sleep.</p><figure class="work
         } catch (error) {
           status.textContent = error.message;
         } finally {
-          input.disabled = effectInput.disabled = ratioInput.disabled = false;
+          manage.disabled = input.disabled = effectInput.disabled = ratioInput.disabled = false;
         }
       };
     } catch (error) {
