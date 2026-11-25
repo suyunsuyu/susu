@@ -5,11 +5,9 @@
 #work-slides .work-slide-window { width: min(100%, calc(var(--work-ratio, 1.7778) * min(58svh, 540px))); margin-inline: auto; aspect-ratio: var(--work-ratio, 1.7778); overflow: hidden; }
 #work-slides img { display: block; width: 100%; height: 100%; object-fit: contain; }
 #work-slides .work-slide-belt, #work-slides .work-slide-group { display: flex; width: 100%; height: 100%; }
-#work-slides .work-slide-group, #work-slides .work-slide-cell { flex: 0 0 100%; min-width: 0; }
+#work-slides .work-slide-group { flex: 0 0 calc(var(--work-slide-count) * 100%); }
+#work-slides .work-slide-cell { flex: 0 0 calc(100% / var(--work-slide-count)); min-width: 0; }
 #work-slides .work-slide-cell { display: grid; place-items: center; }
-#work-slides .work-slide-belt { animation: work-slideshow-scroll var(--work-loop-duration) linear infinite; animation-play-state: paused; }
-#work-slides[data-playing=true] .work-slide-belt { animation-play-state: running; }
-@keyframes work-slideshow-scroll { to { transform: translateX(var(--work-loop-distance)); } }
 #work-slides button { display: block; margin: 8px auto 0; border: 0; background: none; padding: 6px 12px; color: #666; font-size: 12px; }
 #work-slides-upload { max-width: 180px; }
 @media(max-width:600px) {
@@ -101,10 +99,33 @@ These days, when I&#x27;m sad, all I want to do is sleep.</p><figure class="work
     zoom: [{opacity: .3, transform: 'scale(.94)'}, {opacity: 1, transform: 'scale(1)'}]
   };
   const validEffect = value => value === 'loop' || value === 'cut' || Object.hasOwn(effects, value);
+  const timing = {
+    fade: {interval: 6500, duration: 700},
+    slide: {interval: 5500, duration: 550},
+    zoom: {interval: 8000, duration: 1100},
+    cut: {interval: 5000}
+  };
   let effect = 'loop', animation;
+  let belt, frameId, lastTime, offset = 0;
+  let viewportWidth = viewport.clientWidth;
+  new ResizeObserver(() => {
+    const width = viewport.clientWidth;
+    if (viewportWidth && width) offset *= width / viewportWidth;
+    viewportWidth = width;
+    if (belt) belt.style.transform = 'translate3d(' + -offset + 'px,0,0)';
+  }).observe(viewport);
+  function move(time) {
+    const loopWidth = viewportWidth * photos.length;
+    if (lastTime !== undefined && loopWidth) {
+      offset = (offset + Math.min(time - lastTime, 64) * .032) % loopWidth;
+      belt.style.transform = 'translate3d(' + -offset + 'px,0,0)';
+    }
+    lastTime = time;
+    frameId = requestAnimationFrame(move);
+  }
   function transition() {
     animation?.cancel();
-    if (!motion.matches && effect !== 'cut' && effect !== 'loop') animation = image.animate(effects[effect], {duration: 500, easing: 'ease-out'});
+    if (!motion.matches && effect !== 'cut' && effect !== 'loop') animation = image.animate(effects[effect], {duration: timing[effect].duration, easing: 'ease-out'});
   }
   let photos = [];
   let index = 0, timer, paused = motion.matches;
@@ -118,26 +139,32 @@ These days, when I&#x27;m sad, all I want to do is sleep.</p><figure class="work
   function schedule() {
     clearInterval(timer);
     const playing = !paused && !document.hidden && photos.length > 1;
-    stage.dataset.playing = String(playing);
-    if (!playing || effect === 'loop') return;
+    cancelAnimationFrame(frameId);
+    lastTime = undefined;
+    if (!playing) return;
+    if (effect === 'loop') {
+      frameId = requestAnimationFrame(move);
+      return;
+    }
     timer = setInterval(() => {
       index = (index + 1) % photos.length;
       show();
       transition();
-    }, 6500);
+    }, timing[effect].interval);
   }
   function display(items) {
-    photos = items;
+    photos = [...new Map(items.map(photo => [photo.src, photo])).values()];
+    belt = null;
+    offset = 0;
     stage.hidden = photos.length === 0;
     stage.dataset.loop = String(effect === 'loop' && photos.length > 1);
     index = 0;
-    if (stage.hidden) { clearInterval(timer); return; }
+    if (stage.hidden) { viewport.replaceChildren(); schedule(); return; }
     show();
     if (effect === 'loop' && photos.length > 1) {
-      const belt = document.createElement('div');
+      belt = document.createElement('div');
       belt.className = 'work-slide-belt';
-      belt.style.setProperty('--work-loop-duration', photos.length * 18 + 's');
-      belt.style.setProperty('--work-loop-distance', -100 * photos.length + '%');
+      belt.style.setProperty('--work-slide-count', photos.length);
       const group = document.createElement('div');
       group.className = 'work-slide-group';
       for (const photo of photos) {
