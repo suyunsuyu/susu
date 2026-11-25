@@ -86,6 +86,7 @@
 </style>
 
 <style id="borderless-slideshow">
+.cat-photo-area > .film-reel:not(:has(.corridor-slide)) { visibility: hidden; }
 .film-reel[data-frame=none] { background: transparent; border: 0; border-radius: 0; box-shadow: none; }
 .film-reel[data-frame=none]::before,
 .film-reel[data-frame=none]::after,
@@ -222,7 +223,7 @@
 <main class="cat-picture-show" aria-label="Umi's picture show">
 <section class="cat-photo-area is-empty" aria-label="Photo corridor">
 <header class="corridor-heading"><button id="cat-photos-open" type="button" hidden>Edit corridor photos</button></header>
-<div class="film-reel">
+<div class="film-reel" data-frame="none">
 <div class="film-perforations" aria-hidden="true"></div>
 <div id="cat-photo-grid" class="corridor-track" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Photo slides"></div>
 <div class="film-perforations" aria-hidden="true"></div>
