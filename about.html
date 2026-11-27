@@ -249,7 +249,8 @@
   box-shadow: 0 14px 28px #51677427; overflow: hidden;
 }
 .cat-camera-screen img { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
-#cat-camera-photo[hidden] { display: none; }
+#cat-camera-photo[hidden], #cat-camera-video[hidden] { display: none; }
+#cat-camera-video { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
 #cat-camera-empty { margin: 0; font-size: 13px; text-align: center; }
 #cat-camera-arc { position: absolute; inset: 0; }
 .cat-camera-card {
@@ -272,6 +273,18 @@
 <main class="cat-picture-show" aria-label="Umi's picture show">
 <section class="cat-photo-area is-empty" aria-label="Photo corridor">
 <header class="corridor-heading"><button id="cat-photos-open" type="button" hidden>Edit corridor photos</button></header>
+<div class="film-reel" data-frame="none">
+<div class="film-perforations" aria-hidden="true"></div>
+<div id="cat-photo-grid" class="corridor-track" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Photo slides"></div>
+<div class="film-perforations" aria-hidden="true"></div>
+</div>
+<div class="corridor-controls"><button id="corridor-play" type="button" aria-label="Pause slideshow" aria-pressed="true" data-playing="true"><svg class="pause-symbol" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg><svg class="play-symbol" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 4 13 8-13 8z"/></svg></button></div>
+<div id="corridor-thumbnails" class="corridor-thumbnails" aria-label="Choose a photo"></div>
+<p id="cat-photo-load-status" role="status"></p>
+</section>
+<section class="television-area tv-photo-area" aria-label="Camera gallery">
+
+<div class="tv-admin-tools"><button id="tv-photos-open" type="button" hidden>Edit TV media</button><span hidden><button id="tv-layout-open" type="button" hidden>TV layout</button></span></div><div id="tv-photo-grid" hidden></div>
 <div class="cat-camera-entry">
 <button class="cat-camera" id="cat-camera-open" type="button" aria-label="Open UMI photo album" aria-haspopup="dialog"><span class="cat-camera-lens" aria-hidden="true"></span></button>
 </div>
@@ -279,7 +292,7 @@
 <button id="cat-camera-close" type="button" aria-label="Close photo album">×</button>
 <div class="cat-camera-stage">
 <div id="cat-camera-arc" aria-label="Choose a photo"></div>
-<figure class="cat-camera-screen"><img id="cat-camera-photo" alt="" hidden><p id="cat-camera-empty" role="status">Loading photos…</p></figure>
+<figure class="cat-camera-screen"><img id="cat-camera-photo" alt="" hidden><video id="cat-camera-video" controls playsinline preload="metadata" hidden></video><p id="cat-camera-empty" role="status">Loading photos…</p></figure>
 </div>
 <div class="cat-camera-controls">
 <button id="cat-camera-prev" type="button" aria-label="Previous photo">‹</button>
@@ -287,20 +300,7 @@
 <button id="cat-camera-next" type="button" aria-label="Next photo">›</button>
 </div>
 </dialog>
-<div hidden><div class="film-reel" data-frame="none">
-<div class="film-perforations" aria-hidden="true"></div>
-<div id="cat-photo-grid" class="corridor-track" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Photo slides"></div>
-<div class="film-perforations" aria-hidden="true"></div>
-</div>
-<div class="corridor-controls"><button id="corridor-play" type="button" aria-label="Pause slideshow" aria-pressed="true" data-playing="true"><svg class="pause-symbol" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg><svg class="play-symbol" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 4 13 8-13 8z"/></svg></button></div>
-<div id="corridor-thumbnails" class="corridor-thumbnails" aria-label="Choose a photo"></div>
-</div>
-<p id="cat-photo-load-status" role="status"></p>
-</section>
-<section class="television-area tv-photo-area" aria-label="Glass television">
-
-<div class="tv-admin-tools"><button id="tv-photos-open" type="button" hidden>Edit TV media</button><button id="tv-layout-open" type="button" hidden>TV layout</button></div><div id="tv-photo-grid" hidden></div>
-<div class="tv-positioned">
+<div class="tv-positioned" hidden>
 <div class="retro-tv" data-state="off">
 <div class="tv-antenna" aria-hidden="true"><i></i><i></i><span></span></div>
 <div class="tv-cabinet">
@@ -327,6 +327,7 @@
   const opener = document.querySelector('#cat-camera-open');
   const viewer = document.querySelector('#cat-camera-viewer');
   const photo = document.querySelector('#cat-camera-photo');
+  const video = document.querySelector('#cat-camera-video');
   const arc = document.querySelector('#cat-camera-arc');
   const empty = document.querySelector('#cat-camera-empty');
   const count = document.querySelector('#cat-camera-count');
@@ -335,15 +336,23 @@
   let items = [], index = 0, loaded = false;
   function show() {
     const item = items[index];
-    photo.hidden = !item;
+    const isVideo = item?.type === 'video';
+    photo.hidden = !item || isVideo;
+    video.hidden = !isVideo;
+    if (!isVideo) { video.pause(); video.removeAttribute('src'); video.load(); }
     empty.hidden = Boolean(item);
     empty.textContent = loaded ? 'No photos yet.' : 'Loading photos…';
     previous.disabled = next.disabled = items.length < 2;
     count.textContent = item ? (index + 1) + ' / ' + items.length : '';
     arc.replaceChildren();
     if (!item) return;
-    photo.src = item.src;
-    photo.alt = item.alt || 'UMI photo ' + (index + 1);
+    if (isVideo) {
+      if (video.getAttribute('src') !== item.src) video.src = item.src;
+      video.setAttribute('aria-label', item.alt || 'UMI video ' + (index + 1));
+    } else {
+      photo.src = item.src;
+      photo.alt = item.alt || 'UMI photo ' + (index + 1);
+    }
     const distances = [-3, -2, -1, 1, 2, 3];
     const slots = distances.slice(3 - Math.floor((Math.min(items.length, 7) - 1) / 2), 3 + Math.ceil((Math.min(items.length, 7) - 1) / 2));
     for (const distance of slots) {
@@ -355,10 +364,15 @@
       card.style.setProperty('--arc-y', (15 + Math.abs(distance) ** 2 * 4) + '%');
       card.style.setProperty('--arc-angle', distance * 6 + 'deg');
       card.setAttribute('aria-label', 'Show photo ' + (target + 1));
-      const thumbnail = document.createElement('img');
-      thumbnail.src = items[target].src;
-      thumbnail.alt = '';
-      card.append(thumbnail);
+      if (items[target].type === 'video') {
+        card.textContent = '▶';
+        card.setAttribute('aria-label', 'Show video ' + (target + 1));
+      } else {
+        const thumbnail = document.createElement('img');
+        thumbnail.src = items[target].src;
+        thumbnail.alt = '';
+        card.append(thumbnail);
+      }
       card.onclick = () => { index = target; show(); next.focus(); };
       arc.append(card);
     }
@@ -370,24 +384,26 @@
   }
   opener.onclick = () => { show(); viewer.showModal(); };
   document.querySelector('#cat-camera-close').onclick = () => viewer.close();
+  viewer.addEventListener('close', () => video.pause());
   previous.onclick = () => step(-1);
   next.onclick = () => step(1);
   viewer.addEventListener('keydown', event => {
+    if (event.target === video) return;
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
     event.preventDefault();
     step(event.key === 'ArrowLeft' ? -1 : 1);
   });
-  document.addEventListener('umi-photos-updated', event => {
+  document.addEventListener('umi-tv-photos-updated', event => {
     items = event.detail.items || [];
     index = 0;
     loaded = true;
     if (viewer.open) show();
   });
   new MutationObserver(() => {
-    if (viewer.open && !loaded && document.querySelector('#cat-photo-load-status').textContent.trim()) {
+    if (viewer.open && !loaded && document.querySelector('#tv-photo-load-status').textContent.trim()) {
       empty.textContent = 'Photos could not load. Refresh to try again.';
     }
-  }).observe(document.querySelector('#cat-photo-load-status'), {childList: true, subtree: true});
+  }).observe(document.querySelector('#tv-photo-load-status'), {childList: true, subtree: true});
 })();
 </script>
 <script src="cat-photo-gallery.js?v=6-no-frame"></script>
