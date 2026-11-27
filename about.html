@@ -333,6 +333,45 @@
 @media(max-width:600px) { #cat-camera-viewer .cat-camera-screen { width: min(90%, 430px); } }
 @media(prefers-reduced-motion:reduce) { .umi-rack-card { transition: none; transform: none !important; } }
 </style>
+<style id="umi-post-office">
+#umi-post{box-sizing:border-box;display:block;width:min(100%,520px);min-height:0;margin:auto;padding:10px clamp(8px,2vw,28px);color:#182f40;background:white}
+.post-mast,.post-foot,.post-view-head{display:flex;align-items:center;justify-content:space-between}
+.post-mast{border-top:3px double #294353;padding:15px 2px 18px;gap:12px}
+.post-mast h2,.post-view-head>span{font-family:Georgia,serif;letter-spacing:-.075em;font-weight:normal;margin:0;line-height:.98}
+.post-mast h2{font-size:clamp(44px,4.7vw,74px)}
+.post-mast h2 em{font-weight:normal}
+.post-mast p,.post-imprint,.post-foot,.post-address small,.post-address span{font:10px/1.5 'Courier New',monospace;letter-spacing:.09em}
+.post-mast p{margin:8px 0 0;text-transform:uppercase}
+.umi-seal{color:#a8392a;width:57px;height:57px;flex:none;display:grid;place-content:center;justify-items:center;border:3px double currentColor;outline:1px dashed currentColor;outline-offset:3px;border-radius:50%;transform:rotate(-13deg);background:#fffdf6}
+.umi-seal i{font:italic bold 28px/.95 Georgia,serif}.umi-seal b{font:8px/1.4 monospace;letter-spacing:1px}
+#umi-card-rack{box-sizing:border-box;width:100%;padding:clamp(20px,3vw,42px) clamp(13px,2vw,26px) 16px;border:1px solid #c8d3d3;border-radius:6px 6px 2px 2px;background:linear-gradient(116deg,#dfe9e747,#fff 29%,#f4f7f6 61%,#dce6e75c 78%,white);box-shadow:inset 4px 0 1px white,inset -3px 0 1px #acbdbd70,3px 3px 0 #d2dedd,4px 4px 0 #8a9d9f,7px 12px 16px -8px #31444b60}
+.umi-rack-row{grid-template-columns:repeat(var(--slots),minmax(0,1fr));justify-items:center;align-items:end;gap:clamp(5px,1vw,14px);padding:0 4px 9px}
+.umi-rack-row+.umi-rack-row{margin-top:22px}
+.umi-rack-row::after{height:15%;border-color:#adbfbe99;box-shadow:0 2px 1px #83989880,0 6px 8px #5e797523;background:linear-gradient(176deg,#fff9,#d2e1e211 35%,#f4fffe99 96%,#99adaf)}
+.umi-rack-card{position:relative;width:min(100%,185px);aspect-ratio:4/5;display:grid;grid-template-rows:minmax(0,1fr) auto;padding:5% 5% 10%;box-sizing:border-box;border:1px solid #dbd7cd;border-radius:1px;background:#fffdf4;transform:rotate(-3deg);box-shadow:1px 2px #dddacf,2px 4px #fffffc,4px 7px 8px #38494733;transition:transform .28s ease,box-shadow .28s ease}
+.umi-rack-card:nth-child(even){transform:rotate(4deg) translateY(-3px)}
+.umi-rack-card:is(:focus-visible,:hover){z-index:1;transform:translateY(-12px) rotate(0);box-shadow:3px 9px 12px #30434a33}
+.post-imprint{color:#334d59;display:block;text-align:left;font-size:clamp(8px,.65vw,10px);padding-top:5px;white-space:nowrap}
+.post-foot{margin-top:24px;border-top:1px solid #ced5d5;padding-top:9px;color:#455661}.post-foot[hidden]{display:none}
+.post-view-head{border-top:3px double #2d434b;padding-top:10px;margin-bottom:18px;color:#243e4e}
+.post-view-head>span{font-size:30px;font-style:italic}
+#cat-camera-close{margin:0}
+#cat-camera-viewer .cat-camera-screen{box-sizing:border-box;aspect-ratio:4/3;min-height:0;background:#fffdf6;border-radius:1px;padding:10px 10px 16px}
+#cat-camera-viewer .cat-camera-screen.is-back{padding:0}
+.is-back>:is(img,video){visibility:hidden}
+#umi-reverse{position:absolute;inset:0;background:#fffaf0;color:#273d4c;text-align:left;padding:5%;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:35% 1fr;align-items:center}
+#umi-reverse[hidden]{display:none}
+.reverse-title{font:italic clamp(22px,3vw,40px)/1 Georgia,serif;letter-spacing:-.05em}
+#umi-reverse .umi-seal{justify-self:end;transform:scale(.78) rotate(10deg)}
+.post-note,.post-address{align-self:stretch;display:flex;flex-flow:column;justify-content:center;gap:9px}
+.post-note i,.post-address i{font:italic clamp(15px,1.6vw,24px) Georgia,serif}
+.post-note span{font:11px/1.6 monospace}.post-address{border-left:1px solid #c1b5a1;padding-left:12%}
+.post-address i,.post-address span{border-bottom:1px solid #bdbaae;padding-bottom:5px}
+#cat-camera-viewer #umi-turn{border-radius:2px;padding:0 12px;font:13px Georgia,serif}
+#cat-camera-count{font:12px monospace}
+@media(max-width:600px){.cat-camera-controls{gap:9px}.post-mast h2{font-size:52px}}
+@media(prefers-reduced-motion:reduce){.umi-rack-card:is(:focus-visible,:hover){transition:none}}
+</style>
 </head>
 <body class="cat-photo-page">
 <a class="cat-home" href="index.html" aria-label="Back to home"><span>Home</span></a>
@@ -351,18 +390,19 @@
 <section class="television-area tv-photo-area" aria-label="Postcard gallery">
 
 <div class="tv-admin-tools"><button id="tv-photos-open" type="button" hidden>Edit TV media</button><span hidden><button id="tv-layout-open" type="button" hidden>TV layout</button></span></div><div id="tv-photo-grid" hidden></div>
-<div class="cat-camera-entry">
-<div class="umi-card-rack" id="umi-card-rack" aria-label="Postcard rack"><p>Loading postcards…</p></div>
+<div class="cat-camera-entry" id="umi-post">
+<header class="post-mast"><div><h2>Umi <em>Post</em></h2><p>The postcard collection</p></div><span class="umi-seal" aria-hidden="true"><i>U</i><b>UMI POST</b></span></header>
+<div class="umi-card-rack" id="umi-card-rack" aria-label="Postcard rack"><p>Loading postcards…</p></div><footer class="post-foot"><span>Pick a postcard ↗</span><span id="umi-stock"></span></footer>
 </div>
 <dialog id="cat-camera-viewer" aria-label="UMI postcards">
-<button id="cat-camera-close" type="button" aria-label="Close photo album">×</button>
+<div class="post-view-head"><span>Umi Post</span><button id="cat-camera-close" type="button" aria-label="Close photo album">×</button></div>
 <div class="cat-camera-stage">
 <div id="cat-camera-arc" aria-label="Choose a photo"></div>
-<figure class="cat-camera-screen"><img id="cat-camera-photo" alt="" hidden><video id="cat-camera-video" controls playsinline preload="metadata" hidden></video><p id="cat-camera-empty" role="status">Loading photos…</p></figure>
+<figure class="cat-camera-screen"><img id="cat-camera-photo" alt="" hidden><video id="cat-camera-video" controls playsinline preload="metadata" hidden></video><p id="cat-camera-empty" role="status">Loading photos…</p><div id="umi-reverse" hidden><div class="reverse-title">Post Card</div><span class="umi-seal" aria-hidden="true"><i>U</i><b>UMI POST</b></span><div class="post-note"><i>From Umi,</i><span>Ragdoll<br>Born 5 May 2026</span></div><div class="post-address"><small>TO</small><i>The collector</i><span id="umi-serial"></span></div></div></figure>
 </div>
 <div class="cat-camera-controls">
 <button id="cat-camera-prev" type="button" aria-label="Previous photo">‹</button>
-<output id="cat-camera-count" aria-live="polite"></output>
+<button id="umi-turn" type="button" aria-pressed="false">Flip card</button><output id="cat-camera-count" aria-live="polite"></output>
 <button id="cat-camera-next" type="button" aria-label="Next photo">›</button>
 </div>
 </dialog>
@@ -402,7 +442,26 @@
   const screen = photo.closest('figure');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let items = [], index = 0, loaded = false, swipe, changeAnimation;
+  const turn = document.querySelector('#umi-turn');
+  const reverse = document.querySelector('#umi-reverse');
+  function setBack(back) {
+    reverse.hidden = !back;
+    screen.classList.toggle('is-back', back);
+    turn.setAttribute('aria-pressed', String(back));
+    turn.textContent = back ? 'View front' : 'Flip card';
+    if (back) video.pause();
+  }
+  turn.onclick = () => {
+    setBack(reverse.hidden);
+    if (!reducedMotion.matches) screen.animate([
+      {transform:'perspective(800px) rotateY(-28deg) scale(.95)'},
+      {transform:'none'}
+    ], {duration:350, easing:'ease-out'});
+  };
   function show() {
+    setBack(false);
+    turn.hidden = !items.length;
+    document.querySelector('#umi-serial').textContent = 'UMI / ' + String(index + 1).padStart(3,'0');
     const item = items[index];
     const isVideo = item?.type === 'video';
     photo.hidden = !item || isVideo;
@@ -500,11 +559,15 @@
   }
   function renderRack() {
     rack.replaceChildren();
+    document.querySelector('.post-foot').hidden = !items.length;
+    document.querySelector('#umi-stock').textContent = items.length + (items.length === 1 ? ' card' : ' cards');
+    const columns = Math.min(items.length, 3);
+    rack.style.setProperty('--slots', Math.max(1, columns));
     if (!items.length) { rack.textContent = 'No postcards yet.'; return; }
-    for (let start = 0; start < items.length; start += 5) {
+    for (let start = 0; start < items.length; start += columns) {
       const row = document.createElement('div');
       row.className = 'umi-rack-row';
-      items.slice(start, start + 5).forEach((item, i) => {
+      items.slice(start, start + columns).forEach((item, i) => {
         const target = start + i;
         const button = document.createElement('button');
         button.type = 'button';
@@ -519,6 +582,10 @@
           thumbnail.loading = 'lazy';
           button.append(thumbnail);
         }
+        const imprint = document.createElement('span');
+        imprint.className = 'post-imprint';
+        imprint.textContent = 'UMI  /  ' + String(target + 1).padStart(3, '0');
+        button.append(imprint);
         button.onclick = () => openFromCard(target, button);
         row.append(button);
       });
