@@ -287,56 +287,74 @@
 #cat-camera-viewer .cat-camera-controls button { background: #f3eee2; border-color: #d8cebb; }
 #cat-camera-count { font: 12px/1 monospace; font-variant-numeric: tabular-nums; }
 </style>
-<style id="camera-motion-paper">
+<style id="americana-postcard-box">
 .cat-camera-entry {
-  position: relative;
-  isolation: isolate;
-  background: radial-gradient(ellipse at 50% 58%, #e8dbcb80, #f6f0e870 45%, transparent 73%);
+  min-height: clamp(210px, 36vw, 340px);
+  border-radius: 3px;
+  background: radial-gradient(ellipse at 50% 57%, #25231f 0%, #10100f 55%, #050505 100%);
 }
-.cat-camera-entry::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  width: min(80%, 280px);
-  aspect-ratio: 1.55;
-  border: 1px solid #d7c6b65c;
-  border-radius: 50%;
-  transform: rotate(-14deg);
+.cat-camera-entry::before { content: none; }
+.umi-postbox {
+  position: relative; isolation: isolate; width: 178px; height: 120px;
+  padding: 0; border: 0; border-radius: 0; background: none;
+  color: #222f38; cursor: pointer; filter: drop-shadow(0 17px 14px #000b);
 }
-.cat-camera {
-  background: linear-gradient(145deg, #fffcf4, #d7c8b8 58%, #f1e6db);
-  border-color: #9d8b7c;
-  box-shadow: inset 0 0 0 3px #fff9, 0 14px 25px #54483a40;
-  transition: transform 320ms cubic-bezier(.2,.8,.25,1);
+.umi-postbox > span { position: absolute; display: block; pointer-events: none; }
+.umi-box-back {
+  inset: 35px 3px 29px 9px; border: 2px solid #a99674; border-bottom: 0;
+  background: linear-gradient(155deg,#b89d70,#564734 45%,#34281f);
+  transform: skewX(-9deg); border-radius: 3px;
 }
-.cat-camera-lens {
-  background: radial-gradient(circle at 36% 32%, #faf0d3 0 7%, #8c9f99 20%, #4c5a5e 40%, #302d2b 51%, #aa9681 54%, #433b34 62%, #a4927e 65%);
-  position: relative;
-  transition: transform 460ms cubic-bezier(.2,.8,.25,1);
+.umi-card {
+  width: 112px; height: 70px; left: 33px; top: 8px;
+  border: 1px solid #c4b894; border-radius: 2px;
+  background: #f0e2bd; box-shadow: 1px 2px 3px #21180962;
+  transition: transform 360ms cubic-bezier(.2,.75,.3,1);
 }
-.cat-camera-lens::after {
-  content: "";
-  position: absolute;
-  inset: 8px;
-  border-radius: 50%;
-  background: conic-gradient(from 18deg, transparent 0 12%, #f7eac969 18%, transparent 26% 62%, #b6cce852 70%, transparent 79%);
+.umi-card-back { transform: translate(-13px,5px) rotate(-13deg); background: #d7c8a3; }
+.umi-card-mid { transform: translate(12px,0) rotate(12deg); background: #a96653; border-color: #d5ada0; }
+.umi-card-front {
+  transform: rotate(-3deg); padding: 5px;
+  background: linear-gradient(155deg,#f6efd8,#e6d3a6);
 }
-.cat-camera:is(:hover,:focus-visible) { transform: translateY(-6px) rotate(-4deg); }
-.cat-camera:is(:hover,:focus-visible) .cat-camera-lens { transform: rotate(35deg) scale(1.1); }
-.cat-camera:active { transform: translateY(2px) scale(.96); }
-#cat-camera-viewer {
-  background: radial-gradient(ellipse at 50% 35%, #fffaf0 25%, #eee5d7 95%);
+.umi-card-front img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.umi-box-front {
+  inset: 64px 8px 3px 2px; display: grid !important; place-items: center;
+  border: 1px solid #b9a786; border-top: 3px solid #c8ae80;
+  border-radius: 2px 1px 4px 4px;
+  background: repeating-linear-gradient(100deg,#40260d08 0 1px, transparent 1px 4px),
+    linear-gradient(155deg,#c9b28a,#a68b62 68%,#735b3e);
+  box-shadow: inset 0 1px #e3cfaa, inset -6px -5px 0 #59462e2e, 5px 3px 0 #685239;
 }
-#cat-camera-viewer[open] .cat-camera-stage { animation: camera-open 420ms ease-out both; }
-@keyframes camera-open {
-  0% { opacity: 0; transform: translateY(9px) scale(.97); }
-  34% { opacity: .75; filter: brightness(1.16); }
-  100% { opacity: 1; transform: none; filter: none; }
+.umi-box-front b {
+  padding: 4px 11px; border: 1px solid #9e8965;
+  background: #efe0b9; color: #344a56;
+  font: 700 10px/1.2 Georgia,serif; letter-spacing: .16em;
 }
-@media (prefers-reduced-motion: reduce) {
-  .cat-camera, .cat-camera-lens { transition: none; }
-  .cat-camera:is(:hover,:focus-visible,:active), .cat-camera:is(:hover,:focus-visible) .cat-camera-lens { transform: none; }
-  #cat-camera-viewer[open] .cat-camera-stage { animation: none; }
+.umi-postbox:is(:hover,:focus-visible) .umi-card-front { transform: translateY(-18px) rotate(2deg); }
+.umi-postbox:is(:hover,:focus-visible) .umi-card-back { transform: translate(-19px,-4px) rotate(-19deg); }
+.umi-postbox:is(:hover,:focus-visible) .umi-card-mid { transform: translate(18px,-7px) rotate(18deg); }
+
+#cat-camera-viewer { background: #080808; color: #f2eee4; border-color: #35312d; }
+#cat-camera-viewer::backdrop { background: #000d; }
+#cat-camera-viewer .cat-camera-screen {
+  width: min(52%, 510px); aspect-ratio: auto; min-height: 240px;
+  padding: 11px 11px 23px; border-radius: 3px; border: 1px solid #c5bda8;
+  background: linear-gradient(150deg,#f9f3e7,#e6decc); color: #222;
+  box-shadow: 1px 2px #887e6c, 2px 4px #544d41, 0 17px 28px #000b;
+}
+.cat-camera-screen::after { content: none; }
+#cat-camera-photo, #cat-camera-video { max-height: 58svh; border-radius: 0; }
+#cat-camera-viewer .cat-camera-controls button { background: #161514; border-color: #514c43; color: #f2eee4; }
+#cat-camera-viewer .cat-camera-card { border-radius: 2px; background: #f4eddd; }
+@media (max-width:600px) {
+  #cat-camera-viewer .cat-camera-screen { width: min(90%, 430px); min-height: 170px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .umi-card { transition: none; }
+  .umi-postbox:is(:hover,:focus-visible) .umi-card-front { transform: rotate(-3deg); }
+  .umi-postbox:is(:hover,:focus-visible) .umi-card-back { transform: translate(-13px,5px) rotate(-13deg); }
+  .umi-postbox:is(:hover,:focus-visible) .umi-card-mid { transform: translate(12px,0) rotate(12deg); }
 }
 </style>
 </head>
@@ -354,13 +372,19 @@
 <div id="corridor-thumbnails" class="corridor-thumbnails" aria-label="Choose a photo"></div>
 <p id="cat-photo-load-status" role="status"></p>
 </section>
-<section class="television-area tv-photo-area" aria-label="Camera gallery">
+<section class="television-area tv-photo-area" aria-label="Postcard gallery">
 
 <div class="tv-admin-tools"><button id="tv-photos-open" type="button" hidden>Edit TV media</button><span hidden><button id="tv-layout-open" type="button" hidden>TV layout</button></span></div><div id="tv-photo-grid" hidden></div>
 <div class="cat-camera-entry">
-<button class="cat-camera" id="cat-camera-open" type="button" aria-label="Open UMI photo album" aria-haspopup="dialog"><span class="cat-camera-lens" aria-hidden="true"></span></button>
+<button class="umi-postbox" id="cat-camera-open" type="button" aria-label="Open UMI postcards" aria-haspopup="dialog">
+<span class="umi-box-back" aria-hidden="true"></span>
+<span class="umi-card umi-card-back" aria-hidden="true"></span>
+<span class="umi-card umi-card-mid" aria-hidden="true"></span>
+<span class="umi-card umi-card-front" aria-hidden="true"><img id="umi-postbox-preview" alt="" hidden></span>
+<span class="umi-box-front" aria-hidden="true"><b>POSTCARDS</b></span>
+</button>
 </div>
-<dialog id="cat-camera-viewer" aria-label="UMI photo album">
+<dialog id="cat-camera-viewer" aria-label="UMI postcards">
 <button id="cat-camera-close" type="button" aria-label="Close photo album">×</button>
 <div class="cat-camera-stage">
 <div id="cat-camera-arc" aria-label="Choose a photo"></div>
@@ -458,8 +482,8 @@
     changeAnimation?.cancel();
     if (!reducedMotion.matches && screen.animate) {
       changeAnimation = (items[index].type === 'video' ? video : photo).animate([
-        { opacity: .3, transform: 'translateX(' + Math.sign(amount) * 16 + '%)' },
-        { opacity: 1, transform: 'translateX(0)' }
+        { opacity: .3, transform: 'translateX(' + Math.sign(amount) * 16 + '%) translateY(10%) rotate(' + Math.sign(amount) * 5 + 'deg)' },
+        { opacity: 1, transform: 'none' }
       ], { duration: 340, easing: 'cubic-bezier(.2,.75,.3,1)' });
     }
   }
@@ -489,6 +513,10 @@
   });
   document.addEventListener('umi-tv-photos-updated', event => {
     items = event.detail.items || [];
+    const preview = document.querySelector('#umi-postbox-preview');
+    const cover = items.find(item => item.type !== 'video');
+    preview.hidden = !cover;
+    if (cover) preview.src = cover.src; else preview.removeAttribute('src');
     index = 0;
     loaded = true;
     if (viewer.open) show();
