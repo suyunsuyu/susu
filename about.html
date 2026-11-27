@@ -267,6 +267,26 @@
   .cat-camera-card { position: static; flex: 0 0 14%; padding: 2px; transform: rotate(calc(var(--arc-angle) / 3)); }
 }
 </style>
+<style id="cat-retro-viewfinder">
+#cat-camera-viewer { background: #faf8f1; border-color: #d3cbbc; border-radius: 6px; color: #524b42; }
+#cat-camera-viewer::backdrop { background: #3f382e62; }
+#cat-camera-viewer .cat-camera-screen {
+  position: relative; touch-action: pan-y; isolation: isolate;
+  border: 1px solid #807365; border-radius: 13px; background: #252422;
+  color: #f5eee1; box-shadow: inset 0 0 0 4px #46413a, 0 14px 25px #382f283a;
+}
+.cat-camera-screen::after {
+  content: ''; position: absolute; pointer-events: none; inset: 15px; z-index: 2;
+  background: linear-gradient(#f7f0dfaa,#f7f0dfaa) top left / 13px 1px,
+    linear-gradient(#f7f0dfaa,#f7f0dfaa) top left / 1px 13px,
+    linear-gradient(#f7f0dfaa,#f7f0dfaa) top right / 13px 1px,
+    linear-gradient(#f7f0dfaa,#f7f0dfaa) top right / 1px 13px;
+  background-repeat: no-repeat;
+}
+#cat-camera-viewer .cat-camera-card { background: #fffaf0; border-color: #d8cebb; padding-bottom: 8px; }
+#cat-camera-viewer .cat-camera-controls button { background: #f3eee2; border-color: #d8cebb; }
+#cat-camera-count { font: 12px/1 monospace; font-variant-numeric: tabular-nums; }
+</style>
 </head>
 <body class="cat-photo-page">
 <a class="cat-home" href="index.html" aria-label="Back to home"><span>Home</span></a>
@@ -333,7 +353,9 @@
   const count = document.querySelector('#cat-camera-count');
   const previous = document.querySelector('#cat-camera-prev');
   const next = document.querySelector('#cat-camera-next');
-  let items = [], index = 0, loaded = false;
+  const screen = photo.closest('figure');
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  let items = [], index = 0, loaded = false, swipe, changeAnimation;
   function show() {
     const item = items[index];
     const isVideo = item?.type === 'video';
@@ -373,7 +395,7 @@
         thumbnail.alt = '';
         card.append(thumbnail);
       }
-      card.onclick = () => { index = target; show(); next.focus(); };
+      card.onclick = () => { step(distance); next.focus(); };
       arc.append(card);
     }
   }
@@ -381,7 +403,27 @@
     if (items.length < 2) return;
     index = (index + amount + items.length) % items.length;
     show();
+    changeAnimation?.cancel();
+    if (!reducedMotion.matches && screen.animate) {
+      changeAnimation = (items[index].type === 'video' ? video : photo).animate([
+        { opacity: .3, transform: 'translateX(' + Math.sign(amount) * 16 + '%)' },
+        { opacity: 1, transform: 'translateX(0)' }
+      ], { duration: 340, easing: 'cubic-bezier(.2,.75,.3,1)' });
+    }
   }
+  screen.addEventListener('pointerdown', event => {
+    if (event.target === video || !event.isPrimary || event.button !== 0) return;
+    swipe = {id: event.pointerId, x: event.clientX, y: event.clientY};
+    screen.setPointerCapture(event.pointerId);
+  });
+  screen.addEventListener('pointerup', event => {
+    if (swipe?.id !== event.pointerId) return;
+    const dx = event.clientX - swipe.x, dy = event.clientY - swipe.y;
+    swipe = null;
+    if (Math.abs(dx) >= 38 && Math.abs(dx) > Math.abs(dy)) step(dx < 0 ? 1 : -1);
+  });
+  screen.addEventListener('lostpointercapture', () => { swipe = null; });
+  photo.draggable = false;
   opener.onclick = () => { show(); viewer.showModal(); };
   document.querySelector('#cat-camera-close').onclick = () => viewer.close();
   viewer.addEventListener('close', () => video.pause());
