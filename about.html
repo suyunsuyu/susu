@@ -217,19 +217,84 @@
 }
 </style>
 <style>.cat-photo-page .cat-home { width: auto; min-width: 0; height: auto; }</style>
+<style id="cat-camera-design">
+.cat-camera-entry { display: grid; place-items: center; min-height: clamp(190px, 36vw, 340px); }
+.cat-camera {
+  position: relative; display: grid; place-items: center; width: 158px; height: 101px;
+  border-radius: 19px; border: 1px solid #9cb3ba; cursor: pointer;
+  background: linear-gradient(145deg, #fff 6%, #eaf4f37a 40%, #e2e6f49e 72%, #f9eeeb);
+  box-shadow: inset 0 0 0 3px #fffc, 0 0 0 1px #d8e5e7, 0 15px 24px #61787d25;
+}
+.cat-camera::before, .cat-camera::after { content: ""; position: absolute; border: 1px solid #9eb1b7; background: linear-gradient(#fff, #dbecef); }
+.cat-camera::before { left: 14px; top: -10px; width: 31px; height: 10px; border-radius: 6px 6px 1px 1px; }
+.cat-camera::after { right: 13px; top: 12px; width: 17px; height: 9px; border-radius: 4px; }
+.cat-camera-lens {
+  width: 67px; aspect-ratio: 1; border-radius: 50%; border: 1px solid #93a4b9;
+  background: radial-gradient(circle at 37% 30%, #fff 0 5%, #cfe5f0 15%, #a3a8c7 37%, #687d99 52%, #deeaf2 55%, #f5fbff 69%);
+  box-shadow: 0 2px 5px #61787d38;
+}
+#cat-camera-viewer {
+  width: min(1020px, calc(100% - 24px)); max-height: calc(100dvh - 24px);
+  box-sizing: border-box; padding: clamp(16px, 4vw, 44px); border: 1px solid #dce6eb;
+  border-radius: 22px; background: #fdfefe; color: #344653;
+}
+#cat-camera-viewer::backdrop { background: #dae3e9b8; backdrop-filter: blur(6px); }
+#cat-camera-viewer button { font: inherit; color: inherit; cursor: pointer; }
+#cat-camera-close { display: block; margin: 0 0 12px auto; border: 0; background: none; padding: 4px 10px; font-size: 26px !important; }
+.cat-camera-stage { position: relative; display: grid; place-items: start center; }
+.cat-camera-screen {
+  z-index: 1; width: 36%; aspect-ratio: 5 / 6; margin: 0; padding: 10px;
+  display: grid; place-items: center; border: 1px solid #b2cbd3; border-radius: 18px;
+  background: linear-gradient(145deg,#effbfc,#e5eaf5 65%,#f6eeec);
+  box-shadow: 0 14px 28px #51677427; overflow: hidden;
+}
+.cat-camera-screen img { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
+#cat-camera-photo[hidden] { display: none; }
+#cat-camera-empty { margin: 0; font-size: 13px; text-align: center; }
+#cat-camera-arc { position: absolute; inset: 0; }
+.cat-camera-card {
+  position: absolute; left: calc(50% + var(--arc-x)); top: var(--arc-y);
+  width: 12%; aspect-ratio: 1; padding: 4px; border: 1px solid #dae3eb; border-radius: 6px;
+  background: #fff; transform: translateX(-50%) rotate(var(--arc-angle)); box-shadow: 0 5px 12px #41586422;
+}
+.cat-camera-card img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 3px; }
+.cat-camera-controls { display: flex; justify-content: center; align-items: center; gap: 18px; margin-top: 14px; }
+.cat-camera-controls button { min-width: 44px; min-height: 44px; border: 1px solid #dce6eb; border-radius: 50%; background: #f5f9fb; }
+@media (max-width: 600px) {
+  .cat-camera-screen { width: min(72%, 310px); }
+  #cat-camera-arc { position: static; order: 1; display: flex; justify-content: center; gap: 5px; margin-top: 14px; width: 100%; }
+  .cat-camera-card { position: static; flex: 0 0 14%; padding: 2px; transform: rotate(calc(var(--arc-angle) / 3)); }
+}
+</style>
 </head>
 <body class="cat-photo-page">
 <a class="cat-home" href="index.html" aria-label="Back to home"><span>Home</span></a>
 <main class="cat-picture-show" aria-label="Umi's picture show">
 <section class="cat-photo-area is-empty" aria-label="Photo corridor">
 <header class="corridor-heading"><button id="cat-photos-open" type="button" hidden>Edit corridor photos</button></header>
-<div class="film-reel" data-frame="none">
+<div class="cat-camera-entry">
+<button class="cat-camera" id="cat-camera-open" type="button" aria-label="Open UMI photo album" aria-haspopup="dialog"><span class="cat-camera-lens" aria-hidden="true"></span></button>
+</div>
+<dialog id="cat-camera-viewer" aria-label="UMI photo album">
+<button id="cat-camera-close" type="button" aria-label="Close photo album">×</button>
+<div class="cat-camera-stage">
+<div id="cat-camera-arc" aria-label="Choose a photo"></div>
+<figure class="cat-camera-screen"><img id="cat-camera-photo" alt="" hidden><p id="cat-camera-empty" role="status">Loading photos…</p></figure>
+</div>
+<div class="cat-camera-controls">
+<button id="cat-camera-prev" type="button" aria-label="Previous photo">‹</button>
+<output id="cat-camera-count" aria-live="polite"></output>
+<button id="cat-camera-next" type="button" aria-label="Next photo">›</button>
+</div>
+</dialog>
+<div hidden><div class="film-reel" data-frame="none">
 <div class="film-perforations" aria-hidden="true"></div>
 <div id="cat-photo-grid" class="corridor-track" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Photo slides"></div>
 <div class="film-perforations" aria-hidden="true"></div>
 </div>
 <div class="corridor-controls"><button id="corridor-play" type="button" aria-label="Pause slideshow" aria-pressed="true" data-playing="true"><svg class="pause-symbol" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg><svg class="play-symbol" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 4 13 8-13 8z"/></svg></button></div>
 <div id="corridor-thumbnails" class="corridor-thumbnails" aria-label="Choose a photo"></div>
+</div>
 <p id="cat-photo-load-status" role="status"></p>
 </section>
 <section class="television-area tv-photo-area" aria-label="Glass television">
@@ -257,6 +322,74 @@
 <script src="config.js?v=20260818-imgfix2"></script>
 <script src="supabase-site.js?v=20261002-font3"></script>
 <script src="cat-picture-show.js?v=6-cabinet-controls"></script>
+<script>
+(() => {
+  const opener = document.querySelector('#cat-camera-open');
+  const viewer = document.querySelector('#cat-camera-viewer');
+  const photo = document.querySelector('#cat-camera-photo');
+  const arc = document.querySelector('#cat-camera-arc');
+  const empty = document.querySelector('#cat-camera-empty');
+  const count = document.querySelector('#cat-camera-count');
+  const previous = document.querySelector('#cat-camera-prev');
+  const next = document.querySelector('#cat-camera-next');
+  let items = [], index = 0, loaded = false;
+  function show() {
+    const item = items[index];
+    photo.hidden = !item;
+    empty.hidden = Boolean(item);
+    empty.textContent = loaded ? 'No photos yet.' : 'Loading photos…';
+    previous.disabled = next.disabled = items.length < 2;
+    count.textContent = item ? (index + 1) + ' / ' + items.length : '';
+    arc.replaceChildren();
+    if (!item) return;
+    photo.src = item.src;
+    photo.alt = item.alt || 'UMI photo ' + (index + 1);
+    const distances = [-3, -2, -1, 1, 2, 3];
+    const slots = distances.slice(3 - Math.floor((Math.min(items.length, 7) - 1) / 2), 3 + Math.ceil((Math.min(items.length, 7) - 1) / 2));
+    for (const distance of slots) {
+      const target = (index + distance + items.length) % items.length;
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'cat-camera-card';
+      card.style.setProperty('--arc-x', Math.sign(distance) * (18 + Math.abs(distance) * 8) + '%');
+      card.style.setProperty('--arc-y', (15 + Math.abs(distance) ** 2 * 4) + '%');
+      card.style.setProperty('--arc-angle', distance * 6 + 'deg');
+      card.setAttribute('aria-label', 'Show photo ' + (target + 1));
+      const thumbnail = document.createElement('img');
+      thumbnail.src = items[target].src;
+      thumbnail.alt = '';
+      card.append(thumbnail);
+      card.onclick = () => { index = target; show(); next.focus(); };
+      arc.append(card);
+    }
+  }
+  function step(amount) {
+    if (items.length < 2) return;
+    index = (index + amount + items.length) % items.length;
+    show();
+  }
+  opener.onclick = () => { show(); viewer.showModal(); };
+  document.querySelector('#cat-camera-close').onclick = () => viewer.close();
+  previous.onclick = () => step(-1);
+  next.onclick = () => step(1);
+  viewer.addEventListener('keydown', event => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    step(event.key === 'ArrowLeft' ? -1 : 1);
+  });
+  document.addEventListener('umi-photos-updated', event => {
+    items = event.detail.items || [];
+    index = 0;
+    loaded = true;
+    if (viewer.open) show();
+  });
+  new MutationObserver(() => {
+    if (viewer.open && !loaded && document.querySelector('#cat-photo-load-status').textContent.trim()) {
+      empty.textContent = 'Photos could not load. Refresh to try again.';
+    }
+  }).observe(document.querySelector('#cat-photo-load-status'), {childList: true, subtree: true});
+})();
+</script>
 <script src="cat-photo-gallery.js?v=6-no-frame"></script>
 <script src="tv-photo-gallery.js?v=4-standby-cover"></script>
 <script src="tv-layout-editor.js?v=2-english"></script>
