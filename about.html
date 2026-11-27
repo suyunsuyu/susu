@@ -287,75 +287,51 @@
 #cat-camera-viewer .cat-camera-controls button { background: #f3eee2; border-color: #d8cebb; }
 #cat-camera-count { font: 12px/1 monospace; font-variant-numeric: tabular-nums; }
 </style>
-<style id="americana-postcard-box">
+<style id="umi-acrylic-rack">
 .cat-camera-entry {
-  min-height: clamp(210px, 36vw, 340px);
-  border-radius: 3px;
-  background: radial-gradient(ellipse at 50% 57%, #25231f 0%, #10100f 55%, #050505 100%);
+  display: grid; place-items: center; min-height: clamp(230px, 35vw, 360px);
+  padding: 20px 10px; background: #fff;
 }
-.cat-camera-entry::before { content: none; }
-.umi-postbox {
-  position: relative; isolation: isolate; width: 178px; height: 120px;
-  padding: 0; border: 0; border-radius: 0; background: none;
-  color: #222f38; cursor: pointer; filter: drop-shadow(0 17px 14px #000b);
+.umi-card-rack {
+  position: relative; width: min(100%, 360px); padding: 14px 13px 13px;
+  border: 1px solid #b7c6c9; border-radius: 5px;
+  background: linear-gradient(115deg,#eef4f633 0%,#fff 37%,#ecf2f37a 100%);
+  box-shadow: inset 2px 0 0 #fff, 4px 3px 0 #d6e0e3, 5px 4px 0 #b0bfc2, 9px 13px 17px #465c641f;
 }
-.umi-postbox > span { position: absolute; display: block; pointer-events: none; }
-.umi-box-back {
-  inset: 35px 3px 29px 9px; border: 2px solid #a99674; border-bottom: 0;
-  background: linear-gradient(155deg,#b89d70,#564734 45%,#34281f);
-  transform: skewX(-9deg); border-radius: 3px;
+.umi-card-rack::after {
+  content: ""; position: absolute; inset: 1px 3px; pointer-events: none;
+  border-inline: 1px solid #fff;
 }
-.umi-card {
-  width: 112px; height: 70px; left: 33px; top: 8px;
-  border: 1px solid #c4b894; border-radius: 2px;
-  background: #f0e2bd; box-shadow: 1px 2px 3px #21180962;
-  transition: transform 360ms cubic-bezier(.2,.75,.3,1);
+.umi-rack-row { position: relative; display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 5px; padding: 0 3px 8px; }
+.umi-rack-row + .umi-rack-row { margin-top: 5px; }
+.umi-rack-row::after {
+  content: ""; position: absolute; inset: auto 0 0; height: 21%; pointer-events: none;
+  border: 1px solid #9fb5bb99; border-radius: 2px;
+  background: linear-gradient(#fff9 0 15%,#d5e7ed26 24%,#eef4f38c 86%,#b5cbd46b);
+  box-shadow: 0 2px 2px #56788422;
 }
-.umi-card-back { transform: translate(-13px,5px) rotate(-13deg); background: #d7c8a3; }
-.umi-card-mid { transform: translate(12px,0) rotate(12deg); background: #a96653; border-color: #d5ada0; }
-.umi-card-front {
-  transform: rotate(-3deg); padding: 5px;
-  background: linear-gradient(155deg,#f6efd8,#e6d3a6);
+.umi-rack-card {
+  aspect-ratio: 3/4; min-width: 0; padding: 3px; border: 1px solid #d6d0c5;
+  border-radius: 3px; background: #fffef9; cursor: pointer;
+  box-shadow: 1px 2px 3px #53646d28; transition: transform 200ms ease;
 }
-.umi-card-front img { width: 100%; height: 100%; display: block; object-fit: cover; }
-.umi-box-front {
-  inset: 64px 8px 3px 2px; display: grid !important; place-items: center;
-  border: 1px solid #b9a786; border-top: 3px solid #c8ae80;
-  border-radius: 2px 1px 4px 4px;
-  background: repeating-linear-gradient(100deg,#40260d08 0 1px, transparent 1px 4px),
-    linear-gradient(155deg,#c9b28a,#a68b62 68%,#735b3e);
-  box-shadow: inset 0 1px #e3cfaa, inset -6px -5px 0 #59462e2e, 5px 3px 0 #685239;
-}
-.umi-box-front b {
-  padding: 4px 11px; border: 1px solid #9e8965;
-  background: #efe0b9; color: #344a56;
-  font: 700 10px/1.2 Georgia,serif; letter-spacing: .16em;
-}
-.umi-postbox:is(:hover,:focus-visible) .umi-card-front { transform: translateY(-18px) rotate(2deg); }
-.umi-postbox:is(:hover,:focus-visible) .umi-card-back { transform: translate(-19px,-4px) rotate(-19deg); }
-.umi-postbox:is(:hover,:focus-visible) .umi-card-mid { transform: translate(18px,-7px) rotate(18deg); }
-
-#cat-camera-viewer { background: #080808; color: #f2eee4; border-color: #35312d; }
-#cat-camera-viewer::backdrop { background: #000d; }
+.umi-rack-card:is(:hover,:focus-visible) { transform: translateY(-7px); }
+.umi-rack-card img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 1px; }
+#cat-camera-viewer { background: #fff; color: #343637; border-color: #dce3e5; }
+#cat-camera-viewer::backdrop { background: #f5f7f8d9; }
 #cat-camera-viewer .cat-camera-screen {
-  width: min(52%, 510px); aspect-ratio: auto; min-height: 240px;
-  padding: 11px 11px 23px; border-radius: 3px; border: 1px solid #c5bda8;
-  background: linear-gradient(150deg,#f9f3e7,#e6decc); color: #222;
-  box-shadow: 1px 2px #887e6c, 2px 4px #544d41, 0 17px 28px #000b;
+  width: min(52%, 510px); aspect-ratio: auto; min-height: 165px;
+  padding: 10px 10px 18px; border-radius: 3px; border: 1px solid #d6d8d6;
+  background: #fffefa; color: #343637; box-shadow: 0 12px 28px #38494e22;
 }
 .cat-camera-screen::after { content: none; }
 #cat-camera-photo, #cat-camera-video { max-height: 58svh; border-radius: 0; }
-#cat-camera-viewer .cat-camera-controls button { background: #161514; border-color: #514c43; color: #f2eee4; }
-#cat-camera-viewer .cat-camera-card { border-radius: 2px; background: #f4eddd; }
-@media (max-width:600px) {
-  #cat-camera-viewer .cat-camera-screen { width: min(90%, 430px); min-height: 170px; }
-}
-@media (prefers-reduced-motion:reduce) {
-  .umi-card { transition: none; }
-  .umi-postbox:is(:hover,:focus-visible) .umi-card-front { transform: rotate(-3deg); }
-  .umi-postbox:is(:hover,:focus-visible) .umi-card-back { transform: translate(-13px,5px) rotate(-13deg); }
-  .umi-postbox:is(:hover,:focus-visible) .umi-card-mid { transform: translate(12px,0) rotate(12deg); }
-}
+#cat-camera-viewer .cat-camera-controls button { background: #fff; border-color: #dce3e5; }
+#cat-camera-viewer.is-drawing .cat-camera-screen { visibility: hidden; }
+.umi-flying-card { position: fixed; z-index: 5; box-sizing: border-box; pointer-events: none; background: #fffefa; border: 1px solid #dae0dd; border-radius: 3px; padding: 4px; box-shadow: 0 7px 20px #374d5033; }
+.umi-flying-card img { width: 100%; height: 100%; object-fit: contain; display: block; }
+@media(max-width:600px) { #cat-camera-viewer .cat-camera-screen { width: min(90%, 430px); } }
+@media(prefers-reduced-motion:reduce) { .umi-rack-card { transition: none; transform: none !important; } }
 </style>
 </head>
 <body class="cat-photo-page">
@@ -376,13 +352,7 @@
 
 <div class="tv-admin-tools"><button id="tv-photos-open" type="button" hidden>Edit TV media</button><span hidden><button id="tv-layout-open" type="button" hidden>TV layout</button></span></div><div id="tv-photo-grid" hidden></div>
 <div class="cat-camera-entry">
-<button class="umi-postbox" id="cat-camera-open" type="button" aria-label="Open UMI postcards" aria-haspopup="dialog">
-<span class="umi-box-back" aria-hidden="true"></span>
-<span class="umi-card umi-card-back" aria-hidden="true"></span>
-<span class="umi-card umi-card-mid" aria-hidden="true"></span>
-<span class="umi-card umi-card-front" aria-hidden="true"><img id="umi-postbox-preview" alt="" hidden></span>
-<span class="umi-box-front" aria-hidden="true"><b>POSTCARDS</b></span>
-</button>
+<div class="umi-card-rack" id="umi-card-rack" aria-label="Postcard rack"><p>Loading postcards…</p></div>
 </div>
 <dialog id="cat-camera-viewer" aria-label="UMI postcards">
 <button id="cat-camera-close" type="button" aria-label="Close photo album">×</button>
@@ -420,7 +390,7 @@
 <script src="cat-picture-show.js?v=6-cabinet-controls"></script>
 <script>
 (() => {
-  const opener = document.querySelector('#cat-camera-open');
+  const rack = document.querySelector('#umi-card-rack');
   const viewer = document.querySelector('#cat-camera-viewer');
   const photo = document.querySelector('#cat-camera-photo');
   const video = document.querySelector('#cat-camera-video');
@@ -500,9 +470,63 @@
   });
   screen.addEventListener('lostpointercapture', () => { swipe = null; });
   photo.draggable = false;
-  opener.onclick = () => { show(); viewer.showModal(); };
+  let flight;
+  function openFromCard(target, button) {
+    const start = button.getBoundingClientRect();
+    index = target;
+    show();
+    viewer.showModal();
+    if (reducedMotion.matches || !button.animate) return;
+    const end = screen.getBoundingClientRect();
+    const card = document.createElement('div');
+    card.className = 'umi-flying-card';
+    card.setAttribute('aria-hidden', 'true');
+    Object.assign(card.style, {left: start.left + 'px', top: start.top + 'px', width: start.width + 'px', height: start.height + 'px'});
+    const thumbnail = button.querySelector('img');
+    if (thumbnail) card.append(thumbnail.cloneNode());
+    else card.textContent = '▶';
+    viewer.append(card);
+    viewer.classList.add('is-drawing');
+    flight = card.animate([
+      {offset: 0, transform: 'none'},
+      {offset: .34, transform: 'translateY(-35px) rotate(-8deg)'},
+      {offset: 1, transform: 'translate(' + (end.left - start.left) + 'px,' + (end.top - start.top) + 'px) scale(' + end.width/start.width + ',' + end.height/start.height + ')'}
+    ], {duration: 620, easing: 'cubic-bezier(.22,.72,.24,1)'});
+    card.style.transformOrigin = 'top left';
+    flight.finished.catch(() => {}).finally(() => {
+      card.remove();
+      viewer.classList.remove('is-drawing');
+    });
+  }
+  function renderRack() {
+    rack.replaceChildren();
+    if (!items.length) { rack.textContent = 'No postcards yet.'; return; }
+    for (let start = 0; start < items.length; start += 5) {
+      const row = document.createElement('div');
+      row.className = 'umi-rack-row';
+      items.slice(start, start + 5).forEach((item, i) => {
+        const target = start + i;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'umi-rack-card';
+        button.setAttribute('aria-haspopup', 'dialog');
+        button.setAttribute('aria-label', item.alt || 'Open postcard ' + (target + 1));
+        if (item.type === 'video') button.textContent = '▶';
+        else {
+          const thumbnail = document.createElement('img');
+          thumbnail.src = item.src;
+          thumbnail.alt = '';
+          thumbnail.loading = 'lazy';
+          button.append(thumbnail);
+        }
+        button.onclick = () => openFromCard(target, button);
+        row.append(button);
+      });
+      rack.append(row);
+    }
+  }
   document.querySelector('#cat-camera-close').onclick = () => viewer.close();
-  viewer.addEventListener('close', () => video.pause());
+  viewer.addEventListener('close', () => { video.pause(); flight?.cancel(); });
   previous.onclick = () => step(-1);
   next.onclick = () => step(1);
   viewer.addEventListener('keydown', event => {
@@ -513,10 +537,7 @@
   });
   document.addEventListener('umi-tv-photos-updated', event => {
     items = event.detail.items || [];
-    const preview = document.querySelector('#umi-postbox-preview');
-    const cover = items.find(item => item.type !== 'video');
-    preview.hidden = !cover;
-    if (cover) preview.src = cover.src; else preview.removeAttribute('src');
+    renderRack();
     index = 0;
     loaded = true;
     if (viewer.open) show();
